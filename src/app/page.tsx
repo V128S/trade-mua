@@ -5,7 +5,7 @@ export const revalidate = 3600; // refresh every hour
 
 function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col">
+    <Link href={`/products/${product.id}`} className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col">
       {/* Image placeholder — glow effect */}
       <div className="relative h-44 bg-surface flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface/60" />
@@ -50,12 +50,12 @@ function ProductCard({ product }: { product: Product }) {
           <span className="font-headline-md text-headline-md text-primary">
             ${product.priceUSDT.toLocaleString()}
           </span>
-          <button className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
+          <span className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
             Деталі
-          </button>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
