@@ -233,6 +233,47 @@ body {
   color: #ecc246;
 }
 
+/* ─── Light mode overrides for custom component classes ─── */
+
+.light .bg-card {
+  background-color: #ffffff;
+}
+.light .border-card {
+  border-color: rgba(117, 91, 0, 0.12);
+}
+.light .hover-primary-border:hover {
+  border-color: #755b00;
+}
+
+.light .btn-ghost {
+  border-color: rgba(117, 91, 0, 0.3);
+  color: #4d4635;
+}
+.light .btn-ghost:hover {
+  border-color: #755b00;
+  color: #755b00;
+}
+
+.light .chip {
+  background-color: rgba(117, 91, 0, 0.08);
+  color: #755b00;
+}
+
+/* Hardcoded dark borders inside cards → light equivalent */
+.light .border-\[#2e2d2b\] {
+  border-color: rgba(117, 91, 0, 0.12);
+}
+
+/* In-stock green badge: soften dark green on white cards */
+.light .bg-\[#1a2b1a\] {
+  background-color: rgba(22, 163, 74, 0.1);
+}
+
+/* Range slider track in light mode */
+.light input[type="range"]::-webkit-slider-runnable-track {
+  background: #d1c5af;
+}
+
 /* ─── Light mode glassmorphism classes ─── */
 .liquid-glass {
   background: rgba(255, 255, 255, 0.4);
