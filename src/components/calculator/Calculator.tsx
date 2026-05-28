@@ -7,6 +7,7 @@ interface Props {
   revenuePerTH: number; // USD per TH/s per day
   initialHashrate?: string;
   initialPower?: number;
+  initialPrice?: number;
 }
 
 function parseHashrateTH(s: string): number {
@@ -19,10 +20,11 @@ function parseHashrateTH(s: string): number {
   return val;
 }
 
-export default function Calculator({ btcPrice, revenuePerTH, initialHashrate = "", initialPower = 3500 }: Props) {
+export default function Calculator({ btcPrice, revenuePerTH, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
   const [hashrate, setHashrate] = useState(initialHashrate);
   const [powerW, setPowerW] = useState(initialPower);
   const [electricityRate, setElectricityRate] = useState(0.07);
+  const [price, setPrice] = useState(initialPrice);
 
   const result = useMemo(() => {
     const th = parseHashrateTH(hashrate);
@@ -30,13 +32,16 @@ export default function Calculator({ btcPrice, revenuePerTH, initialHashrate = "
     const dailyCost = (powerW / 1000) * 24 * electricityRate;
     const dailyRevenue = revenuePerTH * th;
     const dailyProfit = Math.max(0, dailyRevenue - dailyCost);
+    // Equipment payback = price / daily profit. Requires a price and positive profit.
+    const roi = price > 0 && dailyProfit > 0 ? Math.ceil(price / dailyProfit) : Infinity;
     return {
       daily: { cost: dailyCost, revenue: dailyRevenue, profit: dailyProfit },
       monthly: { cost: dailyCost * 30, revenue: dailyRevenue * 30, profit: dailyProfit * 30 },
       annual: { cost: dailyCost * 365, revenue: dailyRevenue * 365, profit: dailyProfit * 365 },
-      roi: dailyProfit > 0 ? Math.ceil(365 / (dailyRevenue / (dailyCost || 1))) : Infinity,
+      roi,
+      hasPrice: price > 0,
     };
-  }, [hashrate, powerW, electricityRate, revenuePerTH]);
+  }, [hashrate, powerW, electricityRate, revenuePerTH, price]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-12">
@@ -122,6 +127,25 @@ export default function Calculator({ btcPrice, revenuePerTH, initialHashrate = "
           </div>
         </div>
 
+        {/* Equipment price (optional — enables payback calc) */}
+        <div className="space-y-2">
+          <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] block">
+            Вартість обладнання ($)
+          </label>
+          <input
+            type="number"
+            min={0}
+            inputMode="numeric"
+            value={price || ""}
+            onChange={(e) => setPrice(Math.max(0, Number(e.target.value)))}
+            placeholder="наприклад: 5000"
+            className="w-full bg-card border border-[#2e2d2b] rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
+          />
+          <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
+            Вкажіть, щоб розрахувати окупність
+          </p>
+        </div>
+
         {/* Hotel promo */}
         <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-3 flex items-start gap-3">
           <span className="material-symbols-outlined text-primary text-[18px] mt-0.5">warehouse</span>
@@ -183,7 +207,11 @@ export default function Calculator({ btcPrice, revenuePerTH, initialHashrate = "
                 </p>
               </div>
               <div className="text-right">
-                {isFinite(result.roi) ? (
+                {!result.hasPrice ? (
+                  <p className="font-label-caps text-[10px] text-on-surface-variant max-w-[140px]">
+                    Вкажіть вартість обладнання
+                  </p>
+                ) : isFinite(result.roi) ? (
                   <>
                     <p className="font-headline-md text-headline-md text-primary">{result.roi} днів</p>
                     <p className="font-label-caps text-[10px] text-on-surface-variant">≈{Math.ceil(result.roi / 30)} місяців</p>

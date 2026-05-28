@@ -38,6 +38,12 @@ export default function RootLayout({
   return (
     <html lang="uk" className={`dark ${syne.variable} ${hanken.variable} ${jetbrains.variable}`}>
       <head>
+        {/* Restore persisted theme before paint to avoid a flash of the wrong theme */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t);}}catch(e){}})();`,
+          }}
+        />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"

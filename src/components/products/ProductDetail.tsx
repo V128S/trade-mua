@@ -132,7 +132,10 @@ export default function ProductDetail({ product, configs, revenuePerTH }: Props)
           </p>
         )}
 
-        <Link href="/calculator" className="inline-flex items-center gap-1 font-label-caps text-[10px] text-primary uppercase tracking-widest hover:text-secondary transition-colors">
+        <Link
+          href={`/calculator?hashrate=${encodeURIComponent(product.hashrate)}&power=${product.powerW}&price=${product.priceUSDT}`}
+          className="inline-flex items-center gap-1 font-label-caps text-[10px] text-primary uppercase tracking-widest hover:text-secondary transition-colors"
+        >
           Повний калькулятор
           <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
         </Link>

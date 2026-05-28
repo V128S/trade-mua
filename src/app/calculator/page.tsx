@@ -33,7 +33,7 @@ async function getBTCData(): Promise<{ btcPrice: number; revenuePerTH: number }>
   }
 }
 
-type Props = { searchParams: Promise<{ hashrate?: string; power?: string }> };
+type Props = { searchParams: Promise<{ hashrate?: string; power?: string; price?: string }> };
 
 export default async function CalculatorPage({ searchParams }: Props) {
   const [btcData, params] = await Promise.all([getBTCData(), searchParams]);
@@ -55,6 +55,7 @@ export default async function CalculatorPage({ searchParams }: Props) {
         revenuePerTH={btcData.revenuePerTH}
         initialHashrate={params.hashrate ?? ""}
         initialPower={params.power ? Number(params.power) : 3500}
+        initialPrice={params.price ? Number(params.price) : 0}
       />
     </div>
   );

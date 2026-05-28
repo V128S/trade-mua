@@ -90,7 +90,7 @@ export default function ServicesPage() {
             Наші <span className="text-primary">Сервіси</span>
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
-            Повний цикл обслуговування ASIC-майнерів — від ремонту до розміщення на промисловому об'єкті.
+            Повний цикл обслуговування ASIC-майнерів — від ремонту до розміщення на промисловому об&apos;єкті.
           </p>
         </div>
       </section>
@@ -122,11 +122,9 @@ export default function ServicesPage() {
                   <p className="font-label-caps text-label-caps text-primary uppercase tracking-widest">{s.price}</p>
                   <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider">{s.time}</p>
                 </div>
-                <Link href="/contact">
-                  <button className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs flex items-center gap-1">
-                    Замовити
-                    <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-                  </button>
+                <Link href="/contact" className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs flex items-center gap-1">
+                  Замовити
+                  <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </Link>
               </div>
             </div>
@@ -164,20 +162,16 @@ export default function ServicesPage() {
               Готові до роботи
             </h2>
             <p className="font-body-md text-body-md text-on-surface-variant max-w-lg mx-auto">
-              Зв'яжіться з нами, щоб отримати консультацію або здати пристрій на сервіс.
+              Зв&apos;яжіться з нами, щоб отримати консультацію або здати пристрій на сервіс.
             </p>
             <div className="flex flex-wrap gap-4 justify-center pt-2">
-              <Link href="/contact">
-                <button className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
-                  <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                  Зв'язатися
-                </button>
+              <Link href="/contact" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
+                <span className="material-symbols-outlined text-[18px]">contact_support</span>
+                Зв&apos;язатися
               </Link>
-              <Link href="/products">
-                <button className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-                  Каталог
-                </button>
+              <Link href="/products" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+                Каталог
               </Link>
             </div>
           </div>

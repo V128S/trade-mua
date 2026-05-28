@@ -4,8 +4,6 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import type { Product } from "@/lib/sheets";
 
-const ALGO_OPTIONS = ["Всі", "SHA256", "Scrypt", "KHeavyHash", "EtHash", "Blake2B", "X11"];
-
 function ProductCard({ product }: { product: Product }) {
   return (
     <Link
@@ -119,7 +117,9 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
 
         {/* Stock toggle */}
         <button
+          type="button"
           onClick={() => setStockOnly(!stockOnly)}
+          aria-pressed={stockOnly}
           className={`px-4 py-2.5 rounded border font-label-caps text-label-caps uppercase tracking-widest transition-colors whitespace-nowrap ${
             stockOnly
               ? "border-primary text-primary bg-primary/10"
@@ -136,7 +136,9 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
         {algorithms.map((a) => (
           <button
             key={a}
+            type="button"
             onClick={() => setAlgo(a)}
+            aria-pressed={algo === a}
             className={`px-3 py-1 rounded text-[11px] font-label-caps uppercase tracking-widest transition-colors ${
               algo === a
                 ? "bg-primary text-on-primary"
@@ -165,6 +167,7 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
           <span className="material-symbols-outlined text-[48px]">search_off</span>
           <p className="font-body-md text-body-md">Нічого не знайдено. Спробуйте інший запит.</p>
           <button
+            type="button"
             onClick={() => { setSearch(""); setAlgo("Всі"); setStockOnly(false); }}
             className="btn-ghost px-6 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs"
           >

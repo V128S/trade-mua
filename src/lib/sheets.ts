@@ -78,7 +78,8 @@ function parseRow(cols: string[]): Product | null {
 // Parse raw CSV text into rows, handling quoted fields
 function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
-  const lines = text.split("\n");
+  // Normalise CRLF / CR line endings — Google Sheets exports CRLF.
+  const lines = text.replace(/\r\n?/g, "\n").split("\n");
 
   for (const line of lines) {
     const cols: string[] = [];
@@ -87,7 +88,13 @@ function parseCsv(text: string): string[][] {
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
       if (ch === '"') {
-        inQuote = !inQuote;
+        // Escaped quote ("") inside a quoted field → literal quote.
+        if (inQuote && line[i + 1] === '"') {
+          cur += '"';
+          i++;
+        } else {
+          inQuote = !inQuote;
+        }
       } else if (ch === "," && !inQuote) {
         cols.push(cur);
         cur = "";

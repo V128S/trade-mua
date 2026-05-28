@@ -23,7 +23,7 @@ export default function ContactPage() {
         <div className="max-w-container-max mx-auto relative z-10">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-primary" />
-            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Зв'язок</span>
+            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Зв&apos;язок</span>
           </div>
           <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none mb-4">
             Контакти
@@ -69,7 +69,7 @@ export default function ContactPage() {
                 @DenisHandsome
               </a>
               <p className="font-technical-data text-technical-data text-on-surface-variant mt-1">
-                Найшвидший спосіб зв'язатися
+                Найшвидший спосіб зв&apos;язатися
               </p>
             </div>
           </div>
@@ -120,17 +120,13 @@ export default function ContactPage() {
       {/* Quick actions */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-          <Link href="/products">
-            <button className="w-full btn-ghost py-4 px-6 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-              Переглянути каталог
-            </button>
+          <Link href="/products" className="w-full btn-ghost py-4 px-6 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+            Переглянути каталог
           </Link>
-          <Link href="/calculator">
-            <button className="w-full btn-ghost py-4 px-6 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-[18px]">calculate</span>
-              Калькулятор
-            </button>
+          <Link href="/calculator" className="w-full btn-ghost py-4 px-6 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">calculate</span>
+            Калькулятор
           </Link>
         </div>
       </section>

@@ -124,17 +124,13 @@ export default async function Home() {
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-4 pt-2">
-              <Link href="/products">
-                <button className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
-                  <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-                  Каталог товарів
-                </button>
+              <Link href="/products" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
+                <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+                Каталог товарів
               </Link>
-              <Link href="/contact">
-                <button className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                  Консультація
-                </button>
+              <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">contact_support</span>
+                Консультація
               </Link>
             </div>
 
@@ -181,11 +177,9 @@ export default async function Home() {
         )}
 
         <div className="flex justify-center mt-10">
-          <Link href="/products">
-            <button className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px]">grid_view</span>
-              Весь каталог
-            </button>
+          <Link href="/products" className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">grid_view</span>
+            Весь каталог
           </Link>
         </div>
       </section>
@@ -245,11 +239,9 @@ export default async function Home() {
                 Розрахуйте окупність вашого майнера. Враховуємо поточний курс та складність мережі.
               </p>
             </div>
-            <Link href="/calculator" className="shrink-0">
-              <button className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap">
-                <span className="material-symbols-outlined text-[18px]">calculate</span>
-                Розрахувати
-              </button>
+            <Link href="/calculator" className="shrink-0 btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap">
+              <span className="material-symbols-outlined text-[18px]">calculate</span>
+              Розрахувати
             </Link>
           </div>
         </div>

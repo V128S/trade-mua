@@ -14,21 +14,17 @@ export default function CartPage() {
           Кошик порожній
         </h1>
         <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
-          Додайте товари з каталогу або зв'яжіться з нами напряму — ми підберемо найкращий варіант.
+          Додайте товари з каталогу або зв&apos;яжіться з нами напряму — ми підберемо найкращий варіант.
         </p>
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
-        <Link href="/products">
-          <button className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-            Перейти до каталогу
-          </button>
+        <Link href="/products" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
+          <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+          Перейти до каталогу
         </Link>
-        <Link href="/contact">
-          <button className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">contact_support</span>
-            Консультація
-          </button>
+        <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
+          <span className="material-symbols-outlined text-[18px]">contact_support</span>
+          Консультація
         </Link>
       </div>
     </div>

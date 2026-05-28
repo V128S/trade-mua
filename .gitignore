@@ -38,3 +38,4 @@ AGENTS.md
 .copilot/
 *.cursorrules
 .aider*
+.playwright-mcp/

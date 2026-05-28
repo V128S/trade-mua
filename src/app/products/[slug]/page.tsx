@@ -150,17 +150,13 @@ export default async function ProductPage({ params }: Props) {
 
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 mt-6">
-              <Link href="/contact">
-                <button className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
-                  <span className="material-symbols-outlined text-[18px]">shopping_cart</span>
-                  {product.inStock ? "Додати в кошик" : "Замовити"}
-                </button>
+              <Link href="/contact" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
+                <span className="material-symbols-outlined text-[18px]">shopping_cart</span>
+                {product.inStock ? "Додати в кошик" : "Замовити"}
               </Link>
-              <Link href="/contact">
-                <button className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                  Консультація
-                </button>
+              <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">contact_support</span>
+                Консультація
               </Link>
             </div>
 
@@ -241,11 +237,9 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           <div className="flex justify-center mt-10">
-            <Link href="/products">
-              <button className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 text-xs">
-                <span className="material-symbols-outlined text-[16px]">grid_view</span>
-                Весь каталог
-              </button>
+            <Link href="/products" className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 text-xs">
+              <span className="material-symbols-outlined text-[16px]">grid_view</span>
+              Весь каталог
             </Link>
           </div>
         </section>

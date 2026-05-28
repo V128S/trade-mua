@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 
 const NAV_LINKS = [
   { href: "/products", label: "Продукти" },
@@ -11,25 +11,29 @@ const NAV_LINKS = [
   { href: "/contact", label: "Контакти" },
 ];
 
+// Subscribe to <html> class changes so the icon stays in sync with the theme.
+function subscribe(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  return () => observer.disconnect();
+}
+function getTheme(): "dark" | "light" {
+  return document.documentElement.classList.contains("light") ? "light" : "dark";
+}
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  // Read the live theme from the DOM (set before paint by the inline script in layout).
+  // Server snapshot is "dark" — the default <html class="dark">.
+  const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
 
-  // Sync with html class on mount
-  useEffect(() => {
+  const toggleTheme = useCallback(() => {
     const html = document.documentElement;
-    const current = html.classList.contains("light") ? "light" : "dark";
-    setTheme(current);
-  }, []);
-
-  function toggleTheme() {
-    const html = document.documentElement;
-    const next = theme === "dark" ? "light" : "dark";
+    const next = html.classList.contains("light") ? "dark" : "light";
     html.classList.remove("dark", "light");
     html.classList.add(next);
-    setTheme(next);
     localStorage.setItem("theme", next);
-  }
+  }, []);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30">
@@ -67,6 +71,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {/* Theme toggle */}
           <button
+            type="button"
             onClick={toggleTheme}
             aria-label="Toggle theme"
             className="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200"
@@ -87,8 +92,10 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
+            type="button"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Menu"
+            aria-expanded={menuOpen}
             className="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors"
           >
             <span className="material-symbols-outlined text-[22px]">

@@ -83,17 +83,13 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
         <div className="flex flex-wrap gap-4 justify-center">
-          <Link href="/products">
-            <button className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
-              <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-              Каталог товарів
-            </button>
+          <Link href="/products" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
+            <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+            Каталог товарів
           </Link>
-          <Link href="/contact">
-            <button className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px]">contact_support</span>
-              Зв'язатися
-            </button>
+          <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">contact_support</span>
+            Зв&apos;язатися
           </Link>
         </div>
       </section>
