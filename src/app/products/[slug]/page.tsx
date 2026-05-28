@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProducts } from "@/lib/sheets";
 import ProductDetail from "@/components/products/ProductDetail";
+import { getProductImage } from "@/lib/product-images";
 
 export const revalidate = 3600;
 
@@ -94,24 +96,37 @@ export default async function ProductPage({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-start">
 
           {/* Left — product image */}
-          <div className="relative bg-card border-card rounded-lg overflow-hidden aspect-square flex items-center justify-center">
-            {/* Ambient glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 bg-primary/6 blur-[100px] rounded-full" />
-            {/* Grid overlay */}
-            <div className="absolute inset-0 opacity-[0.02]"
-              style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
-            <span className="material-symbols-outlined text-outline-variant text-[120px] relative z-10">memory</span>
-            {/* Stock badge */}
-            <div className="absolute top-4 left-4 flex gap-2 z-20">
-              {product.isNew && (
-                <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">Новинка</span>
-              )}
-              <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
-                {product.inStock ? "In Stock" : "Під замовлення"}
-              </span>
-            </div>
-          </div>
+          {(() => {
+            const imgSrc = getProductImage(product.name);
+            return (
+              <div className="relative bg-card border-card rounded-lg overflow-hidden aspect-square flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 bg-primary/6 blur-[100px] rounded-full" />
+                <div className="absolute inset-0 opacity-[0.02]"
+                  style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+                {imgSrc ? (
+                  <Image
+                    src={imgSrc}
+                    alt={product.name}
+                    width={420}
+                    height={420}
+                    className="relative z-10 object-contain drop-shadow-2xl"
+                    priority
+                  />
+                ) : (
+                  <span className="material-symbols-outlined text-outline-variant text-[120px] relative z-10">memory</span>
+                )}
+                <div className="absolute top-4 left-4 flex gap-2 z-20">
+                  {product.isNew && (
+                    <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">Новинка</span>
+                  )}
+                  <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
+                    {product.inStock ? "In Stock" : "Під замовлення"}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Right — details */}
           <div className="flex flex-col gap-0">

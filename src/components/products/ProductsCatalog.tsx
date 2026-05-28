@@ -1,10 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import type { Product } from "@/lib/sheets";
+import { getProductImage } from "@/lib/product-images";
 
 function ProductCard({ product }: { product: Product }) {
+  const imgSrc = getProductImage(product.name);
   return (
     <Link
       href={`/products/${product.id}`}
@@ -13,9 +16,19 @@ function ProductCard({ product }: { product: Product }) {
       <div className="relative h-44 bg-surface flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface/60" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary/5 blur-[60px] rounded-full" />
-        <span className="material-symbols-outlined text-outline-variant group-hover:text-primary/40 transition-colors text-[64px] relative z-10">
-          memory
-        </span>
+        {imgSrc ? (
+          <Image
+            src={imgSrc}
+            alt={product.name}
+            width={160}
+            height={160}
+            className="relative z-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <span className="material-symbols-outlined text-outline-variant group-hover:text-primary/40 transition-colors text-[64px] relative z-10">
+            memory
+          </span>
+        )}
         <div className="absolute top-3 left-3 flex gap-2 z-20">
           {product.isNew && (
             <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider">
