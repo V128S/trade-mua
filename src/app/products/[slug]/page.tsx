@@ -2,18 +2,38 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProducts } from "@/lib/sheets";
+import ProductDetail from "@/components/products/ProductDetail";
 
 export const revalidate = 3600;
 
-// Parse hashrate string to TH/s float (e.g. "335 TH/s" → 335, "20 GH/s" → 0.02)
-function toTHs(hashrate: string): number {
-  const m = hashrate.match(/([\d.,]+)\s*(TH|GH|MH|T|G|M)/i);
-  if (!m) return 0;
-  const val = parseFloat(m[1].replace(",", "."));
-  const unit = m[2].toUpperCase();
-  if (unit.startsWith("G")) return val / 1000;
-  if (unit.startsWith("M")) return val / 1_000_000;
-  return val;
+// Strip hashrate suffix to get base model name
+// "Antminer S21 Hydro 335Th" → "Antminer S21 Hydro"
+function getBaseName(name: string): string {
+  return name.replace(/\s*\d[\d.,]*\s*(?:TH\/s|GH\/s|MH\/s|Th|Gh|Mh|T|G|M)\s*$/i, "").trim();
+}
+
+function getCooling(name: string): string {
+  if (/hydro/i.test(name)) return "Hydro";
+  if (/immersion/i.test(name)) return "Immersion";
+  return "Air";
+}
+
+async function getBTCRevenue(): Promise<number> {
+  try {
+    const [priceRes, diffRes] = await Promise.all([
+      fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd", { next: { revalidate: 300 } }),
+      fetch("https://blockchain.info/q/getdifficulty", { next: { revalidate: 300 } }),
+    ]);
+    if (!priceRes.ok || !diffRes.ok) return 0;
+    const priceData = await priceRes.json();
+    const btcPrice: number = priceData?.bitcoin?.usd ?? 0;
+    const difficulty = parseFloat(await diffRes.text());
+    if (!btcPrice || !difficulty) return 0;
+    const networkHashTH = (difficulty * 4_294_967_296) / 600 / 1e12;
+    return (144 * 3.125 * btcPrice) / networkHashTH;
+  } catch {
+    return 0;
+  }
 }
 
 type Props = { params: Promise<{ slug: string }> };
@@ -31,122 +51,109 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const products = await getProducts();
-  const product = products.find((p) => p.id === slug);
+  const [products, revenuePerTH] = await Promise.all([getProducts(), getBTCRevenue()]);
 
+  const product = products.find((p) => p.id === slug);
   if (!product) notFound();
 
-  const thValue = toTHs(product.hashrate);
-  const efficiencyJTH = thValue > 0 ? (product.powerW / thValue).toFixed(1) : "—";
-  const powerKW = product.powerW / 1000;
+  const baseName = getBaseName(product.name);
+  const cooling = getCooling(product.name);
 
-  // Recommended electricity: 0.07 $/kWh (mining hotel rate)
-  const electricityCost = 0.07;
-  const dailyElecCost = powerKW * 24 * electricityCost;
+  // All configurations = same base name, sorted by hashrate desc
+  const configs = products
+    .filter((p) => getBaseName(p.name) === baseName)
+    .sort((a, b) => b.priceUSDT - a.priceUSDT);
+
+  // Similar models = same algorithm, different base name, max 4
+  const similar = products
+    .filter((p) => p.algorithm === product.algorithm && getBaseName(p.name) !== baseName)
+    .slice(0, 4);
+
+  const specs = [
+    { label: "Алгоритм", value: product.algorithm },
+    { label: "Хешрейт", value: product.hashrate || "—" },
+    { label: "Енергоспоживання", value: `${product.powerW} W` },
+    { label: "Охолодження", value: cooling },
+  ];
 
   return (
-    <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-12 pb-section-gap">
+    <div className="pb-section-gap">
 
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-10">
-        <Link href="/" className="hover:text-primary transition-colors">Головна</Link>
-        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-        <Link href="/products" className="hover:text-primary transition-colors">Каталог</Link>
-        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-        <span className="text-on-surface truncate max-w-[200px]">{product.name}</span>
-      </nav>
+      {/* ── Hero section ── */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto pt-10 pb-16">
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-10">
+          <Link href="/" className="hover:text-primary transition-colors">Головна</Link>
+          <span className="material-symbols-outlined text-[12px]">chevron_right</span>
+          <Link href="/products" className="hover:text-primary transition-colors">Майнери</Link>
+          <span className="material-symbols-outlined text-[12px]">chevron_right</span>
+          <span className="text-on-surface truncate max-w-[220px] uppercase">{product.name}</span>
+        </nav>
 
-        {/* Left — image placeholder */}
-        <div className="bg-card border-card rounded-lg h-80 lg:h-[500px] relative flex items-center justify-center overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 bg-primary/5 blur-[80px] rounded-full" />
-          <span className="material-symbols-outlined text-outline-variant text-[96px] relative z-10">memory</span>
-          <div className="absolute top-4 left-4 flex gap-2 z-20">
-            {product.isNew && (
-              <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">Новинка</span>
-            )}
-            <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
-              {product.inStock ? "В наявності" : "Під замовлення"}
-            </span>
-          </div>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-start">
 
-        {/* Right — info */}
-        <div className="flex flex-col gap-6">
-
-          {/* Algorithm label */}
-          <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">
-            {product.algorithm}
-          </span>
-
-          {/* Name */}
-          <h1 className="font-headline-lg text-headline-lg text-on-surface uppercase tracking-wide leading-tight">
-            {product.name}
-          </h1>
-
-          {/* Specs grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {[
-              { label: "Хешрейт", value: product.hashrate || "—" },
-              { label: "Споживання", value: `${product.powerW} W` },
-              { label: "Ефективність", value: `${efficiencyJTH} J/TH` },
-            ].map((s) => (
-              <div key={s.label} className="bg-card border-card rounded-lg p-4 flex flex-col gap-1">
-                <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
-                  {s.label}
-                </span>
-                <span className="font-technical-data text-technical-data text-primary text-base">
-                  {s.value}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Electricity estimate */}
-          <div className="bg-card border-card rounded-lg p-4">
-            <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-2">
-              Витрати на електроенергію
-            </p>
-            <div className="flex gap-6">
-              <div>
-                <p className="font-technical-data text-technical-data text-primary">
-                  ${dailyElecCost.toFixed(2)} / день
-                </p>
-                <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
-                  при $0.07/кВт·год
-                </p>
-              </div>
-              <div>
-                <p className="font-technical-data text-technical-data text-primary">
-                  ${(dailyElecCost * 30).toFixed(0)} / місяць
-                </p>
-                <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
-                  30 діб
-                </p>
-              </div>
+          {/* Left — product image */}
+          <div className="relative bg-card border-card rounded-lg overflow-hidden aspect-square flex items-center justify-center">
+            {/* Ambient glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 bg-primary/6 blur-[100px] rounded-full" />
+            {/* Grid overlay */}
+            <div className="absolute inset-0 opacity-[0.02]"
+              style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+            <span className="material-symbols-outlined text-outline-variant text-[120px] relative z-10">memory</span>
+            {/* Stock badge */}
+            <div className="absolute top-4 left-4 flex gap-2 z-20">
+              {product.isNew && (
+                <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">Новинка</span>
+              )}
+              <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
+                {product.inStock ? "In Stock" : "Під замовлення"}
+              </span>
             </div>
           </div>
 
-          {/* Price + CTAs */}
-          <div className="border-t border-[#2e2d2b] pt-6 space-y-4">
-            <div>
-              <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-1">
+          {/* Right — details */}
+          <div className="flex flex-col gap-0">
+            {/* Algorithm label */}
+            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest text-[11px]">
+              {product.algorithm}
+            </span>
+
+            {/* Name */}
+            <h1 className="font-headline-lg text-headline-lg text-on-surface mt-2 leading-tight">
+              {product.name.replace(/\s*\d[\d.,]*\s*(?:TH\/s|GH\/s|MH\/s|Th|Gh|Mh|T|G|M)\s*$/i, "").trim()}
+              {product.hashrate && (
+                <span className="text-on-surface-variant ml-2 font-normal">{product.hashrate}</span>
+              )}
+            </h1>
+
+            {/* Description */}
+            <p className="font-body-md text-body-md text-on-surface-variant mt-3 max-w-md">
+              {cooling === "Hydro"
+                ? "Флагманська модель з водяним охолодженням для максимальної стабільності та тихої роботи."
+                : cooling === "Immersion"
+                ? "Майнер для занурювального охолодження — максимальна ефективність у промислових умовах."
+                : "Повітряне охолодження, компактний корпус, оптимальна ефективність для домашнього майнінгу."}
+            </p>
+
+            {/* Price */}
+            <div className="mt-6">
+              <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">
                 {product.inStock ? "Ціна (в наявності)" : "Ціна (під замовлення)"}
               </p>
-              <p className="font-display-lg text-[40px] leading-none text-primary">
+              <p className="font-display-lg text-[52px] leading-none text-primary">
                 ${product.priceUSDT.toLocaleString()}
               </p>
-              <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px] mt-1">
-                Оплата USDT / Готівка / Переказ
-              </p>
+              <p className="font-label-caps text-[10px] text-on-surface-variant mt-1">USDT / USD / Готівка</p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            {/* Buttons */}
+            <div className="flex flex-wrap gap-3 mt-6">
               <Link href="/contact">
                 <button className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
                   <span className="material-symbols-outlined text-[18px]">shopping_cart</span>
-                  {product.inStock ? "Купити" : "Замовити"}
+                  {product.inStock ? "Додати в кошик" : "Замовити"}
                 </button>
               </Link>
               <Link href="/contact">
@@ -156,38 +163,94 @@ export default async function ProductPage({ params }: Props) {
                 </button>
               </Link>
             </div>
+
+            {/* Config selector + mini calculator (client) */}
+            <ProductDetail
+              product={product}
+              configs={configs.map((c) => ({
+                id: c.id,
+                hashrate: c.hashrate,
+                powerW: c.powerW,
+                priceUSDT: c.priceUSDT,
+                inStock: c.inStock,
+              }))}
+              revenuePerTH={revenuePerTH}
+            />
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Calculator CTA */}
-      <div className="mt-16 bg-card border-card rounded-lg p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-        <div>
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-1">
-            Розрахувати прибутковість
+      {/* ── Tech specs ── */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-16">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-px bg-outline-variant flex-1" />
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap text-base">
+            Технічні Характеристики
           </h2>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            Введіть тариф електроенергії та подивіться реальний ROI для цього майнера.
-          </p>
+          <div className="h-px bg-outline-variant flex-1" />
         </div>
-        <Link href={`/calculator?hashrate=${encodeURIComponent(product.hashrate)}&power=${product.powerW}`} className="shrink-0">
-          <button className="btn-ghost py-3 px-6 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">calculate</span>
-            Калькулятор
-          </button>
-        </Link>
-      </div>
 
-      {/* Back link */}
-      <div className="mt-10">
-        <Link
-          href="/products"
-          className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest hover:text-primary transition-colors flex items-center gap-1"
-        >
-          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-          Весь каталог
-        </Link>
-      </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {specs.map((s) => (
+            <div key={s.label} className="bg-card border-card rounded-lg p-5 flex flex-col gap-2 hover-primary-border transition-colors duration-300">
+              <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
+                {s.label}
+              </span>
+              <span className="font-technical-data text-technical-data text-primary text-base">
+                {s.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Similar models ── */}
+      {similar.length > 0 && (
+        <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="h-px bg-outline-variant flex-1" />
+            <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap text-base">
+              Схожі Моделі
+            </h2>
+            <div className="h-px bg-outline-variant flex-1" />
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+            {similar.map((p) => (
+              <Link
+                key={p.id}
+                href={`/products/${p.id}`}
+                className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col"
+              >
+                <div className="relative h-36 bg-surface flex items-center justify-center">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 bg-primary/5 blur-[40px] rounded-full" />
+                  <span className="material-symbols-outlined text-outline-variant group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
+                  <span className={`absolute top-2 left-2 chip px-2 py-0.5 text-[9px] font-technical-data uppercase ${p.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
+                    {p.inStock ? "В наявності" : "Замовлення"}
+                  </span>
+                </div>
+                <div className="p-4 border-t border-[#2e2d2b] flex flex-col gap-1 flex-1">
+                  <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">{p.algorithm}</span>
+                  <h3 className="font-technical-data text-technical-data text-on-surface text-sm leading-snug">{p.name}</h3>
+                  <p className="font-headline-md text-headline-md text-primary mt-auto pt-2 text-base">
+                    ${p.priceUSDT.toLocaleString()}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex justify-center mt-10">
+            <Link href="/products">
+              <button className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 text-xs">
+                <span className="material-symbols-outlined text-[16px]">grid_view</span>
+                Весь каталог
+              </button>
+            </Link>
+          </div>
+        </section>
+      )}
+
     </div>
   );
 }

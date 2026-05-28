@@ -64,7 +64,7 @@ function parseRow(cols: string[]): Product | null {
   const hashrate = hashrateMatch ? hashrateMatch[1].trim() : "";
 
   return {
-    id: `${modelFull}-${powerW}`.replace(/\s+/g, "-").toLowerCase(),
+    id: `${modelFull}-${powerW}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""),
     algorithm: algorithm || "SHA256",
     name: modelFull,
     hashrate,
