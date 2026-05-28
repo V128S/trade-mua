@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Build outputs
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS
+.DS_Store
+.DS_Store?
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# AI tooling — не включаем в репозиторий
+.claude/
+CLAUDE.md
+AGENTS.md
+.cursor/
+.copilot/
+*.cursorrules
+.aider*

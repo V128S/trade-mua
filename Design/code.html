@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="uk"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trade M | Antminer S21 Hydro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Syne:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#3d2e00",
+                        "secondary-container": "#52461d",
+                        "surface-container-low": "#1c1c17",
+                        "primary-container": "#c9a227",
+                        "on-surface": "#e5e2db",
+                        "on-secondary-fixed": "#231b00",
+                        "surface-container-lowest": "#0e0e0a",
+                        "secondary": "#d8c591",
+                        "surface": "#141410",
+                        "surface-container-high": "#2b2a26",
+                        "outline-variant": "#4d4635",
+                        "on-tertiary-container": "#3d3c3a",
+                        "tertiary": "#c9c6c3",
+                        "surface-bright": "#3a3934",
+                        "primary": "#ecc246",
+                        "surface-variant": "#353530",
+                        "on-background": "#e5e2db",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#a9a6a3",
+                        "surface-tint": "#ecc246",
+                        "on-secondary-fixed-variant": "#52461d",
+                        "inverse-surface": "#e5e2db",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1c1b1a",
+                        "surface-container": "#20201b",
+                        "secondary-fixed-dim": "#d8c591",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#3a2f09",
+                        "inverse-on-surface": "#31302c",
+                        "outline": "#99907b",
+                        "on-tertiary-fixed-variant": "#484644",
+                        "secondary-fixed": "#f5e1ab",
+                        "on-primary-fixed": "#241a00",
+                        "tertiary-fixed-dim": "#c9c6c3",
+                        "surface-dim": "#141410",
+                        "on-secondary-container": "#c6b481",
+                        "on-surface-variant": "#d1c5af",
+                        "surface-container-highest": "#353530",
+                        "primary-fixed-dim": "#ecc246",
+                        "background": "#141410",
+                        "on-tertiary": "#31302e",
+                        "on-primary-container": "#4b3a00",
+                        "tertiary-fixed": "#e6e2de",
+                        "error-container": "#93000a",
+                        "on-primary-fixed-variant": "#584400",
+                        "primary-fixed": "#ffe08e",
+                        "inverse-primary": "#755b00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "section-gap": "128px",
+                        "unit": "8px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Syne"],
+                        "headline-md": ["Syne"],
+                        "display-lg": ["Syne"],
+                        "technical-data": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Syne"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+                        "display-lg": ["72px", { "lineHeight": "80px", "letterSpacing": "0.04em", "fontWeight": "800" }],
+                        "technical-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #111110;
+            color: #e5e2db;
+        }
+        .bg-card { background-color: #1a1918; }
+        .border-card { border-color: #2e2d2b; border-width: 1px; }
+        .hover-primary-border:hover { border-color: #ecc246; }
+        .btn-primary {
+            background-color: #c9a227;
+            color: #0e0e0a;
+            box-shadow: inset 0 1px 0 0 #e8d5a0;
+        }
+        .btn-ghost {
+            background-color: transparent;
+            border: 1px solid #2e2d2b;
+            color: #e5e2db;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-ghost:hover {
+            border-color: #ecc246;
+            color: #ecc246;
+        }
+        .chip {
+            border-radius: 2px;
+            background-color: #2b2a26;
+            color: #ecc246;
+        }
+        .spec-grid-item {
+            border-bottom: 1px solid #2e2d2b;
+        }
+        .spec-grid-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Custom Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #ecc246;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(236, 194, 70, 0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #353530;
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+    </style>
+<style type="text/css"></style></head>
+<body class="font-body-md text-body-md antialiased selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary tracking-tighter">
+                Trade M
+            </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-primary border-b-2 border-primary pb-1 font-label-caps text-label-caps uppercase tracking-widest" href="#">Products</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-caps text-label-caps uppercase tracking-widest" href="#">Services</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-caps text-label-caps uppercase tracking-widest" href="#">Calculator</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-caps text-label-caps uppercase tracking-widest" href="#">About</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-caps text-label-caps uppercase tracking-widest" href="#">Contact</a>
+</div>
+<div class="flex gap-4 items-center text-primary dark:text-primary">
+<button class="hover:text-primary dark:hover:text-primary transition-all duration-200">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="hover:text-primary dark:hover:text-primary transition-all duration-200">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto space-y-section-gap">
+<!-- Product Hero Section -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<!-- Left: Image -->
+<div class="lg:col-span-7 bg-card border-card rounded-lg p-8 md:p-16 flex justify-center items-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-tr from-surface-lowest to-transparent opacity-50"></div>
+<!-- Highlight effect behind miner -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary/5 blur-[100px] rounded-full"></div>
+<img alt="Antminer S21 Hydro" class="relative z-10 w-full max-w-2xl object-contain drop-shadow-2xl transform transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/ADBb0uh1s7iVmHCyEEbeF6uSl64mKMdyg2eod8hrM2qbuL50u8W3qF1ed80fRS6rNUBX3dJ0C7LDJlyc-0-5J-WsyLIM6Sbn4u_9BE7jhYDAbzXlJB5MFQNnT8B7QxamRAChmlgsEVuOYGXlFJri9x22fn62lIHBWygketcyu8749faLdpW9JsXY4fVOM7x1aXW8DGDTeaHakRsMd3jrbXRLwMiYBODkKp-kYhzFDxrkJPa_LAnpxr8qxY2hrXE"/>
+<div class="absolute top-4 left-4 z-20 chip px-3 py-1 font-technical-data text-technical-data uppercase">
+                    In Stock
+                </div>
+</div>
+<!-- Right: Details -->
+<div class="lg:col-span-5 flex flex-col justify-center space-y-8">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Antminer S21 Hydro</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Високопродуктивний ASIC-майнер з рідинним охолодженням для промислового видобутку Bitcoin.</p>
+</div>
+<div class="space-y-2">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Ціна</div>
+<div class="font-display-lg text-display-lg text-primary tracking-tight" id="main-price">$8,500</div>
+</div>
+<div class="space-y-4">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
+        Виберіть конфігурацію
+    </div>
+<div class="grid grid-cols-2 gap-3" id="config-grid">
+<button class="config-btn p-3 text-left bg-surface-container border border-primary rounded hover:border-primary transition-all group" data-hashrate="335" data-power="5360" data-price="8500">
+<div class="config-hashrate font-headline-md text-sm text-primary group-hover:text-primary mb-1">335 TH/s</div>
+<div class="font-technical-data text-[10px] text-on-surface-variant">5360 W</div>
+</button>
+<button class="config-btn p-3 text-left bg-card border border-outline-variant/30 rounded hover:border-primary transition-all group" data-hashrate="320" data-power="5120" data-price="8100">
+<div class="config-hashrate font-headline-md text-sm text-on-surface group-hover:text-primary mb-1">320 TH/s</div>
+<div class="font-technical-data text-[10px] text-on-surface-variant">5120 W</div>
+</button>
+<button class="config-btn p-3 text-left bg-card border border-outline-variant/30 rounded hover:border-primary transition-all group" data-hashrate="305" data-power="4880" data-price="7700">
+<div class="config-hashrate font-headline-md text-sm text-on-surface group-hover:text-primary mb-1">305 TH/s</div>
+<div class="font-technical-data text-[10px] text-on-surface-variant">4880 W</div>
+</button>
+<button class="config-btn p-3 text-left bg-card border border-outline-variant/30 rounded hover:border-primary transition-all group" data-hashrate="290" data-power="4640" data-price="7300">
+<div class="config-hashrate font-headline-md text-sm text-on-surface group-hover:text-primary mb-1">290 TH/s</div>
+<div class="font-technical-data text-[10px] text-on-surface-variant">4640 W</div>
+</button>
+<button class="config-btn p-3 text-left bg-card border border-outline-variant/30 rounded hover:border-primary transition-all group" data-hashrate="275" data-power="4400" data-price="6900">
+<div class="config-hashrate font-headline-md text-sm text-on-surface group-hover:text-primary mb-1">275 TH/s</div>
+<div class="font-technical-data text-[10px] text-on-surface-variant">4400 W</div>
+</button>
+<button class="config-btn p-3 text-left bg-card border border-outline-variant/30 rounded hover:border-primary transition-all group" data-hashrate="260" data-power="4160" data-price="6500">
+<div class="config-hashrate font-headline-md text-sm text-on-surface group-hover:text-primary mb-1">260 TH/s</div>
+<div class="font-technical-data text-[10px] text-on-surface-variant">4160 W</div>
+</button>
+</div>
+</div><div class="flex flex-col sm:flex-row gap-4 pt-4">
+<button class="btn-primary flex-1 py-4 px-8 rounded flex items-center justify-center gap-2 font-label-caps text-label-caps uppercase tracking-widest transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+                        Додати в кошик
+                    </button>
+<button class="btn-ghost flex-1 py-4 px-8 rounded flex items-center justify-center gap-2 font-label-caps text-label-caps uppercase tracking-widest">
+<span class="material-symbols-outlined text-[18px]">contact_support</span>
+                        Консультація
+                    </button>
+</div>
+</div>
+</section>
+<!-- Specifications Section -->
+<section>
+<div class="flex items-center gap-4 mb-8">
+<div class="h-px bg-outline-variant flex-1"></div>
+<h2 class="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">Технічні Характеристики</h2>
+<div class="h-px bg-outline-variant flex-1"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-card border-card p-6 flex flex-col justify-between h-32 hover-primary-border transition-colors duration-300">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Алгоритм</span>
+<span class="font-technical-data text-technical-data text-primary text-xl">SHA-256</span>
+</div>
+<div class="bg-card border-card p-6 flex flex-col justify-between h-32 hover-primary-border transition-colors duration-300">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Хешрейт</span>
+<span class="font-technical-data text-technical-data text-primary text-xl" id="spec-hashrate">335 TH/s</span>
+</div>
+<div class="bg-card border-card p-6 flex flex-col justify-between h-32 hover-primary-border transition-colors duration-300">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Енергоспоживання</span>
+<span class="font-technical-data text-technical-data text-primary text-xl" id="spec-power">5360 W</span>
+</div>
+<div class="bg-card border-card p-6 flex flex-col justify-between h-32 hover-primary-border transition-colors duration-300">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Охолодження</span>
+<span class="font-technical-data text-technical-data text-primary text-xl">Hydro</span>
+</div>
+</div>
+</section>
+<!-- Profitability Calculator Section -->
+<section class="bg-card border-card rounded-lg p-8 md:p-12 relative overflow-hidden">
+<!-- Background pattern -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#ecc246 1px, transparent 1px); background-size: 24px 24px;"></div>
+<div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Калькулятор Прибутковості</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">Розрахуйте орієнтовний прибуток для Antminer S21 Hydro на основі вашого тарифу на електроенергію.</p>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between items-center font-label-caps text-label-caps uppercase">
+<label class="text-on-surface-variant tracking-widest">Ціна електроенергії ($/kWh)</label>
+<span class="text-primary" id="elec-val">0.05</span>
+</div>
+<input id="elec-slider" max="0.20" min="0.01" step="0.01" type="range" value="0.05"/>
+</div>
+<div class="flex gap-4 items-center p-4 bg-surface rounded border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary">bolt</span>
+<div class="font-technical-data text-technical-data">
+<span class="text-on-surface-variant">Споживання:</span>
+<span class="text-on-surface ml-2" id="calc-power">5360W</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface border-card p-8 rounded flex flex-col justify-center space-y-8">
+<div>
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-1">Орієнтовний дохід (День)</div>
+<div class="font-headline-lg text-headline-lg text-primary">$<span class="" id="daily-profit">18.45</span></div>
+</div>
+<div class="h-px bg-outline-variant/30 w-full"></div>
+<div>
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-1">Орієнтовний дохід (Місяць)</div>
+<div class="font-headline-md text-headline-md text-on-surface">$<span class="" id="monthly-profit">553.50</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Related Products Section -->
+<section>
+<div class="flex items-center gap-4 mb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">Схожі Моделі</h2>
+<div class="h-px bg-outline-variant flex-1"></div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<a class="group bg-card border-card flex flex-col hover-primary-border transition-colors duration-300" href="#">
+<div class="h-48 bg-surface p-4 flex items-center justify-center relative">
+<!-- Placeholder graphic for product -->
+<div class="w-24 h-32 bg-surface-variant border border-outline-variant/50 rounded flex items-center justify-center group-hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-4xl">memory</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between border-t border-card">
+<div>
+<h3 class="font-technical-data text-technical-data text-on-surface mb-1">Whatsminer M53S</h3>
+<div class="font-label-caps text-label-caps text-on-surface-variant">298 TH/s • Hydro</div>
+</div>
+<div class="mt-4 font-technical-data text-technical-data text-primary">$6,200</div>
+</div>
+</a>
+<!-- Card 2 -->
+<a class="group bg-card border-card flex flex-col hover-primary-border transition-colors duration-300" href="#">
+<div class="h-48 bg-surface p-4 flex items-center justify-center relative">
+<div class="w-24 h-32 bg-surface-variant border border-outline-variant/50 rounded flex items-center justify-center group-hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-4xl">memory</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between border-t border-card">
+<div>
+<h3 class="font-technical-data text-technical-data text-on-surface mb-1">Antminer S19 XP Hydro</h3>
+<div class="font-label-caps text-label-caps text-on-surface-variant">255 TH/s • Hydro</div>
+</div>
+<div class="mt-4 font-technical-data text-technical-data text-primary">$4,800</div>
+</div>
+</a>
+<!-- Card 3 -->
+<a class="group bg-card border-card flex flex-col hover-primary-border transition-colors duration-300" href="#">
+<div class="h-48 bg-surface p-4 flex items-center justify-center relative">
+<div class="w-24 h-32 bg-surface-variant border border-outline-variant/50 rounded flex items-center justify-center group-hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-4xl">memory</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between border-t border-card">
+<div>
+<h3 class="font-technical-data text-technical-data text-on-surface mb-1">Whatsminer M56S</h3>
+<div class="font-label-caps text-label-caps text-on-surface-variant">212 TH/s • Immersion</div>
+</div>
+<div class="mt-4 font-technical-data text-technical-data text-primary">$4,100</div>
+</div>
+</a>
+<!-- Card 4 -->
+<a class="group bg-card border-card flex flex-col hover-primary-border transition-colors duration-300" href="#">
+<div class="h-48 bg-surface p-4 flex items-center justify-center relative">
+<div class="w-24 h-32 bg-surface-variant border border-outline-variant/50 rounded flex items-center justify-center group-hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-4xl">memory</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between border-t border-card">
+<div>
+<h3 class="font-technical-data text-technical-data text-on-surface mb-1">Antminer S21</h3>
+<div class="font-label-caps text-label-caps text-on-surface-variant">200 TH/s • Air</div>
+</div>
+<div class="mt-4 font-technical-data text-technical-data text-primary">$5,500</div>
+</div>
+</a>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex flex-col md:flex-row justify-between items-start px-margin-mobile md:px-margin-desktop py-section-gap max-w-container-max mx-auto gap-8">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary">
+                Trade M
+            </div>
+<div class="flex flex-wrap gap-x-8 gap-y-4">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase tracking-widest" href="#">Products</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase tracking-widest" href="#">Services</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase tracking-widest" href="#">Calculator</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase tracking-widest" href="#">About</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase tracking-widest" href="#">Contact</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase tracking-widest" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase tracking-widest" href="#">Privacy Policy</a>
+</div>
+<div class="text-on-surface-variant font-body-md text-body-md mt-4 md:mt-0">
+                © 2024 Trade M. Industrial Excellence.
+            </div>
+</div>
+</footer>
+<script>
+        const slider = document.getElementById('elec-slider');
+        const elecValDisplay = document.getElementById('elec-val');
+        const dailyProfitDisplay = document.getElementById('daily-profit');
+        const monthlyProfitDisplay = document.getElementById('monthly-profit');
+        const configBtns = document.querySelectorAll('.config-btn');
+        const mainPriceDisplay = document.getElementById('main-price');
+        const specHashrateDisplay = document.getElementById('spec-hashrate');
+        const specPowerDisplay = document.getElementById('spec-power');
+        const calcPowerDisplay = document.getElementById('calc-power');
+
+        // State
+        let currentHashrate = 335;
+        let currentPowerKW = 5.36; // 5360W
+        const hoursPerDay = 24;
+        
+        // Mock revenue multiplier per TH/s (to simulate real calculations)
+        const revenuePerTH = 25.00 / 335; 
+
+        function updateCalculator() {
+            const costPerKWh = parseFloat(slider.value);
+            elecValDisplay.textContent = costPerKWh.toFixed(2);
+            
+            const dailyCost = currentPowerKW * hoursPerDay * costPerKWh;
+            const dailyRevenue = revenuePerTH * currentHashrate;
+            const dailyProfit = dailyRevenue - dailyCost;
+            
+            // Prevent negative values for demo
+            const displayDaily = Math.max(0, dailyProfit);
+            
+            dailyProfitDisplay.textContent = displayDaily.toFixed(2);
+            monthlyProfitDisplay.textContent = (displayDaily * 30).toFixed(2);
+        }
+
+        slider.addEventListener('input', updateCalculator);
+
+        configBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active styling from all buttons
+                configBtns.forEach(b => {
+                    b.classList.remove('bg-surface-container', 'border-primary');
+                    b.classList.add('bg-card', 'border-outline-variant/30');
+                    b.querySelector('.config-hashrate').classList.remove('text-primary');
+                    b.querySelector('.config-hashrate').classList.add('text-on-surface');
+                });
+
+                // Apply active styling to clicked button
+                this.classList.remove('bg-card', 'border-outline-variant/30');
+                this.classList.add('bg-surface-container', 'border-primary');
+                this.querySelector('.config-hashrate').classList.remove('text-on-surface');
+                this.querySelector('.config-hashrate').classList.add('text-primary');
+
+                // Extract data
+                const price = this.getAttribute('data-price');
+                const hashrate = parseFloat(this.getAttribute('data-hashrate'));
+                const power = parseFloat(this.getAttribute('data-power'));
+
+                // Update UI elements
+                mainPriceDisplay.textContent = `$${parseInt(price).toLocaleString()}`;
+                specHashrateDisplay.textContent = `${hashrate} TH/s`;
+                specPowerDisplay.textContent = `${power} W`;
+                calcPowerDisplay.textContent = `${power}W`;
+
+                // Update state and recalculate
+                currentHashrate = hashrate;
+                currentPowerKW = power / 1000;
+                updateCalculator();
+            });
+        });
+
+        // Initialize calculator on load
+        updateCalculator();
+    </script>
+</body></html>

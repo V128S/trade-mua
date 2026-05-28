@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html class="light" lang="uk"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trade M | Промисловий Каталог</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&amp;family=Hanken+Grotesk:wght@300..600&amp;family=JetBrains+Mono:wght@400..600&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container-low": "#f3f3f4",
+                "background": "#f9f9f9",
+                "error": "#ba1a1a",
+                "inverse-primary": "#ecc246",
+                "on-tertiary-fixed-variant": "#454748",
+                "secondary-fixed": "#e5e2e1",
+                "surface-container": "#eeeeee",
+                "on-tertiary": "#ffffff",
+                "inverse-on-surface": "#f0f1f1",
+                "tertiary": "#5d5e60",
+                "on-secondary-container": "#636262",
+                "secondary-fixed-dim": "#c8c6c5",
+                "on-primary-fixed-variant": "#584400",
+                "on-background": "#1a1c1c",
+                "outline-variant": "#d1c5af",
+                "secondary-container": "#e2dfde",
+                "outline": "#7f7663",
+                "primary-fixed": "#ffe08e",
+                "tertiary-fixed-dim": "#c6c6c7",
+                "on-tertiary-container": "#3b3d3e",
+                "surface-container-high": "#e8e8e8",
+                "surface-container-highest": "#e2e2e2",
+                "on-primary-container": "#4b3a00",
+                "on-surface-variant": "#4d4635",
+                "on-error": "#ffffff",
+                "tertiary-container": "#a6a7a8",
+                "surface-bright": "#f9f9f9",
+                "primary-container": "#c9a227",
+                "on-surface": "#1a1c1c",
+                "error-container": "#ffdad6",
+                "on-primary": "#ffffff",
+                "surface-variant": "#e2e2e2",
+                "inverse-surface": "#2f3131",
+                "on-error-container": "#93000a",
+                "surface": "#f9f9f9",
+                "surface-container-lowest": "#ffffff",
+                "tertiary-fixed": "#e2e2e3",
+                "on-primary-fixed": "#241a00",
+                "surface-tint": "#755b00",
+                "primary": "#755b00",
+                "secondary": "#5f5e5e",
+                "on-secondary": "#ffffff",
+                "on-tertiary-fixed": "#1a1c1d",
+                "on-secondary-fixed": "#1c1b1b",
+                "primary-fixed-dim": "#ecc246",
+                "on-secondary-fixed-variant": "#474746",
+                "surface-dim": "#dadada"
+            },
+            "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "container-max": "1440px",
+                "base": "8px",
+                "gutter": "24px",
+                "margin-mobile": "16px",
+                "margin-desktop": "48px"
+            },
+            "fontFamily": {
+                "label-sm": ["JetBrains Mono"],
+                "body-md": ["Hanken Grotesk"],
+                "display-lg": ["Syne"],
+                "label-md": ["JetBrains Mono"],
+                "headline-lg-mobile": ["Syne"],
+                "headline-lg": ["Syne"],
+                "body-lg": ["Hanken Grotesk"],
+                "headline-md": ["Syne"]
+            },
+            "fontSize": {
+                "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .gold-checkbox {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #755b00;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            background: transparent;
+        }
+        .gold-checkbox:checked {
+            background-color: #755b00;
+        }
+        .gold-checkbox:checked::after {
+            content: 'check';
+            font-family: 'Material Symbols Outlined';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 2px;
+            background: #d1c5af;
+            outline: none;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #755b00;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm shadow-primary/5">
+<div class="max-w-container-max mx-auto px-margin-desktop flex items-center justify-between h-20">
+<div class="flex items-center gap-10">
+<a class="font-display-lg text-headline-md tracking-tighter text-primary" href="#">Trade M</a>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md transition-colors duration-300" href="#">Inventory</a>
+<a class="text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary transition-colors duration-300" href="#">Solutions</a>
+<a class="text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary transition-colors duration-300" href="#">Service</a>
+<a class="text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary transition-colors duration-300" href="#">Contact</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="active:scale-95 transition-transform text-on-surface-variant hover:text-primary relative">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-label-sm">2</span>
+</button>
+<button class="active:scale-95 transition-transform text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 rounded font-label-md active:scale-95 transition-all hover:bg-primary/90">
+                    Connect Wallet
+                </button>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-desktop py-12 flex flex-col md:flex-row gap-gutter">
+<!-- Sidebar Filters -->
+<aside class="w-full md:w-80 shrink-0">
+<div class="sticky top-32 space-y-10">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary mb-6">Фільтри</h2>
+<!-- Search within results -->
+<div class="relative mb-8">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded focus:ring-1 focus:ring-primary focus:border-primary outline-none font-body-md" placeholder="Пошук обладнання..." type="text"/>
+</div>
+<!-- Category Checkboxes -->
+<div class="space-y-6">
+<div class="space-y-4">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-outline">Виробник</h3>
+<div class="flex flex-col gap-3">
+<label class="flex items-center gap-3 group cursor-pointer">
+<input checked="" class="gold-checkbox" type="checkbox"/>
+<span class="font-body-md text-on-surface group-hover:text-primary transition-colors">Bitmain Antminer</span>
+</label>
+<label class="flex items-center gap-3 group cursor-pointer">
+<input class="gold-checkbox" type="checkbox"/>
+<span class="font-body-md text-on-surface group-hover:text-primary transition-colors">Whatsminer</span>
+</label>
+<label class="flex items-center gap-3 group cursor-pointer">
+<input class="gold-checkbox" type="checkbox"/>
+<span class="font-body-md text-on-surface group-hover:text-primary transition-colors">Canaan Avalon</span>
+</label>
+</div>
+</div>
+<!-- Price Slider -->
+<div class="space-y-4 pt-4">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-outline">Ціна (USD)</h3>
+<div class="px-2">
+<input class="range-slider" max="15000" min="500" step="100" type="range" value="8000"/>
+<div class="flex justify-between mt-3 text-label-sm font-label-sm text-on-surface-variant">
+<span>$500</span>
+<span>$15,000+</span>
+</div>
+</div>
+</div>
+<!-- Power Consumption -->
+<div class="space-y-4 pt-4">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-outline">Потужність (W)</h3>
+<div class="px-2">
+<input class="range-slider" max="6000" min="1000" step="50" type="range" value="3500"/>
+<div class="flex justify-between mt-3 text-label-sm font-label-sm text-on-surface-variant">
+<span>1000W</span>
+<span>6000W</span>
+</div>
+</div>
+</div>
+<!-- Status Tags -->
+<div class="space-y-4 pt-4">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-outline">Статус</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-1.5 rounded-full border border-primary bg-primary/10 text-primary font-label-sm">В наявності</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-outline hover:border-primary hover:text-primary transition-colors font-label-sm">Передзамовлення</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Assistance Card -->
+<div class="glass-panel p-8 rounded-lg border border-outline-variant/20">
+<h4 class="font-headline-md text-headline-md mb-2">Потрібна допомога?</h4>
+<p class="font-body-md text-on-surface-variant mb-6 text-sm">Наші інженери допоможуть розрахувати окупність вашого проекту.</p>
+<button class="w-full py-4 bg-on-background text-background rounded font-label-md hover:bg-primary transition-colors">Консультація</button>
+</div>
+</div>
+</aside>
+<!-- Product Grid Section -->
+<section class="flex-1">
+<div class="flex items-center justify-between mb-10">
+<div>
+<h1 class="font-headline-lg text-headline-lg mb-2">Обладнання</h1>
+<p class="font-body-lg text-on-surface-variant">Знайдено 24 позиції</p>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-label-md text-outline">Сортувати:</span>
+<select class="bg-transparent border-none font-body-md text-on-surface focus:ring-0 cursor-pointer">
+<option>За популярністю</option>
+<option>Ціна: від низької</option>
+<option>Ціна: від високої</option>
+</select>
+</div>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Product Card 1 -->
+<article class="glass-panel group rounded overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10">
+<div class="relative h-64 overflow-hidden bg-surface-container-low">
+<img alt="Antminer S21 Pro" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0ugQTLRJs2wOcOYwSbAroTeMLq5C8pOmrBxKPx0YjE_qE3bXSqMMzOwr24vZmWCZ8rmAcxZGFVGP3tG5GPDh1CvWHYOZi-l6_MAITKplO7YCeYhWFsxcTbtFOkANhMLPnPn21PpMrWqED_gEUIogH5UFdwI-z-1BhaG_1axdTxkygtxZq1FCaZ8zAJXQdbJg1scN1oU4yFjjkbqQsdbMd27pKXI64JgLI6_Nofu7Zc5wkJsgplau491b57Y"/>
+<div class="absolute top-4 left-4">
+<span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[10px] uppercase tracking-widest">In Stock</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-on-surface mb-1">Antminer S21 Pro</h3>
+<p class="font-label-sm text-outline uppercase">Bitmain • SHA-256</p>
+</div>
+<span class="font-headline-md text-primary">$4,850</span>
+</div>
+<div class="space-y-3 mb-8">
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Хешрейт</span>
+<span class="font-label-md text-on-surface">234 TH/s</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Споживання</span>
+<span class="font-label-md text-on-surface">3510 W</span>
+</div>
+<div class="flex justify-between">
+<span class="font-body-md text-on-surface-variant">Ефективність</span>
+<span class="font-label-md text-on-surface">15 J/TH</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 bg-primary text-on-primary py-3 rounded font-label-md active:scale-95 transition-all">Купити</button>
+<button class="px-4 py-3 border border-primary text-primary rounded active:scale-95 transition-all hover:bg-primary/5">
+<span class="material-symbols-outlined align-middle" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Product Card 2 -->
+<article class="glass-panel group rounded overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10">
+<div class="relative h-64 overflow-hidden bg-surface-container-low">
+<img alt="Antminer S21 Hydro" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0uh1s7iVmHCyEEbeF6uSl64mKMdyg2eod8hrM2qbuL50u8W3qF1ed80fRS6rNUBX3dJ0C7LDJlyc-0-5J-WsyLIM6Sbn4u_9BE7jhYDAbzXlJB5MFQNnT8B7QxamRAChmlgsEVuOYGXlFJri9x22fn62lIHBWygketcyu8749faLdpW9JsXY4fVOM7x1aXW8DGDTeaHakRsMd3jrbXRLwMiYBODkKp-kYhzFDxrkJPa_LAnpxr8qxY2hrXE"/>
+<div class="absolute top-4 left-4">
+<span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[10px] uppercase tracking-widest">In Stock</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-on-surface mb-1">S21 Hydro</h3>
+<p class="font-label-sm text-outline uppercase">Bitmain • SHA-256</p>
+</div>
+<span class="font-headline-md text-primary">$5,120</span>
+</div>
+<div class="space-y-3 mb-8">
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Хешрейт</span>
+<span class="font-label-md text-on-surface">335 TH/s</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Споживання</span>
+<span class="font-label-md text-on-surface">5360 W</span>
+</div>
+<div class="flex justify-between">
+<span class="font-body-md text-on-surface-variant">Ефективність</span>
+<span class="font-label-md text-on-surface">16 J/TH</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 bg-primary text-on-primary py-3 rounded font-label-md active:scale-95 transition-all">Купити</button>
+<button class="px-4 py-3 border border-primary text-primary rounded active:scale-95 transition-all hover:bg-primary/5">
+<span class="material-symbols-outlined align-middle" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Product Card 3 -->
+<article class="glass-panel group rounded overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10">
+<div class="relative h-64 overflow-hidden bg-surface-container-low">
+<img alt="ASIC Collection" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0ujDutfqith59IuYy3iTwNRqLs2BH0h_dlQCsgzSis2pU7RlwIwt_xgYisXgT7z0VNb-Tzlp1zbLLQlHTe5kITEm8diqR0D47kPwhoHbCxgrV9dvvUWc9HtGKkADqF3RGgP4WTkLZkfLSDaa9zVmREsFjelatCFCUGRJ1J70TyJveTvWew3P2FipXJAlXku5kd2dCbyM-1KN777t4DfIvGcimM0jPiNmG8e31iUXxXZF9B9vx8nkfJIx4h8"/>
+<div class="absolute top-4 left-4">
+<span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[10px] uppercase tracking-widest">In Stock</span>
+</div>
+<div class="absolute top-4 right-4 bg-on-background/10 backdrop-blur text-on-background px-2 py-1 rounded font-label-sm text-[10px]">PRO</div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-on-surface mb-1">Whatsminer M50S++</h3>
+<p class="font-label-sm text-outline uppercase">MicroBT • SHA-256</p>
+</div>
+<span class="font-headline-md text-primary">$3,990</span>
+</div>
+<div class="space-y-3 mb-8">
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Хешрейт</span>
+<span class="font-label-md text-on-surface">150 TH/s</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Споживання</span>
+<span class="font-label-md text-on-surface">3300 W</span>
+</div>
+<div class="flex justify-between">
+<span class="font-body-md text-on-surface-variant">Ефективність</span>
+<span class="font-label-md text-on-surface">22 J/TH</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 bg-primary text-on-primary py-3 rounded font-label-md active:scale-95 transition-all">Купити</button>
+<button class="px-4 py-3 border border-primary text-primary rounded active:scale-95 transition-all hover:bg-primary/5">
+<span class="material-symbols-outlined align-middle" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Reusing imagery for more grid density -->
+<!-- Card 4 -->
+<article class="glass-panel group rounded overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10">
+<div class="relative h-64 overflow-hidden bg-surface-container-low">
+<img alt="Miner setup" class="w-full h-full object-cover filter grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0ugQTLRJs2wOcOYwSbAroTeMLq5C8pOmrBxKPx0YjE_qE3bXSqMMzOwr24vZmWCZ8rmAcxZGFVGP3tG5GPDh1CvWHYOZi-l6_MAITKplO7YCeYhWFsxcTbtFOkANhMLPnPn21PpMrWqED_gEUIogH5UFdwI-z-1BhaG_1axdTxkygtxZq1FCaZ8zAJXQdbJg1scN1oU4yFjjkbqQsdbMd27pKXI64JgLI6_Nofu7Zc5wkJsgplau491b57Y"/>
+<div class="absolute top-4 left-4">
+<span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[10px] uppercase tracking-widest">In Stock</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-on-surface mb-1">Antminer T21</h3>
+<p class="font-label-sm text-outline uppercase">Bitmain • SHA-256</p>
+</div>
+<span class="font-headline-md text-primary">$3,250</span>
+</div>
+<div class="space-y-3 mb-8">
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Хешрейт</span>
+<span class="font-label-md text-on-surface">190 TH/s</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-body-md text-on-surface-variant">Споживання</span>
+<span class="font-label-md text-on-surface">3610 W</span>
+</div>
+<div class="flex justify-between">
+<span class="font-body-md text-on-surface-variant">Ефективність</span>
+<span class="font-label-md text-on-surface">19 J/TH</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 bg-primary text-on-primary py-3 rounded font-label-md active:scale-95 transition-all">Купити</button>
+<button class="px-4 py-3 border border-primary text-primary rounded active:scale-95 transition-all hover:bg-primary/5">
+<span class="material-symbols-outlined align-middle" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Additional cards would follow same pattern -->
+</div>
+<!-- Pagination -->
+<div class="mt-16 flex items-center justify-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded border border-outline-variant hover:border-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded bg-primary text-on-primary font-label-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-outline-variant hover:border-primary transition-colors font-label-md">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-outline-variant hover:border-primary transition-colors font-label-md">3</button>
+<span class="px-2">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-outline-variant hover:border-primary transition-colors font-label-md">12</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-outline-variant hover:border-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-margin-desktop bg-surface-container-lowest border-t border-outline-variant/10 mt-20">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="col-span-1 md:col-span-1">
+<a class="font-display-lg text-headline-md text-primary mb-6 block" href="#">Trade M</a>
+<p class="font-body-md text-on-tertiary-fixed-variant opacity-80 leading-relaxed max-w-xs">
+                    Ваш надійний партнер у світі промислового майнінгу. Тільки сертифіковане обладнання та професійний сервіс.
+                </p>
+</div>
+<div>
+<h4 class="font-label-md text-primary uppercase mb-6">Продукти</h4>
+<ul class="space-y-4">
+<li><a class="font-body-md text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Hardware</a></li>
+<li><a class="font-body-md text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Hosting</a></li>
+<li><a class="font-body-md text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Maintenance</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-primary uppercase mb-6">Компанія</h4>
+<ul class="space-y-4">
+<li><a class="font-body-md text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a></li>
+<li><a class="font-body-md text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-primary uppercase mb-6">Спецпропозиції</h4>
+<div class="flex gap-2">
+<input class="bg-surface-container-low border border-outline-variant/20 rounded px-4 py-2 w-full font-body-md focus:outline-none focus:border-primary" placeholder="Email" type="email"/>
+<button class="bg-primary text-on-primary px-4 py-2 rounded">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop mt-16 pt-8 border-t border-outline-variant/5">
+<p class="text-on-tertiary-fixed-variant font-body-md text-sm">© 2024 Trade M Industrial. Precision Mining Solutions.</p>
+</div>
+</footer>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Simple range value update (visual only)
+        const sliders = document.querySelectorAll('.range-slider');
+        sliders.forEach(slider => {
+            slider.addEventListener('input', function() {
+                // Future expansion: dynamic filtering
+            });
+        });
+    </script>
+</body></html>
