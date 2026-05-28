@@ -27,9 +27,9 @@ const jetbrains = JetBrains_Mono({
 
 // Material Symbols loaded via <link> in head
 export const metadata: Metadata = {
-  title: "Trade M | Industrial Excellence",
+  title: "Trade M | Кращий Партнер",
   description:
-    "Преміум ASIC-майнери: Antminer, Whatsminer. Продаж, сервіс та майнінг-готель в Україні.",
+    "Вигідні ASIC-майнери: Antminer, Whatsminer. Продаж, сервіс та майнінг-готель в Україні.",
 };
 
 export default function RootLayout({
