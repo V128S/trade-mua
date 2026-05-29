@@ -5,11 +5,9 @@ import { useState } from 'react'
 export default function ProductsSyncPanel({
   lastSync,
   productCount,
-  syncSecret,
 }: {
   lastSync: string | null
   productCount: number
-  syncSecret: string
 }) {
   const [syncing, setSyncing] = useState(false)
   const [result, setResult] = useState<{ synced?: number; error?: string } | null>(null)
@@ -17,13 +15,15 @@ export default function ProductsSyncPanel({
   async function triggerSync() {
     setSyncing(true)
     setResult(null)
-    const res = await fetch('/api/sync-products', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${syncSecret}` },
-    })
-    const data = await res.json()
-    setSyncing(false)
-    setResult(res.ok ? { synced: data.synced } : { error: data.error })
+    try {
+      const res = await fetch('/api/admin/sync-trigger', { method: 'POST' })
+      const data = await res.json()
+      setResult(res.ok ? { synced: data.synced } : { error: data.error })
+    } catch {
+      setResult({ error: 'Помилка мережі' })
+    } finally {
+      setSyncing(false)
+    }
   }
 
   return (

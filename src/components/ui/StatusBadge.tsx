@@ -8,8 +8,10 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; classes: string }> = {
   cancelled: { label: 'Скасовано',    classes: 'bg-[#2b1a1a] text-red-400' },
 }
 
-export default function StatusBadge({ status }: { status: OrderStatus }) {
-  const cfg = STATUS_CONFIG[status]
+const FALLBACK = { label: 'Невідомо', classes: 'bg-[#2b2a26] text-on-surface-variant' }
+
+export default function StatusBadge({ status }: { status: string }) {
+  const cfg = STATUS_CONFIG[status as OrderStatus] ?? FALLBACK
   return (
     <span className={`chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider ${cfg.classes}`}>
       {cfg.label}

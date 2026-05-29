@@ -1,16 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@/lib/types/database.types'
-
-async function requireAdmin(): Promise<SupabaseClient<Database> | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (data?.role !== 'admin') return null
-  return supabase
-}
+import { requireAdmin } from '@/lib/supabase/admin'
 
 export async function POST(request: NextRequest) {
   const supabase = await requireAdmin()
@@ -19,11 +8,19 @@ export async function POST(request: NextRequest) {
   const body = await request.json()
   const { code, discount_pct, max_uses, expires_at } = body
 
-  if (!code || !discount_pct) return NextResponse.json({ error: 'code and discount_pct required' }, { status: 400 })
+  if (!code) return NextResponse.json({ error: 'code is required' }, { status: 400 })
+  if (discount_pct === undefined || discount_pct === null || discount_pct === '') {
+    return NextResponse.json({ error: 'discount_pct is required' }, { status: 400 })
+  }
+
+  const pct = Number(discount_pct)
+  if (isNaN(pct) || pct < 0 || pct > 100) {
+    return NextResponse.json({ error: 'discount_pct must be 0–100' }, { status: 400 })
+  }
 
   const { data, error } = await supabase.from('promo_codes').insert({
     code: (code as string).toUpperCase().trim(),
-    discount_pct: Number(discount_pct),
+    discount_pct: pct,
     max_uses: max_uses ? Number(max_uses) : null,
     expires_at: expires_at || null,
   }).select().single()

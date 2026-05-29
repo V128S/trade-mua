@@ -27,7 +27,8 @@ export default function ProfileForm({ profile, userId }: { profile: Profile; use
       .upload(path, file, { upsert: true })
     if (uploadError) { setError('Помилка завантаження фото'); setUploading(false); return }
     const { data } = supabase.storage.from('avatars').getPublicUrl(path)
-    setAvatarUrl(data.publicUrl + '?t=' + Date.now())
+    // Store the clean URL in state (and eventually DB); append cache-bust only for display
+    setAvatarUrl(data.publicUrl)
     setUploading(false)
   }
 
@@ -52,7 +53,7 @@ export default function ProfileForm({ profile, userId }: { profile: Profile; use
       <div className="flex items-center gap-5">
         <div className="w-20 h-20 rounded-full bg-card border-card overflow-hidden flex items-center justify-center shrink-0">
           {avatarUrl ? (
-            <Image src={avatarUrl} alt="Avatar" width={80} height={80} className="object-cover w-full h-full" unoptimized />
+            <Image src={`${avatarUrl}?t=${uploading ? 'loading' : avatarUrl.length}`} alt="Avatar" width={80} height={80} className="object-cover w-full h-full" unoptimized />
           ) : (
             <span className="material-symbols-outlined text-on-surface-variant text-[40px]">person</span>
           )}

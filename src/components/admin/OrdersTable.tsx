@@ -19,13 +19,22 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
 
   async function updateStatus(orderId: string, status: OrderStatus) {
     setUpdating(orderId)
-    await fetch(`/api/admin/orders/${orderId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    })
-    setUpdating(null)
-    router.refresh()
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        console.error('Status update failed:', data.error ?? res.status)
+      }
+    } catch (err) {
+      console.error('Network error updating order status:', err)
+    } finally {
+      setUpdating(null)
+      router.refresh()
+    }
   }
 
   if (orders.length === 0) {

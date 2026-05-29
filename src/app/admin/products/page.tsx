@@ -15,7 +15,6 @@ export default async function AdminProductsPage() {
       <ProductsSyncPanel
         lastSync={lastSync}
         productCount={count ?? 0}
-        syncSecret={process.env.SYNC_SECRET!}
       />
     </div>
   )

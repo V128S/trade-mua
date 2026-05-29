@@ -36,7 +36,7 @@ export default function OrderList({ orders }: { orders: Order[] }) {
           </div>
 
           <div className="border-t border-[#2e2d2b] pt-4 space-y-2">
-            {(order.items as { name: string; qty: number; price_usdt: number }[]).map((item, i) => (
+            {(Array.isArray(order.items) ? order.items as { name: string; qty: number; price_usdt: number }[] : []).map((item, i) => (
               <div key={i} className="flex justify-between items-center">
                 <span className="font-body-md text-body-md text-on-surface">{item.name}</span>
                 <span className="font-label-caps text-label-caps text-on-surface-variant text-[11px]">

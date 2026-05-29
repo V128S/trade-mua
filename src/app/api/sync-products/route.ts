@@ -10,18 +10,17 @@ function getServiceSupabase() {
   )
 }
 
-export async function POST(request: NextRequest) {
+function isAuthorized(request: NextRequest): boolean {
   const authHeader = request.headers.get('authorization')
   const isValidBearer = authHeader === `Bearer ${process.env.SYNC_SECRET}`
   const isVercelCron = request.headers.get('x-vercel-cron') === '1'
+  return isValidBearer || isVercelCron
+}
 
-  if (!isValidBearer && !isVercelCron) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
+async function runSync(): Promise<{ synced: number; timestamp: string } | { error: string }> {
   const products = await getProducts()
   if (products.length === 0) {
-    return NextResponse.json({ error: 'No products fetched from Sheets' }, { status: 500 })
+    return { error: 'No products fetched from Sheets' }
   }
 
   const supabase = getServiceSupabase()
@@ -44,16 +43,36 @@ export async function POST(request: NextRequest) {
     .from('products')
     .upsert(rows, { onConflict: 'id' })
 
-  if (upsertError) {
-    return NextResponse.json({ error: upsertError.message }, { status: 500 })
-  }
+  if (upsertError) return { error: upsertError.message }
 
-  // Remove products no longer in Sheets
+  // IDs are URL-safe slugs (a-z, 0-9, -) — safe for unquoted PostgREST filter
   const currentIds = rows.map(r => r.id)
-  await supabase
+  const { error: deleteError } = await supabase
     .from('products')
     .delete()
-    .not('id', 'in', `(${currentIds.map(id => `"${id}"`).join(',')})`)
+    .not('id', 'in', `(${currentIds.join(',')})`)
 
-  return NextResponse.json({ synced: rows.length, timestamp: now })
+  if (deleteError) return { error: `Sync ok but cleanup failed: ${deleteError.message}` }
+
+  return { synced: rows.length, timestamp: now }
+}
+
+// Called by Google Apps Script webhook (POST with Bearer token)
+export async function POST(request: NextRequest) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const result = await runSync()
+  if ('error' in result) return NextResponse.json(result, { status: 500 })
+  return NextResponse.json(result)
+}
+
+// Called by Vercel Cron (GET request)
+export async function GET(request: NextRequest) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const result = await runSync()
+  if ('error' in result) return NextResponse.json(result, { status: 500 })
+  return NextResponse.json(result)
 }

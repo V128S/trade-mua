@@ -8,7 +8,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: profile } = await supabase.from('profiles').select('*').eq('id', id).single()
+  const { data: profile } = await supabase.from('profiles').select('*').eq('id', id).maybeSingle()
   if (!profile) notFound()
 
   const { data: orders } = await supabase
