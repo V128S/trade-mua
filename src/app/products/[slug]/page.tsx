@@ -15,8 +15,8 @@ function getBaseName(name: string): string {
 }
 
 function getCooling(name: string): string {
-  if (/hydro/i.test(name)) return "Hydro";
-  if (/immersion/i.test(name)) return "Immersion";
+  if (/hyd/i.test(name)) return "Hydro";
+  if (/imm/i.test(name)) return "Immersion";
   return "Air";
 }
 
