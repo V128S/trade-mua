@@ -93,8 +93,7 @@ function UserNavButtonMobile() {
           onClick={async () => {
             const supabase = createClient()
             await supabase.auth.signOut()
-            router.push('/')
-            router.refresh()
+            window.location.href = '/'
           }}
           className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-red-400 transition-colors duration-200 w-full text-left"
         >

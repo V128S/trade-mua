@@ -26,8 +26,8 @@ export default function LoginForm() {
       return
     }
 
-    router.push('/dashboard')
-    router.refresh()
+    // Hard redirect ensures browser sends fresh session cookies with the next request
+    window.location.href = '/dashboard'
   }
 
   return (
