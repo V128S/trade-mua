@@ -13,6 +13,8 @@ export interface OrderItem {
 
 export interface Database {
   public: {
+    Views: Record<string, never>
+    Functions: Record<string, never>
     Tables: {
       profiles: {
         Row: {
@@ -36,6 +38,7 @@ export interface Database {
           avatar_url?: string | null
           role?: UserRole
         }
+        Relationships: []
       }
       orders: {
         Row: {
@@ -65,6 +68,7 @@ export interface Database {
           nova_poshta_address?: string | null
           notes?: string | null
         }
+        Relationships: []
       }
       promo_codes: {
         Row: {
@@ -90,6 +94,7 @@ export interface Database {
           expires_at?: string | null
           is_active?: boolean
         }
+        Relationships: []
       }
       products: {
         Row: {
@@ -127,6 +132,7 @@ export interface Database {
           is_new?: boolean
           synced_at?: string
         }
+        Relationships: []
       }
     }
   }
