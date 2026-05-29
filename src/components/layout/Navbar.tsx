@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useState, useSyncExternalStore } from "react";
+import SlideNav from "@/components/ui/nav-header";
 
 const NAV_LINKS = [
   { href: "/products", label: "Продукти" },
@@ -54,17 +55,9 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav links */}
-        <div className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-300"
-            >
-              {l.label}
-            </Link>
-          ))}
+        {/* Desktop nav — sliding pill */}
+        <div className="hidden md:block">
+          <SlideNav items={NAV_LINKS} />
         </div>
 
         {/* Actions */}
