@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProducts } from "@/lib/sheets";
+import { getProductsFromDB } from "@/lib/products";
 import ProductDetail from "@/components/products/ProductDetail";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 // Strip hashrate suffix to get base model name
 // "Antminer S21 Hydro 335Th" → "Antminer S21 Hydro"
@@ -26,7 +26,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const products = await getProducts();
+  const products = await getProductsFromDB();
   const product = products.find((p) => p.id === slug);
   if (!product) return { title: "Trade M" };
   return {
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const [products, revenueMap] = await Promise.all([getProducts(), getMinerstatRevenue()]);
+  const [products, revenueMap] = await Promise.all([getProductsFromDB(), getMinerstatRevenue()]);
 
   const product = products.find((p) => p.id === slug);
   if (!product) notFound();
