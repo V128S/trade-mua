@@ -128,7 +128,7 @@ export default function ProductDetail({ product, configs, revenuePerTH }: Props)
           </div>
         ) : (
           <p className="font-label-caps text-[10px] text-on-surface-variant text-center py-2">
-            Дані BTC завантажуються...
+            Дані завантажуються...
           </p>
         )}
 
