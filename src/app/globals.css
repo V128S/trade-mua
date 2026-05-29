@@ -259,15 +259,6 @@ body {
   color: #755b00;
 }
 
-/* Hardcoded dark borders inside cards → light equivalent */
-.light .border-\[#2e2d2b\] {
-  border-color: rgba(117, 91, 0, 0.12);
-}
-
-/* In-stock green badge: soften dark green on white cards */
-.light .bg-\[#1a2b1a\] {
-  background-color: rgba(22, 163, 74, 0.1);
-}
 
 /* Range slider track in light mode */
 .light input[type="range"]::-webkit-slider-runnable-track {

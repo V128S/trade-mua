@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 import SlideNav from "@/components/ui/nav-header";
 
 const NAV_LINKS = [
@@ -21,6 +24,95 @@ function subscribe(callback: () => void) {
 }
 function getTheme(): "dark" | "light" {
   return document.documentElement.classList.contains("light") ? "light" : "dark";
+}
+
+function UserNavButton() {
+  const [user, setUser] = useState<User | null | undefined>(undefined)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  if (user === undefined) return null
+
+  if (user) {
+    return (
+      <Link
+        href="/dashboard"
+        className="hidden sm:flex items-center gap-1.5 border border-primary/40 hover:border-primary bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-primary transition-colors duration-200"
+      >
+        <span className="material-symbols-outlined text-[16px]">person</span>
+        Кабінет
+      </Link>
+    )
+  }
+
+  return (
+    <Link
+      href="/login"
+      className="hidden sm:flex items-center gap-1.5 border border-outline-variant/50 hover:border-primary/60 hover:text-primary px-3 py-1.5 rounded font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-on-surface-variant transition-colors duration-200"
+    >
+      <span className="material-symbols-outlined text-[16px]">person</span>
+      Логін
+    </Link>
+  )
+}
+
+function UserNavButtonMobile() {
+  const router = useRouter()
+  const [user, setUser] = useState<User | null | undefined>(undefined)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  if (user === undefined) return null
+
+  if (user) {
+    return (
+      <div className="space-y-1">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
+        >
+          <span className="material-symbols-outlined text-[18px]">person</span>
+          Кабінет
+        </Link>
+        <button
+          type="button"
+          onClick={async () => {
+            const supabase = createClient()
+            await supabase.auth.signOut()
+            window.location.href = '/'
+          }}
+          className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-red-400 transition-colors duration-200 w-full text-left"
+        >
+          <span className="material-symbols-outlined text-[18px]">logout</span>
+          Вийти
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <Link
+      href="/login"
+      className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
+    >
+      <span className="material-symbols-outlined text-[18px]">person</span>
+      Логін
+    </Link>
+  )
 }
 
 export default function Navbar() {
@@ -84,14 +176,7 @@ export default function Navbar() {
             <span className="material-symbols-outlined text-[22px]">shopping_cart</span>
           </Link>
 
-          {/* Login */}
-          <Link
-            href="/login"
-            className="hidden sm:flex items-center gap-1.5 border border-outline-variant/50 hover:border-primary/60 hover:text-primary px-3 py-1.5 rounded font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-on-surface-variant transition-colors duration-200"
-          >
-            <span className="material-symbols-outlined text-[16px]">person</span>
-            Логін
-          </Link>
+          <UserNavButton />
 
           {/* Mobile hamburger */}
           <button
@@ -122,14 +207,7 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="pt-3 border-t border-outline-variant/20">
-            <Link
-              href="/login"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
-            >
-              <span className="material-symbols-outlined text-[18px]">person</span>
-              Логін
-            </Link>
+            <UserNavButtonMobile />
           </div>
         </div>
       )}

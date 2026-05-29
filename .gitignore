@@ -39,3 +39,4 @@ AGENTS.md
 *.cursorrules
 .aider*
 .playwright-mcp/
+.mcp.json

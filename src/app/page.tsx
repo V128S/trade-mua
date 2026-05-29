@@ -1,19 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getTopProducts, type Product } from "@/lib/sheets";
+import { getTopProductsFromDB } from "@/lib/products";
+import type { Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 import HeroCarousel from "@/components/hero/HeroCarousel";
 import BrandTicker from "@/components/ui/BrandTicker";
 
-export const revalidate = 3600; // refresh every hour
+export const revalidate = 60; // refresh every minute
 
 function ProductCard({ product }: { product: Product }) {
   const imgSrc = getProductImage(product.name);
   return (
     <Link href={`/products/${product.id}`} className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col">
-      <div className="relative h-44 bg-surface flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface/60" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary/5 blur-[60px] rounded-full" />
+      <div className="relative h-44 bg-white flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30" />
         {imgSrc ? (
           <Image
             src={imgSrc}
@@ -91,7 +91,7 @@ const SERVICES = [
 ];
 
 export default async function Home() {
-  const products = await getTopProducts(8);
+  const products = await getTopProductsFromDB(8);
 
   return (
     <div className="space-y-section-gap pb-section-gap">
