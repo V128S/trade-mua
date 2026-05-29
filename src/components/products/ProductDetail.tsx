@@ -133,7 +133,7 @@ export default function ProductDetail({ product, configs, revenuePerTH }: Props)
         )}
 
         <Link
-          href={`/calculator?hashrate=${encodeURIComponent(product.hashrate)}&power=${product.powerW}&price=${product.priceUSDT}`}
+          href={`/calculator?hashrate=${encodeURIComponent(product.hashrate)}&power=${product.powerW}&price=${product.priceUSDT}&algorithm=${encodeURIComponent(product.algorithm)}`}
           className="inline-flex items-center gap-1 font-label-caps text-[10px] text-primary uppercase tracking-widest hover:text-secondary transition-colors"
         >
           Повний калькулятор

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getProducts } from "@/lib/sheets";
 import ProductDetail from "@/components/products/ProductDetail";
 import { getProductImage } from "@/lib/product-images";
+import { getMinerstatRevenue } from "@/lib/minerstat";
 
 export const revalidate = 3600;
 
@@ -20,23 +21,6 @@ function getCooling(name: string): string {
   return "Air";
 }
 
-async function getBTCRevenue(): Promise<number> {
-  try {
-    const [priceRes, diffRes] = await Promise.all([
-      fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd", { next: { revalidate: 300 } }),
-      fetch("https://blockchain.info/q/getdifficulty", { next: { revalidate: 300 } }),
-    ]);
-    if (!priceRes.ok || !diffRes.ok) return 0;
-    const priceData = await priceRes.json();
-    const btcPrice: number = priceData?.bitcoin?.usd ?? 0;
-    const difficulty = parseFloat(await diffRes.text());
-    if (!btcPrice || !difficulty) return 0;
-    const networkHashTH = (difficulty * 4_294_967_296) / 600 / 1e12;
-    return (144 * 3.125 * btcPrice) / networkHashTH;
-  } catch {
-    return 0;
-  }
-}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -53,10 +37,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const [products, revenuePerTH] = await Promise.all([getProducts(), getBTCRevenue()]);
+  const [products, revenueMap] = await Promise.all([getProducts(), getMinerstatRevenue()]);
 
   const product = products.find((p) => p.id === slug);
   if (!product) notFound();
+
+  // Revenue for this product's specific algorithm
+  const algoData = revenueMap[product.algorithm] ?? revenueMap["SHA256"];
+  const revenuePerTH = algoData?.revenuePerTH ?? 0;
 
   const baseName = getBaseName(product.name);
   const cooling = getCooling(product.name);

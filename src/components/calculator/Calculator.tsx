@@ -3,8 +3,9 @@
 import { useState, useMemo } from "react";
 
 interface Props {
-  btcPrice: number;
-  revenuePerTH: number; // USD per TH/s per day
+  coinPrice: number;
+  coinSymbol?: string;
+  revenuePerTH: number; // USD per TH-equivalent per day
   initialHashrate?: string;
   initialPower?: number;
   initialPrice?: number;
@@ -20,7 +21,7 @@ function parseHashrateTH(s: string): number {
   return val;
 }
 
-export default function Calculator({ btcPrice, revenuePerTH, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
+export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
   const [hashrate, setHashrate] = useState(initialHashrate);
   const [powerW, setPowerW] = useState(initialPower);
   const [electricityRate, setElectricityRate] = useState(0.07);
@@ -49,16 +50,16 @@ export default function Calculator({ btcPrice, revenuePerTH, initialHashrate = "
       {/* Inputs */}
       <div className="space-y-6">
 
-        {/* BTC price info */}
+        {/* Coin price info */}
         <div className="bg-card border-card rounded-lg px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-primary text-[20px]">currency_bitcoin</span>
             <div>
               <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
-                Поточна ціна BTC
+                Поточна ціна {coinSymbol}
               </p>
               <p className="font-headline-md text-headline-md text-primary">
-                {btcPrice > 0 ? `$${btcPrice.toLocaleString()}` : "Завантаження..."}
+                {coinPrice > 0 ? `$${coinPrice.toLocaleString()}` : "Завантаження..."}
               </p>
             </div>
           </div>
