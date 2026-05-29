@@ -26,13 +26,8 @@ export default function HeroCarousel({ products }: { products: Product[] }) {
               className="group bg-card border-card rounded-lg overflow-hidden shrink-0 hover-primary-border transition-colors duration-300"
             >
               {/* Image */}
-              <div className="relative h-44 bg-surface flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface/50" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary/8 blur-[60px] rounded-full" />
-                <div
-                  className="absolute inset-0 opacity-[0.015]"
-                  style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "16px 16px" }}
-                />
+              <div className="relative h-44 bg-white flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/20" />
                 {imgSrc ? (
                   <Image
                     src={imgSrc}

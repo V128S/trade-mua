@@ -87,11 +87,8 @@ export default async function ProductPage({ params }: Props) {
           {(() => {
             const imgSrc = getProductImage(product.name);
             return (
-              <div className="relative bg-card border-card rounded-lg overflow-hidden aspect-square flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 bg-primary/6 blur-[100px] rounded-full" />
-                <div className="absolute inset-0 opacity-[0.02]"
-                  style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+              <div className="relative bg-white border-card rounded-lg overflow-hidden aspect-square flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/20" />
                 {imgSrc ? (
                   <Image
                     src={imgSrc}
@@ -215,15 +212,20 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
-            {similar.map((p) => (
+            {similar.map((p) => {
+              const simImg = getProductImage(p.name);
+              return (
               <Link
                 key={p.id}
                 href={`/products/${p.id}`}
                 className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col"
               >
-                <div className="relative h-36 bg-surface flex items-center justify-center">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 bg-primary/5 blur-[40px] rounded-full" />
-                  <span className="material-symbols-outlined text-outline-variant group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
+                <div className="relative h-36 bg-white flex items-center justify-center">
+                  {simImg ? (
+                    <Image src={simImg} alt={p.name} width={120} height={120} className="relative z-10 object-contain group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <span className="material-symbols-outlined text-gray-300 group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
+                  )}
                   <span className={`absolute top-2 left-2 chip px-2 py-0.5 text-[9px] font-technical-data uppercase ${p.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
                     {p.inStock ? "В наявності" : "Замовлення"}
                   </span>
@@ -236,7 +238,8 @@ export default async function ProductPage({ params }: Props) {
                   </p>
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
 
           <div className="flex justify-center mt-10">
