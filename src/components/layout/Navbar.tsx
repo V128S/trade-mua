@@ -6,6 +6,7 @@ import { useCallback, useState, useSyncExternalStore } from "react";
 import SlideNav from "@/components/ui/nav-header";
 
 const NAV_LINKS = [
+  { href: "/", label: "Головна" },
   { href: "/products", label: "Продукти" },
   { href: "/services", label: "Сервіси" },
   { href: "/calculator", label: "Калькулятор" },
@@ -83,6 +84,15 @@ export default function Navbar() {
             <span className="material-symbols-outlined text-[22px]">shopping_cart</span>
           </Link>
 
+          {/* Login */}
+          <Link
+            href="/login"
+            className="hidden sm:flex items-center gap-1.5 border border-outline-variant/50 hover:border-primary/60 hover:text-primary px-3 py-1.5 rounded font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-on-surface-variant transition-colors duration-200"
+          >
+            <span className="material-symbols-outlined text-[16px]">person</span>
+            Логін
+          </Link>
+
           {/* Mobile hamburger */}
           <button
             type="button"
@@ -111,6 +121,16 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          <div className="pt-3 border-t border-outline-variant/20">
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
+            >
+              <span className="material-symbols-outlined text-[18px]">person</span>
+              Логін
+            </Link>
+          </div>
         </div>
       )}
     </nav>

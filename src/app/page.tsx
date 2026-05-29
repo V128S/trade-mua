@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTopProducts, type Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 import HeroCarousel from "@/components/hero/HeroCarousel";
+import BrandTicker from "@/components/ui/BrandTicker";
 
 export const revalidate = 3600; // refresh every hour
 
@@ -174,6 +175,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Brand Ticker ── */}
+      <BrandTicker />
 
       {/* ── Top Products ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">

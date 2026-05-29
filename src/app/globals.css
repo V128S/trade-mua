@@ -326,6 +326,14 @@ body {
   animation-play-state: paused;
 }
 
+@keyframes brand-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-brand-scroll {
+  animation: brand-scroll 28s linear infinite;
+}
+
 /* Gold range slider */
 input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
 input[type="range"]::-webkit-slider-thumb {
