@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTopProducts, type Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
+import HeroCarousel from "@/components/hero/HeroCarousel";
 
 export const revalidate = 3600; // refresh every hour
 
@@ -111,55 +112,65 @@ export default async function Home() {
         </div>
 
         <div className="max-w-container-max mx-auto w-full relative z-10">
-          <div className="max-w-2xl space-y-8">
-            {/* Label */}
-            <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">
-                Кращий крипто Партнер
-              </span>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 xl:gap-16 items-center">
 
-            {/* Headline */}
-            <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none">
-              Вигідні{" "}
-              <span className="text-primary">ASIC</span>
-              <br />
-              Майнери
-            </h1>
+            {/* Left — text */}
+            <div className="max-w-2xl space-y-8">
+              {/* Label */}
+              <div className="flex items-center gap-3">
+                <div className="h-px w-8 bg-primary" />
+                <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">
+                  Кращий крипто Партнер
+                </span>
+              </div>
 
-            <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
-              Antminer, Whatsminer, Avalon — ми офіційні постачальники. Доставка з Китаю 10–14 днів.
-              Фіксована ціна під час замовлення.
-            </p>
+              {/* Headline */}
+              <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none">
+                Вигідні{" "}
+                <span className="text-primary">ASIC</span>
+                <br />
+                Майнери
+              </h1>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link href="/products" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
-                <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-                Каталог товарів
-              </Link>
-              <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                Консультація
-              </Link>
-            </div>
+              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                Antminer, Whatsminer, Avalon — ми офіційні постачальники. Доставка з Китаю 10–14 днів.
+                Фіксована ціна під час замовлення.
+              </p>
 
-            {/* Trust stats */}
-            <div className="flex flex-wrap gap-8 pt-4 border-t border-outline-variant/30">
-              {[
-                { value: "10–14", label: "Днів доставка" },
-                { value: "24/7", label: "Підтримка" },
-                { value: "Київ / Дніпро", label: "Офіси" },
-              ].map((s) => (
-                <div key={s.label}>
-                  <div className="font-headline-md text-headline-md text-primary">{s.value}</div>
-                  <div className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
-                    {s.label}
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4 pt-2">
+                <Link href="/products" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
+                  <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+                  Каталог товарів
+                </Link>
+                <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px]">contact_support</span>
+                  Консультація
+                </Link>
+              </div>
+
+              {/* Trust stats */}
+              <div className="flex flex-wrap gap-8 pt-4 border-t border-outline-variant/30">
+                {[
+                  { value: "10–14", label: "Днів доставка" },
+                  { value: "24/7", label: "Підтримка" },
+                  { value: "Київ / Дніпро", label: "Офіси" },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <div className="font-headline-md text-headline-md text-primary">{s.value}</div>
+                    <div className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
+                      {s.label}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+
+            {/* Right — infinite scroll carousel (desktop only) */}
+            <div className="hidden lg:block">
+              <HeroCarousel products={products} />
+            </div>
+
           </div>
         </div>
       </section>

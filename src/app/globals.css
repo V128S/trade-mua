@@ -307,6 +307,25 @@ body {
   100% { background-position: 200% 0; }
 }
 
+/* ─── Hero carousel ─── */
+
+/* Fade overlays — must match body background */
+.hero-fade-top    { background: linear-gradient(to bottom, #111110 0%, transparent 100%); }
+.hero-fade-bottom { background: linear-gradient(to top,   #111110 0%, transparent 100%); }
+.light .hero-fade-top    { background: linear-gradient(to bottom, #f9f9f9 0%, transparent 100%); }
+.light .hero-fade-bottom { background: linear-gradient(to top,   #f9f9f9 0%, transparent 100%); }
+
+@keyframes hero-scroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+.animate-hero-scroll {
+  animation: hero-scroll 22s linear infinite;
+}
+.animate-hero-scroll:hover {
+  animation-play-state: paused;
+}
+
 /* Gold range slider */
 input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
 input[type="range"]::-webkit-slider-thumb {
