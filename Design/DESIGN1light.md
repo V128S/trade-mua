@@ -1,5 +1,5 @@
 ---
-name: Industrial Excellence Light
+name: Кращий крипто Партнер Light
 colors:
   surface: '#f9f9f9'
   surface-dim: '#dadada'

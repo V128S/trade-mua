@@ -53,7 +53,7 @@ export default function Footer() {
 
       <div className="border-t border-outline-variant/20 px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
         <p className="font-label-caps text-label-caps text-outline uppercase tracking-widest">
-          © 2025 Trade M · Industrial Excellence
+          © 2025 Trade M · Кращий крипто Партнер
         </p>
       </div>
     </footer>

@@ -1,5 +1,5 @@
 ---
-name: Industrial Excellence
+name: Кращий крипто Партнер
 colors:
   surface: '#141410'
   surface-dim: '#141410'
@@ -137,7 +137,7 @@ The layout follows a strict **Fixed Grid** philosophy on desktop to ensure an ed
 
 - **Grid:** 12-column grid with generous 24px gutters.
 - **Rhythm:** An 8px linear scale governs all padding and margins. 
-- **Whitespace:** Use significant vertical padding (`section-gap`) between product blocks to allow the "Industrial Excellence" of each item to breathe.
+- **Whitespace:** Use significant vertical padding (`section-gap`) between product blocks to allow the "Кращий крипто Партнер" of each item to breathe.
 - **Desktop:** 64px outer margins to frame content like a gallery piece.
 - **Mobile:** Margins compress to 16px, with 1-column layouts for product cards to maintain image impact.
 

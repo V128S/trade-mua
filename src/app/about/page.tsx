@@ -36,7 +36,7 @@ export default function AboutPage() {
         <div className="max-w-container-max mx-auto relative z-10 max-w-3xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-primary" />
-            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Industrial Excellence</span>
+            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Кращий крипто Партнер</span>
           </div>
           <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none mb-6">
             Trade <span className="text-primary">M</span>
