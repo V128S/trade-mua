@@ -1,27 +1,19 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { parseHashrateTH } from "@/lib/utils";
 
 interface Props {
   coinPrice: number;
   coinSymbol?: string;
-  revenuePerTH: number; // USD per TH-equivalent per day
+  revenuePerTH: number;  // USD per TH-equivalent per day (spot)
+  revenue24h?: number;   // 24h average (more stable for ROI calc)
   initialHashrate?: string;
   initialPower?: number;
   initialPrice?: number;
 }
 
-function parseHashrateTH(s: string): number {
-  const m = s.match(/([\d.,]+)\s*(TH|GH|MH|T|G|M)?/i);
-  if (!m) return 0;
-  const val = parseFloat(m[1].replace(",", "."));
-  const unit = (m[2] ?? "T").toUpperCase();
-  if (unit.startsWith("G")) return val / 1000;
-  if (unit.startsWith("M")) return val / 1_000_000;
-  return val;
-}
-
-export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
+export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH, revenue24h, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
   const [hashrate, setHashrate] = useState(initialHashrate);
   const [powerW, setPowerW] = useState(initialPower);
   const [electricityRate, setElectricityRate] = useState(0.07);
@@ -33,8 +25,10 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
     const dailyCost = (powerW / 1000) * 24 * electricityRate;
     const dailyRevenue = revenuePerTH * th;
     const dailyProfit = Math.max(0, dailyRevenue - dailyCost);
-    // Equipment payback = price / daily profit. Requires a price and positive profit.
-    const roi = price > 0 && dailyProfit > 0 ? Math.ceil(price / dailyProfit) : Infinity;
+    // ROI uses 24h average for more stable estimate
+    const rev24 = (revenue24h ?? revenuePerTH) * th;
+    const profit24 = Math.max(0, rev24 - dailyCost);
+    const roi = price > 0 && profit24 > 0 ? Math.ceil(price / profit24) : Infinity;
     return {
       daily: { cost: dailyCost, revenue: dailyRevenue, profit: dailyProfit },
       monthly: { cost: dailyCost * 30, revenue: dailyRevenue * 30, profit: dailyProfit * 30 },
@@ -42,7 +36,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
       roi,
       hasPrice: price > 0,
     };
-  }, [hashrate, powerW, electricityRate, revenuePerTH, price]);
+  }, [hashrate, powerW, electricityRate, revenuePerTH, revenue24h, price]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-12">
@@ -79,7 +73,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             className="w-full bg-card border border-[#2e2d2b] rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
           />
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
-            Вводьте в TH/s, GH/s або MH/s
+            TH/s, GH/s, MH/s, kH/s або kSol/s
           </p>
         </div>
 

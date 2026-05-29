@@ -1,106 +1,146 @@
-// Free data sources: CoinGecko (prices) + blockchain.info (live BTC hashrate)
-// No API keys required.
+// Primary: WhatToMine API v1 /calculate
+// Fallback (EthHash only): CoinGecko + formula
 
-const GECKO_URL = "https://api.coingecko.com/api/v3/simple/price";
-const BTC_HASHRATE_URL = "https://blockchain.info/q/hashrate"; // returns GH/s plain text
+const WTM_KEY = process.env.WHATTOMINE_API_KEY ?? "7620ec9bede1243fb97c8b2b46c23b5b48df74ad21e16f6ae8e5eedfae5e17c2";
+const WTM_URL = "https://whattomine.com/api/v1/calculate";
 
 export const ALGO_NAMES: Record<string, string> = {
   SHA256:     "SHA-256",
   Scrypt:     "Scrypt",
   KHeavyHash: "KHeavyHash",
   EthHash:    "Etchash",
+  Eaglesong:  "Eaglesong",
   Equihash:   "Equihash",
   X11:        "X11",
   Handshake:  "Handshake",
-  Eaglesong:  "Eaglesong",
   RandomX:    "RandomX",
 };
 
 export interface AlgoRevenue {
   revenuePerTH: number; // USD per TH-equivalent per day
   coin: string;
-  coinPrice: number;    // USD
+  coinPrice: number;    // USD (derived from WTM revenue / estimated_rewards)
+  revenue24h: number;   // 24h average revenue per TH (more stable)
 }
 
-interface AlgoStats {
-  blockTime: number;    // seconds per block
-  blockReward: number;  // coins per block
-  nethash: number;      // H/s (algorithm-native units, same unit as miner specs)
-  geckoId: string;
-  ticker: string;
-  // LTC is merge-mined simultaneously with DOGE — add its revenue on top
-  mergeCoin?: {
-    geckoId: string;
-    blockTime: number;  // LTC: 150s
-    blockReward: number; // LTC post-Aug-2023 halving: 6.25
-  };
+// WhatToMine calculate response item
+interface WtmCoin {
+  id: number;
+  tag: string;
+  name: string;
+  estimated_rewards: string;  // coins per day at reference hashrate
+  btc_revenue: string;
+  btc_revenue24: string;
+  revenue: string;            // USD per day at reference hashrate
+  revenue24: string;          // 24h average USD per day
+  profit: string;
 }
 
-// Network stats — update quarterly.
-// nethash in H/s (native algorithm units matching miner spec units).
-// SHA256 nethash is overridden at runtime from blockchain.info.
-//
-// Scrypt nethash: LTC+DOGE merge-mining network ~4700 TH/s Scrypt = 4.7e15 H/s
-//   (reverse-calculated from asicminervalue: L9 16GH/s → 49.35 DOGE/day →
-//    nethash = 1.6e10 * 1440 * 10000 / 49.35 ≈ 4.67e15)
-const ALGO_STATS: Record<string, AlgoStats> = {
-  SHA256:     { blockTime: 600,  blockReward: 3.125,  nethash: 7e20,   geckoId: "bitcoin",          ticker: "BTC"  },
-  Scrypt:     { blockTime: 60,   blockReward: 10000,  nethash: 4.7e15, geckoId: "dogecoin",         ticker: "DOGE",
-                mergeCoin: { geckoId: "litecoin", blockTime: 150, blockReward: 6.25 } },
-  KHeavyHash: { blockTime: 1,    blockReward: 80,     nethash: 9e17,   geckoId: "kaspa",            ticker: "KAS"  },
-  EthHash:    { blockTime: 13,   blockReward: 2.56,   nethash: 2e14,   geckoId: "ethereum-classic", ticker: "ETC"  },
-  Equihash:   { blockTime: 75,   blockReward: 3.125,  nethash: 1e10,   geckoId: "zcash",            ticker: "ZEC"  },
-  X11:        { blockTime: 158,  blockReward: 1.71,   nethash: 5e15,   geckoId: "dash",             ticker: "DASH" },
-  Handshake:  { blockTime: 600,  blockReward: 2000,   nethash: 1e18,   geckoId: "handshake",        ticker: "HNS"  },
-  Eaglesong:  { blockTime: 10,   blockReward: 1917,   nethash: 2e17,   geckoId: "nervos-network",   ticker: "CKB"  },
-  RandomX:    { blockTime: 120,  blockReward: 0.6,    nethash: 3e9,    geckoId: "monero",            ticker: "XMR"  },
+// Per-algorithm config:
+//   param     — WhatToMine API parameter name
+//   refUnit   — reference hashrate (1T = 1 TH/s, 1G = 1 GH/s, 1K = 1 kH/s)
+//   scaleToTH — multiply WTM revenue by this to get revenuePerTH
+//               (because parseHashrateTH returns TH-equivalents)
+//               sha256/hh/esg/hk with 1T ref: scale=1 (already per TH)
+//               scrypt/x11    with 1G ref: scale=1000 (1GH = 0.001 TH)
+//               eq/rmx        with 1K ref: scale=1e9  (1kH = 1e-9 TH)
+//   coinNames — coin names as returned by WhatToMine (for matching response)
+//   mergeMine — true = sum revenues of all matching coins (e.g. DOGE+LTC)
+interface AlgoConfig {
+  param: string;
+  refUnit: string;
+  scaleToTH: number;
+  coinNames: string[];
+  mergeMine?: boolean;
+}
+
+const ALGO_CONFIGS: Record<string, AlgoConfig> = {
+  SHA256:     { param: "sha256", refUnit: "1T", scaleToTH: 1,    coinNames: ["Bitcoin"]                     },
+  Scrypt:     { param: "scrypt", refUnit: "1G", scaleToTH: 1000, coinNames: ["Dogecoin", "Litecoin"], mergeMine: true },
+  KHeavyHash: { param: "hh",     refUnit: "1T", scaleToTH: 1,    coinNames: ["Kaspa"]                      },
+  Eaglesong:  { param: "esg",    refUnit: "1T", scaleToTH: 1,    coinNames: ["Nervos"]                     },
+  Equihash:   { param: "eq",     refUnit: "1K", scaleToTH: 1e9,  coinNames: ["Zcash", "Pirate"]            },
+  X11:        { param: "x11",    refUnit: "1G", scaleToTH: 1000, coinNames: ["Dash"]                       },
+  Handshake:  { param: "hk",     refUnit: "1T", scaleToTH: 1,    coinNames: ["Handshake"]                  },
+  RandomX:    { param: "rmx",    refUnit: "1K", scaleToTH: 1e9,  coinNames: ["Monero"]                     },
 };
+
+// EthHash fallback: WhatToMine doesn't have Etchash (ETC) in its calculate endpoint.
+// Use CoinGecko price + hardcoded network stats.
+async function getEthHashFallback(): Promise<AlgoRevenue | null> {
+  try {
+    const res = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum-classic&vs_currencies=usd",
+      { next: { revalidate: 300 } }
+    );
+    if (!res.ok) return null;
+    const data = await res.json() as { "ethereum-classic"?: { usd?: number } };
+    const price = data["ethereum-classic"]?.usd;
+    if (!price) return null;
+    // ETC Etchash: ~200 TH/s network, 13s blocks, 2.56 ETC reward
+    const revenuePerTH = (1e12 / 2e14) * (86400 / 13) * 2.56 * price;
+    return { revenuePerTH, coin: "ETC", coinPrice: price, revenue24h: revenuePerTH };
+  } catch {
+    return null;
+  }
+}
 
 export async function getMinerstatRevenue(): Promise<Record<string, AlgoRevenue>> {
   try {
-    // Collect all gecko IDs including merge coins
-    const geckoIdSet = new Set(Object.values(ALGO_STATS).map((s) => s.geckoId));
-    Object.values(ALGO_STATS).forEach((s) => s.mergeCoin && geckoIdSet.add(s.mergeCoin.geckoId));
-    const geckoUrl = `${GECKO_URL}?ids=${[...geckoIdSet].join(",")}&vs_currencies=usd`;
+    // Single API call with all algorithms + their reference hashrates
+    const algoQuery = Object.values(ALGO_CONFIGS)
+      .map((c) => `${c.param}=0|${c.refUnit}`)
+      .join("&");
+    const url = `${WTM_URL}?${algoQuery}&cost=0&api_token=${WTM_KEY}`;
 
-    const [geckoRes, btcHashRes] = await Promise.all([
-      fetch(geckoUrl, { next: { revalidate: 300 } }),
-      fetch(BTC_HASHRATE_URL, { next: { revalidate: 300 } }),
+    const [wtmRes, ethHashData] = await Promise.all([
+      fetch(url, { next: { revalidate: 300 } }),
+      getEthHashFallback(),
     ]);
 
-    if (!geckoRes.ok) return {};
-    const prices = (await geckoRes.json()) as Record<string, { usd: number }>;
+    if (!wtmRes.ok) return {};
 
-    // Live BTC network hashrate
-    let btcNethash = ALGO_STATS.SHA256.nethash;
-    if (btcHashRes.ok) {
-      const ghVal = parseFloat((await btcHashRes.text()).trim());
-      if (ghVal > 0) btcNethash = ghVal * 1e9; // GH/s → H/s
-    }
+    const coins: WtmCoin[] = await wtmRes.json();
+
+    // Index coins by name for O(1) lookup
+    const byName = new Map<string, WtmCoin>();
+    for (const c of coins) byName.set(c.name, c);
 
     const result: Record<string, AlgoRevenue> = {};
 
-    for (const [algo, stats] of Object.entries(ALGO_STATS)) {
-      const coinPrice = prices[stats.geckoId]?.usd;
-      if (!coinPrice) continue;
+    for (const [algo, cfg] of Object.entries(ALGO_CONFIGS)) {
+      const matches = cfg.coinNames
+        .map((n) => byName.get(n))
+        .filter((c): c is WtmCoin => !!c && parseFloat(c.revenue) > 0);
 
-      const nethash = algo === "SHA256" ? btcNethash : stats.nethash;
+      if (!matches.length) continue;
 
-      // Universal formula:
-      //   revenuePerTH = (1 TH/s share of network) × blocks_per_day × block_reward × price
-      let revenuePerTH =
-        (1e12 / nethash) * (86400 / stats.blockTime) * stats.blockReward * coinPrice;
+      const primary = matches[0];
 
-      // Add merge-mined coin revenue (e.g. LTC on top of DOGE for Scrypt)
-      if (stats.mergeCoin) {
-        const mergePrice = prices[stats.mergeCoin.geckoId]?.usd;
-        if (mergePrice) {
-          revenuePerTH +=
-            (1e12 / nethash) * (86400 / stats.mergeCoin.blockTime) * stats.mergeCoin.blockReward * mergePrice;
-        }
-      }
+      // For merge-mined algos, sum revenues; otherwise take primary
+      const totalRev = cfg.mergeMine
+        ? matches.reduce((s, c) => s + parseFloat(c.revenue), 0)
+        : parseFloat(primary.revenue);
 
-      result[algo] = { revenuePerTH, coin: stats.ticker, coinPrice };
+      const totalRev24 = cfg.mergeMine
+        ? matches.reduce((s, c) => s + parseFloat(c.revenue24), 0)
+        : parseFloat(primary.revenue24);
+
+      // Derive spot price from WTM data: price = revenue / estimated_rewards
+      const rewards = parseFloat(primary.estimated_rewards);
+      const coinPrice = rewards > 0 ? parseFloat(primary.revenue) / rewards : 0;
+
+      result[algo] = {
+        revenuePerTH: totalRev * cfg.scaleToTH,
+        revenue24h:   totalRev24 * cfg.scaleToTH,
+        coin:         primary.tag,
+        coinPrice,
+      };
+    }
+
+    // EthHash: WhatToMine doesn't cover ETC Etchash → fallback
+    if (ethHashData) {
+      result.EthHash = ethHashData;
     }
 
     return result;

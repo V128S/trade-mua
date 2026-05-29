@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { Product } from "@/lib/sheets";
+import { parseHashrateTH } from "@/lib/utils";
 
 interface Config {
   id: string;
@@ -15,17 +16,7 @@ interface Config {
 interface Props {
   product: Product;
   configs: Config[];
-  revenuePerTH: number; // USD per TH/s per day
-}
-
-function parseHashrateTH(s: string): number {
-  const m = s.match(/([\d.,]+)\s*(TH|GH|MH|T|G|M)?/i);
-  if (!m) return 0;
-  const val = parseFloat(m[1].replace(",", "."));
-  const unit = (m[2] ?? "T").toUpperCase();
-  if (unit.startsWith("G")) return val / 1000;
-  if (unit.startsWith("M")) return val / 1_000_000;
-  return val;
+  revenuePerTH: number; // USD per TH-equivalent per day
 }
 
 export default function ProductDetail({ product, configs, revenuePerTH }: Props) {
