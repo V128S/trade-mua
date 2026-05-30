@@ -1,11 +1,29 @@
 'use client'
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCart } from '@/lib/cart/useCart'
 import { getProductImage } from '@/lib/product-images'
+import { previewPromo } from '@/lib/cart/actions'
+import { applyDiscount } from '@/lib/cart/cart-math'
 
 export default function CartView() {
-  const { items, hydrated, subtotal, setQty, remove } = useCart()
+  const { items, hydrated, subtotal, setQty, remove, promo, setPromo, clearPromo } = useCart()
+
+  const [code, setCode] = useState('')
+  const [promoError, setPromoError] = useState<string | null>(null)
+  const [checking, setChecking] = useState(false)
+
+  async function handleApplyPromo() {
+    setChecking(true)
+    setPromoError(null)
+    const res = await previewPromo(code)
+    setChecking(false)
+    if ('error' in res) { setPromoError(res.error); clearPromo(); return }
+    setPromo({ code: code.trim().toUpperCase(), pct: res.discountPct })
+  }
+
+  const total = promo ? applyDiscount(subtotal, promo.pct) : subtotal
 
   if (!hydrated) return <div className="py-24" />
 
@@ -75,6 +93,37 @@ export default function CartView() {
           <span>Сума</span>
           <span className="text-on-surface font-technical-data">${subtotal.toLocaleString()}</span>
         </div>
+
+        {/* Promo */}
+        <div className="space-y-2">
+          {promo ? (
+            <div className="flex justify-between items-center font-body-md text-body-md">
+              <span className="text-on-surface-variant">Промокод <span className="text-primary font-technical-data">{promo.code}</span> (−{promo.pct}%)</span>
+              <button type="button" onClick={() => { clearPromo(); setCode(''); }} className="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-red-400">close</button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                value={code}
+                onChange={e => setCode(e.target.value)}
+                placeholder="Промокод"
+                className="flex-1 min-w-0 bg-surface border border-[#2e2d2b] rounded px-3 py-2 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60"
+              />
+              <button type="button" onClick={handleApplyPromo} disabled={checking} className="btn-ghost px-4 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs disabled:opacity-50">
+                {checking ? '...' : 'Застос.'}
+              </button>
+            </div>
+          )}
+          {promoError && <p className="font-label-caps text-[10px] text-red-400">{promoError}</p>}
+        </div>
+
+        {promo && (
+          <div className="flex justify-between font-body-md text-body-md text-on-surface border-t border-[#2e2d2b] pt-3">
+            <span className="uppercase font-label-caps tracking-widest text-[11px]">Разом</span>
+            <span className="font-headline-md text-headline-md text-primary">${total.toLocaleString()}</span>
+          </div>
+        )}
+
         <Link href="/checkout" className="btn-primary w-full py-3 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2">
           Перейти до оформлення
           <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
