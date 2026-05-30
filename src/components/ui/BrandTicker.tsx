@@ -1,14 +1,14 @@
 // Server component — no state, pure CSS animation
 const BRANDS = [
-  { name: "Antminer",   sub: "Bitmain"  },
-  { name: "Whatsminer", sub: "MicroBT"  },
-  { name: "Avalon",     sub: "Canaan"   },
-  { name: "Elphapex",   sub: ""         },
-  { name: "Fluminer",   sub: ""         },
-  { name: "Volcminer",  sub: ""         },
-  { name: "Pinecone",   sub: ""         },
-  { name: "Jasminer",   sub: ""         },
-  { name: "Bombax",     sub: ""         },
+  { name: "Antminer",   sub: "Bitmain"          },
+  { name: "Whatsminer", sub: "MicroBT"           },
+  { name: "Avalon",     sub: "Canaan"            },
+  { name: "Elphapex",   sub: "FoundationLogic"   },
+  { name: "Fluminer",   sub: "Fulu Technology"   },
+  { name: "Volcminer",  sub: "VolcMiner Tech"    },
+  { name: "Pinecone",   sub: "INIBOX"            },
+  { name: "Jasminer",   sub: "Jasminer Inc."     },
+  { name: "Bombax",     sub: "Bombax Mining"     },
 ];
 
 // Duplicate for seamless infinite loop (animation translates -50%)

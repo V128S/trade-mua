@@ -10,13 +10,15 @@ const SERVICES = [
   {
     icon: "build",
     title: "Ремонт та Діагностика",
-    short: "Відновлення несправних майнерів",
+    short: "Відновлення несправних майнерів будь-якої складності",
+    desc: "Власна сертифікована майстерня у Дніпрі та Києві. Оригінальні запчастини зі складу — без очікування постачання. Гарантія на виконані роботи 3 місяці.",
     items: [
-      "Повна діагностика хешбордів та PSU",
-      "Заміна чипів BM1370, BM1368, BM1366",
-      "Ремонт блоків живлення",
-      "Чищення від пилу та термопаста",
-      "Тест під навантаженням 24+ год",
+      "Повна діагностика хешбордів, PSU та плати управління",
+      "Заміна ASIC-чипів: BM1370, BM1368, BM1366, BM1362",
+      "Ремонт та заміна блоків живлення",
+      "Усунення короткого замикання та наслідків перегріву",
+      "Чищення, нанесення термопасти, заміна вентиляторів",
+      "Стрес-тест під навантаженням 24+ год з протоколом",
     ],
     price: "Від $30",
     time: "24–72 год",
@@ -24,13 +26,15 @@ const SERVICES = [
   {
     icon: "settings",
     title: "Прошивка та Налаштування",
-    short: "Оптимізація під ваші умови",
+    short: "Максимальна прибутковість під ваш тариф електроенергії",
+    desc: "Індивідуальний підбір режиму роботи для вашого тарифу та умов охолодження. Підтримуємо Antminer, Whatsminer, Avalon та інші платформи.",
     items: [
-      "Оновлення офіційної прошивки",
-      "Встановлення кастомної (Braiins OS, VNish)",
-      "Налаштування майнінг-пулу та воркера",
-      "Розгін / підбір оптимального профілю",
-      "Моніторинг та сповіщення",
+      "Оновлення офіційної прошивки до останньої версії",
+      "Встановлення кастомної OS: Braiins OS+, VNish, LuxOS",
+      "Налаштування майнінг-пулу, воркера та резервного пулу",
+      "Розгін та підбір оптимального профілю хешрейт/енергія",
+      "Налаштування авто-тюнінгу під температурний діапазон",
+      "Підключення моніторингу, сповіщень та Telegram-бота",
     ],
     price: "Від $20",
     time: "1–4 год",
@@ -38,13 +42,15 @@ const SERVICES = [
   {
     icon: "warehouse",
     title: "Майнінг-Готель",
-    short: "Ваш майнер — наші турботи",
+    short: "Промисловий об'єкт з тарифом від $0.07/кВт·год",
+    desc: "Виділений майданчик із промисловим живленням 380V, надпотужним охолодженням та цілодобовою охороною. Ви отримуєте щомісячний звіт та доступ до онлайн-моніторингу.",
     items: [
-      "Промисловий об'єкт 380V / 50 Hz",
-      "Тариф від $0.07/кВт·год",
-      "24/7 моніторинг та підтримка",
-      "Відеоспостереження та охорона",
-      "Щомісячний звіт про роботу",
+      "Промисловий об'єкт 380V / 50 Hz, виділений трансформатор",
+      "Конкурентний тариф $0.07–$0.09/кВт·год (залежно від обсягу)",
+      "Потужна вентиляція та кондиціонування — температура до +25°C",
+      "Відеоспостереження 24/7, охоронна сигналізація",
+      "Цілодобовий технічний моніторинг, перезавантаження на запит",
+      "Щомісячний детальний звіт про споживання та хешрейт",
     ],
     price: "$0.07–0.09/кВт·год",
     time: "Від 1 місяця",
@@ -99,14 +105,20 @@ export default function ServicesPage() {
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
           {SERVICES.map((s) => (
-            <div key={s.title} className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300">
-              <span className="material-symbols-outlined text-primary text-[36px]">{s.icon}</span>
-              <div>
-                <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-1">
-                  {s.title}
-                </h2>
-                <p className="font-technical-data text-technical-data text-on-surface-variant">{s.short}</p>
+            <div key={s.title} className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 cursor-default">
+              <div className="flex items-start gap-4">
+                <span className="material-symbols-outlined text-primary text-[36px] shrink-0">{s.icon}</span>
+                <div>
+                  <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-1">
+                    {s.title}
+                  </h2>
+                  <p className="font-label-caps text-[10px] text-primary uppercase tracking-widest">{s.short}</p>
+                </div>
               </div>
+
+              <p className="font-body-md text-body-md text-on-surface-variant text-sm leading-relaxed">
+                {s.desc}
+              </p>
 
               <ul className="space-y-2 flex-1">
                 {s.items.map((item) => (

@@ -46,6 +46,33 @@ export async function getTopProductsFromDB(limit = 8): Promise<Product[]> {
   }))
 }
 
+export async function getRandomProductsFromDB(count: number): Promise<Product[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+
+  if (error || !data) return []
+
+  const shuffled = [...data]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+
+  return shuffled.slice(0, count).map(row => ({
+    id: row.id,
+    algorithm: row.algorithm,
+    brand: row.brand,
+    name: row.name,
+    hashrate: row.hashrate,
+    powerW: row.power_w,
+    priceUSDT: Number(row.price_usdt),
+    inStock: row.in_stock,
+    isNew: row.is_new,
+  }))
+}
+
 export async function getLastSyncTime(): Promise<string | null> {
   const supabase = await createClient()
   const { data } = await supabase

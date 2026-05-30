@@ -9,55 +9,51 @@ export default function HeroCarousel({ products }: { products: Product[] }) {
   const items = [...products, ...products]; // duplicate for seamless infinite loop
 
   return (
-    <div className="relative h-[540px] overflow-hidden select-none" aria-label="Топ майнери">
+    <div className="relative h-[500px] overflow-hidden select-none" aria-label="Топ майнери">
       {/* Top fade */}
-      <div className="hero-fade-top absolute top-0 inset-x-0 h-32 z-10 pointer-events-none" />
+      <div className="hero-fade-top absolute top-0 inset-x-0 h-24 z-10 pointer-events-none" />
       {/* Bottom fade */}
-      <div className="hero-fade-bottom absolute bottom-0 inset-x-0 h-32 z-10 pointer-events-none" />
+      <div className="hero-fade-bottom absolute bottom-0 inset-x-0 h-24 z-10 pointer-events-none" />
 
-      {/* Scrolling track — duplicate list gives seamless loop at -50% */}
-      <div className="animate-hero-scroll flex flex-col gap-3">
+      {/* Scrolling track */}
+      <div className="animate-hero-scroll flex flex-col gap-2">
         {items.map((product, i) => {
           const imgSrc = getProductImage(product.name);
           return (
             <Link
               key={`${product.id}-${i}`}
               href={`/products/${product.id}`}
-              className="group bg-card border-card rounded-lg overflow-hidden shrink-0 hover-primary-border transition-colors duration-300"
+              className="group bg-card border-card rounded-lg overflow-hidden shrink-0 hover-primary-border transition-colors duration-300 flex items-center gap-3 px-3 py-2.5"
             >
               {/* Image */}
-              <div className="relative h-44 bg-white flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/20" />
+              <div className="w-16 h-16 bg-white rounded flex items-center justify-center shrink-0 overflow-hidden">
                 {imgSrc ? (
                   <Image
                     src={imgSrc}
                     alt={product.name}
-                    width={150}
-                    height={150}
-                    className="relative z-10 object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-700"
+                    width={56}
+                    height={56}
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
-                  <span className="material-symbols-outlined text-outline-variant text-[64px] relative z-10">memory</span>
+                  <span className="material-symbols-outlined text-outline-variant text-[32px]">memory</span>
                 )}
-                {/* Stock badge */}
-                <span className={`absolute top-2 left-2 chip px-2 py-0.5 text-[9px] font-technical-data uppercase z-20 ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
-                  {product.inStock ? "В наявності" : "Замовлення"}
-                </span>
               </div>
 
-              {/* Name + price */}
-              <div className="px-4 py-3 border-t border-[#2e2d2b] flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="font-technical-data text-technical-data text-on-surface text-sm leading-snug truncate">
-                    {product.name}
-                  </p>
-                  <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mt-0.5">
-                    {product.hashrate}
-                  </p>
+              {/* Info */}
+              <div className="min-w-0 flex-1">
+                <p className="font-technical-data text-sm text-on-surface leading-tight truncate">
+                  {product.name}
+                </p>
+                <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mt-0.5">
+                  {product.hashrate}
+                </p>
+                <div className="flex items-center justify-between mt-1.5">
+                  <span className="font-headline-md text-primary text-sm">
+                    ${product.priceUSDT.toLocaleString()}
+                  </span>
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${product.inStock ? "bg-green-400" : "bg-yellow-400"}`} title={product.inStock ? "В наявності" : "Під замовлення"} />
                 </div>
-                <span className="font-headline-md text-headline-md text-primary text-base shrink-0">
-                  ${product.priceUSDT.toLocaleString()}
-                </span>
               </div>
             </Link>
           );

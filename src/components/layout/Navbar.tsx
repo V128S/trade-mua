@@ -2,21 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import SlideNav from "@/components/ui/nav-header";
 
 const NAV_LINKS = [
-  { href: "/", label: "Головна" },
-  { href: "/products", label: "Продукти" },
-  { href: "/services", label: "Сервіси" },
+  { href: "/",           label: "Головна"     },
+  { href: "/products",   label: "Продукти"    },
+  { href: "/services",   label: "Сервіси"     },
   { href: "/calculator", label: "Калькулятор" },
-  { href: "/contact", label: "Контакти" },
+  { href: "/contact",    label: "Контакти"    },
 ];
 
-// Subscribe to <html> class changes so the icon stays in sync with the theme.
 function subscribe(callback: () => void) {
   const observer = new MutationObserver(callback);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
@@ -26,100 +24,38 @@ function getTheme(): "dark" | "light" {
   return document.documentElement.classList.contains("light") ? "light" : "dark";
 }
 
-function UserNavButton() {
-  const [user, setUser] = useState<User | null | undefined>(undefined)
+// ── Desktop dropdown button ──────────────────────────────────────────────────
+function UserMenuButton() {
+  const [open, setOpen]   = useState(false);
+  const [user, setUser]   = useState<User | null | undefined>(undefined);
+  const [lang, setLang]   = useState<"uk" | "en">("uk");
+  const ref               = useRef<HTMLDivElement>(null);
+  const theme             = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
 
   useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null)
-    })
-    return () => subscription.unsubscribe()
-  }, [])
-
-  if (user === undefined) return null
-
-  if (user) {
-    return (
-      <Link
-        href="/dashboard"
-        className="hidden sm:flex items-center gap-1.5 border border-primary/40 hover:border-primary bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-primary transition-colors duration-200"
-      >
-        <span className="material-symbols-outlined text-[16px]">person</span>
-        Кабінет
-      </Link>
-    )
-  }
-
-  return (
-    <Link
-      href="/login"
-      className="hidden sm:flex items-center gap-1.5 border border-outline-variant/50 hover:border-primary/60 hover:text-primary px-3 py-1.5 rounded font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-on-surface-variant transition-colors duration-200"
-    >
-      <span className="material-symbols-outlined text-[16px]">person</span>
-      Логін
-    </Link>
-  )
-}
-
-function UserNavButtonMobile() {
-  const router = useRouter()
-  const [user, setUser] = useState<User | null | undefined>(undefined)
+    try {
+      const s = localStorage.getItem("lang");
+      if (s === "uk" || s === "en") setLang(s);
+    } catch {}
+  }, []);
 
   useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null)
-    })
-    return () => subscription.unsubscribe()
-  }, [])
-
-  if (user === undefined) return null
-
-  if (user) {
-    return (
-      <div className="space-y-1">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
-        >
-          <span className="material-symbols-outlined text-[18px]">person</span>
-          Кабінет
-        </Link>
-        <button
-          type="button"
-          onClick={async () => {
-            const supabase = createClient()
-            await supabase.auth.signOut()
-            window.location.href = '/'
-          }}
-          className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-red-400 transition-colors duration-200 w-full text-left"
-        >
-          <span className="material-symbols-outlined text-[18px]">logout</span>
-          Вийти
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <Link
-      href="/login"
-      className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
-    >
-      <span className="material-symbols-outlined text-[18px]">person</span>
-      Логін
-    </Link>
-  )
-}
-
-export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  // Read the live theme from the DOM (set before paint by the inline script in layout).
-  // Server snapshot is "dark" — the default <html class="dark">.
-  const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const toggleTheme = useCallback(() => {
     const html = document.documentElement;
@@ -129,73 +65,216 @@ export default function Navbar() {
     localStorage.setItem("theme", next);
   }, []);
 
+  const toggleLang = () => {
+    const next = lang === "uk" ? "en" : "uk";
+    setLang(next);
+    localStorage.setItem("lang", next);
+  };
+
+  // Invisible placeholder while auth loads to prevent layout shift
+  if (user === undefined) {
+    return (
+      <div className="hidden sm:flex w-8 h-8 rounded-full border border-outline-variant/20 items-center justify-center">
+        <span className="material-symbols-outlined text-[17px] text-on-surface-variant/20">person</span>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={ref} className="relative hidden sm:block">
+      {/* Trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Меню акаунту"
+        className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-200 ${
+          open
+            ? "border-primary text-primary bg-primary/10"
+            : "border-outline-variant/50 text-on-surface-variant hover:border-primary/60 hover:text-primary"
+        }`}
+      >
+        <span className="material-symbols-outlined text-[17px]">
+          {user ? "account_circle" : "person"}
+        </span>
+      </button>
+
+      {/* Dropdown panel */}
+      {open && (
+        <div className="dropdown-in absolute right-0 top-[calc(100%+10px)] w-56 bg-card border border-[#2e2d2b] rounded-lg shadow-2xl z-50 overflow-hidden">
+
+          {/* Auth info */}
+          {user && (
+            <>
+              <div className="px-4 py-3">
+                <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Акаунт</p>
+                <p className="font-technical-data text-[11px] text-on-surface truncate">{user.email}</p>
+              </div>
+              <div className="border-t border-[#2e2d2b]" />
+            </>
+          )}
+
+          {/* Settings */}
+          <div className="p-1.5 space-y-0.5">
+            {/* Theme toggle */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="w-full flex items-center justify-between px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">
+                  {theme === "dark" ? "light_mode" : "dark_mode"}
+                </span>
+                <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">
+                  {theme === "dark" ? "Світла тема" : "Темна тема"}
+                </span>
+              </div>
+              {/* Toggle pill */}
+              <div
+                className={`w-7 h-3.5 rounded-full flex items-center px-0.5 transition-all duration-300 ${
+                  theme === "light" ? "bg-primary" : "bg-outline-variant/30"
+                }`}
+              >
+                <div
+                  className={`w-2.5 h-2.5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                    theme === "light" ? "translate-x-3.5" : "translate-x-0"
+                  }`}
+                />
+              </div>
+            </button>
+
+            {/* Language */}
+            <button
+              type="button"
+              onClick={toggleLang}
+              className="w-full flex items-center justify-between px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">translate</span>
+                <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">Мова</span>
+              </div>
+              <div className="flex rounded overflow-hidden border border-outline-variant/30">
+                <span className={`px-2 py-0.5 font-label-caps text-[9px] uppercase tracking-wider transition-colors ${lang === "uk" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>UA</span>
+                <span className={`px-2 py-0.5 font-label-caps text-[9px] uppercase tracking-wider transition-colors ${lang === "en" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>EN</span>
+              </div>
+            </button>
+          </div>
+
+          <div className="border-t border-[#2e2d2b]" />
+
+          {/* Auth actions */}
+          <div className="p-1.5">
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+                >
+                  <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">space_dashboard</span>
+                  <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">Кабінет</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const sb = createClient();
+                    await sb.auth.signOut();
+                    setOpen(false);
+                    window.location.href = "/";
+                  }}
+                  className="w-full flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+                >
+                  <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-red-400 transition-colors">logout</span>
+                  <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-red-400 uppercase tracking-widest transition-colors">Вийти</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+              >
+                <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">login</span>
+                <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">Увійти</span>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main Navbar ──────────────────────────────────────────────────────────────
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [lang, setLang]         = useState<"uk" | "en">("uk");
+  const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
+
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem("lang");
+      if (s === "uk" || s === "en") setLang(s);
+    } catch {}
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    const html = document.documentElement;
+    const next = html.classList.contains("light") ? "dark" : "light";
+    html.classList.remove("dark", "light");
+    html.classList.add(next);
+    localStorage.setItem("theme", next);
+  }, []);
+
+  const toggleLang = () => {
+    const next = lang === "uk" ? "en" : "uk";
+    setLang(next);
+    localStorage.setItem("lang", next);
+  };
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30">
       <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-3 max-w-container-max mx-auto">
 
-        {/* Logo + Brand */}
+        {/* Logo */}
         <Link href="/" className="flex items-center gap-3 shrink-0">
-          <Image
-            src="/logo.png"
-            alt="Trade M"
-            width={44}
-            height={44}
-            className="rounded-full"
-            priority
-          />
+          <Image src="/logo.png" alt="Trade M" width={44} height={44} className="rounded-full" priority />
           <span className="font-headline-md text-headline-md font-bold text-primary tracking-tighter hidden sm:block">
             Trade M
           </span>
         </Link>
 
-        {/* Desktop nav — sliding pill */}
+        {/* Desktop nav */}
         <div className="hidden md:block">
           <SlideNav items={NAV_LINKS} />
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
-          {/* Theme toggle */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200"
-          >
-            <span className="material-symbols-outlined text-[22px]">
-              {theme === "dark" ? "light_mode" : "dark_mode"}
-            </span>
-          </button>
-
+        <div className="flex items-center gap-2.5">
           {/* Cart */}
-          <Link
-            href="/cart"
-            aria-label="Cart"
-            className="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200"
-          >
-            <span className="material-symbols-outlined text-[22px]">shopping_cart</span>
+          <Link href="/cart" aria-label="Кошик" className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-200">
+            <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
           </Link>
 
-          <UserNavButton />
+          {/* User menu (desktop) */}
+          <UserMenuButton />
 
           {/* Mobile hamburger */}
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menu"
+            aria-label="Меню"
             aria-expanded={menuOpen}
-            className="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors"
+            className="md:hidden w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
           >
-            <span className="material-symbols-outlined text-[22px]">
-              {menuOpen ? "close" : "menu"}
-            </span>
+            <span className="material-symbols-outlined text-[20px]">{menuOpen ? "close" : "menu"}</span>
           </button>
         </div>
       </div>
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-card border-t border-card px-margin-mobile py-4 space-y-1">
+        <div className="md:hidden bg-card border-t border-[#2e2d2b] px-margin-mobile py-4 space-y-1">
           {NAV_LINKS.map((l) => (
             <Link
               key={l.href}
@@ -206,8 +285,50 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <div className="pt-3 border-t border-outline-variant/20">
-            <UserNavButtonMobile />
+
+          {/* Settings in mobile menu */}
+          <div className="pt-3 border-t border-outline-variant/20 space-y-0.5">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="w-full flex items-center justify-between py-3 group"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">
+                  {theme === "dark" ? "light_mode" : "dark_mode"}
+                </span>
+                <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
+                  {theme === "dark" ? "Світла тема" : "Темна тема"}
+                </span>
+              </div>
+              <div className={`w-8 h-4 rounded-full flex items-center px-0.5 transition-all duration-300 ${theme === "light" ? "bg-primary" : "bg-outline-variant/30"}`}>
+                <div className={`w-3 h-3 rounded-full bg-white shadow-sm transition-transform duration-300 ${theme === "light" ? "translate-x-4" : "translate-x-0"}`} />
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleLang}
+              className="w-full flex items-center justify-between py-3 group"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">translate</span>
+                <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Мова</span>
+              </div>
+              <div className="flex rounded overflow-hidden border border-outline-variant/30">
+                <span className={`px-2.5 py-1 font-label-caps text-[10px] uppercase tracking-wider transition-colors ${lang === "uk" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>UA</span>
+                <span className={`px-2.5 py-1 font-label-caps text-[10px] uppercase tracking-wider transition-colors ${lang === "en" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>EN</span>
+              </div>
+            </button>
+
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
+            >
+              <span className="material-symbols-outlined text-[18px]">login</span>
+              Увійти
+            </Link>
           </div>
         </div>
       )}

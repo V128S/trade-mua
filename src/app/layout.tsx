@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Syne, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import CryptoPriceTicker from "@/components/layout/CryptoPriceTicker";
 import BackgroundSparkles from "@/components/ui/background-sparkles";
 import "./globals.css";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
         <BackgroundSparkles />
         <Navbar />
         <main className="pt-20">
+          <CryptoPriceTicker />
           {children}
         </main>
         <Footer />
