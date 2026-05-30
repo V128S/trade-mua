@@ -1,0 +1,62 @@
+// src/components/products/ProductsMobileDrawer.tsx
+"use client";
+import { useEffect, type ReactNode } from "react";
+
+interface ProductsMobileDrawerProps {
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}
+
+export function ProductsMobileDrawer({ open, onClose, children }: ProductsMobileDrawerProps) {
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        aria-hidden="true"
+        className={`fixed inset-0 bg-black/60 z-40 transition-opacity duration-300 lg:hidden ${
+          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={onClose}
+      />
+
+      {/* Drawer */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Фільтри"
+        className={`fixed inset-x-0 bottom-0 z-50 h-[85vh] rounded-t-2xl bg-card border-t border-[#2e2d2b] transition-transform duration-300 ease-out lg:hidden flex flex-col ${
+          open ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-1 shrink-0">
+          <div className="w-10 h-1 rounded-full bg-[#2e2d2b]" />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-3 border-b border-[#2e2d2b] shrink-0">
+          <span className="font-headline-md text-[16px] text-on-surface">Фільтри</span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Закрити фільтри"
+            className="text-on-surface-variant hover:text-on-surface transition-colors p-1"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        {/* Scrollable content */}
+        <div className="overflow-y-auto flex-1 px-5 pb-8">
+          {children}
+        </div>
+      </div>
+    </>
+  );
+}
