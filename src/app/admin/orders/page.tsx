@@ -13,7 +13,7 @@ export default async function AdminOrdersPage() {
       <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest text-base mb-6">
         Замовлення ({(orders ?? []).length})
       </h2>
-      <OrdersTable orders={(orders as Parameters<typeof OrdersTable>[0]['orders']) ?? []} />
+      <OrdersTable orders={(orders as unknown as Parameters<typeof OrdersTable>[0]['orders']) ?? []} />
     </div>
   )
 }
