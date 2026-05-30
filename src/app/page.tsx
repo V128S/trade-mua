@@ -264,11 +264,11 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
           {SERVICES.map((s) => (
-            <div key={s.title} className="service-flip h-[220px]">
+            <div key={s.title} className="service-flip h-[260px]">
               <div className="service-flip-inner h-full">
 
                 {/* ── Front ── */}
-                <div className="service-flip-face bg-card border border-[#2e2d2b] rounded-lg p-8 h-full flex flex-col gap-4 cursor-default">
+                <div className="service-flip-face bg-card border border-[#2e2d2b] rounded-lg px-8 pt-8 pb-10 h-full flex flex-col items-center text-center gap-4 cursor-default">
                   <span className="material-symbols-outlined text-primary text-[32px]">{s.icon}</span>
                   <h3 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">{s.title}</h3>
                   <p className="font-body-md text-body-md text-on-surface-variant">{s.desc}</p>

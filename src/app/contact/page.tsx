@@ -39,52 +39,65 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
 
           {/* Phone */}
-          <div className="bg-card border-card rounded-lg p-8 flex flex-col gap-4 hover-primary-border transition-colors duration-300">
-            <span className="material-symbols-outlined text-primary text-[32px]">phone</span>
+          <a
+            href="tel:+380974225060"
+            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+          >
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary text-[28px]">phone</span>
+              <p className="font-label-caps text-sm text-on-surface-variant uppercase tracking-widest group-hover:text-primary transition-colors">Телефон</p>
+            </div>
             <div>
-              <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-2">Телефон</p>
-              <a
-                href="tel:+380974225060"
-                className="font-headline-md text-headline-md text-on-surface hover:text-primary transition-colors"
-              >
+              <p className="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">
                 097-422-50-60
-              </a>
+              </p>
               <p className="font-technical-data text-technical-data text-on-surface-variant mt-1">
                 Денис — консультації з продажу та сервісу
               </p>
             </div>
-          </div>
+          </a>
 
           {/* Telegram */}
-          <div className="bg-card border-card rounded-lg p-8 flex flex-col gap-4 hover-primary-border transition-colors duration-300">
-            <span className="material-symbols-outlined text-primary text-[32px]">send</span>
+          <a
+            href="https://t.me/DenisHandsome"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+          >
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary text-[28px]">send</span>
+              <p className="font-label-caps text-sm text-on-surface-variant uppercase tracking-widest group-hover:text-primary transition-colors">Telegram</p>
+            </div>
             <div>
-              <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-2">Telegram</p>
-              <a
-                href="https://t.me/DenisHandsome"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-headline-md text-headline-md text-on-surface hover:text-primary transition-colors"
-              >
+              <p className="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">
                 @DenisHandsome
-              </a>
+              </p>
               <p className="font-technical-data text-technical-data text-on-surface-variant mt-1">
                 Найшвидший спосіб зв&apos;язатися
               </p>
             </div>
-          </div>
+          </a>
 
           {/* Working hours */}
-          <div className="bg-card border-card rounded-lg p-8 flex flex-col gap-4 hover-primary-border transition-colors duration-300">
-            <span className="material-symbols-outlined text-primary text-[32px]">schedule</span>
+          <a
+            href="https://t.me/DenisHandsome"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+          >
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary text-[28px]">schedule</span>
+              <p className="font-label-caps text-sm text-on-surface-variant uppercase tracking-widest group-hover:text-primary transition-colors">Графік роботи</p>
+            </div>
             <div>
-              <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-2">Графік</p>
-              <p className="font-headline-md text-headline-md text-on-surface">Пн–Сб</p>
+              <p className="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">
+                Пн–Сб, 09:00–20:00
+              </p>
               <p className="font-technical-data text-technical-data text-on-surface-variant mt-1">
-                09:00–20:00 за Київським часом
+                За Київським часом. Telegram — цілодобово.
               </p>
             </div>
-          </div>
+          </a>
         </div>
       </section>
 

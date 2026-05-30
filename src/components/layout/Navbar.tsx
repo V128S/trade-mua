@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import SlideNav from "@/components/ui/nav-header";
@@ -209,6 +210,7 @@ function UserMenuButton() {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang]         = useState<"uk" | "en">("uk");
+  const pathname = usePathname();
   const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
 
   useEffect(() => {
@@ -275,16 +277,22 @@ export default function Navbar() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden bg-card border-t border-[#2e2d2b] px-margin-mobile py-4 space-y-1">
-          {NAV_LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setMenuOpen(false)}
-              className="block py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
-            >
-              {l.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((l) => {
+            const isActive = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                className={`block py-3 font-label-caps text-label-caps uppercase tracking-widest transition-colors duration-200 flex items-center gap-2 ${
+                  isActive ? "text-primary" : "text-on-surface-variant hover:text-primary"
+                }`}
+              >
+                {isActive && <span className="w-1 h-1 rounded-full bg-primary shrink-0" />}
+                {l.label}
+              </Link>
+            );
+          })}
 
           {/* Settings in mobile menu */}
           <div className="pt-3 border-t border-outline-variant/20 space-y-0.5">
