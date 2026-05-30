@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginForm() {
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -25,7 +27,10 @@ export default function LoginForm() {
     }
 
     // Hard redirect ensures browser sends fresh session cookies with the next request
-    window.location.href = '/dashboard'
+    const redirect = searchParams.get('redirect')
+    // Only allow same-origin relative paths (reject protocol-relative "//host")
+    const safe = redirect && redirect.startsWith('/') && !redirect.startsWith('//')
+    window.location.href = safe ? redirect : '/dashboard'
   }
 
   return (

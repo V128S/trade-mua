@@ -14,7 +14,10 @@ export interface OrderItem {
 export interface Database {
   public: {
     Views: Record<string, never>
-    Functions: Record<string, never>
+    Functions: {
+      validate_promo: { Args: { p_code: string }; Returns: number }
+      redeem_promo: { Args: { p_code: string }; Returns: number }
+    }
     Tables: {
       profiles: {
         Row: {
