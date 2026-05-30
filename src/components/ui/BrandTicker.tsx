@@ -24,7 +24,7 @@ export default function BrandTicker() {
             className="flex items-center gap-0 shrink-0"
           >
             {/* Brand item */}
-            <div className="w-[33vw] md:w-[380px] px-8 flex flex-col items-center justify-center gap-0.5">
+            <div className="w-[52vw] md:w-[380px] px-5 md:px-8 flex flex-col items-center justify-center gap-0.5">
               <span className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
                 {brand.name}
               </span>
