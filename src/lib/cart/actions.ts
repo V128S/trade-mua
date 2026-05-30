@@ -1,6 +1,6 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
-import { buildOrderItems, subtotal as sumItems, applyDiscount } from '@/lib/cart/cart-math'
+import { buildOrderItems, applyDiscount } from '@/lib/cart/cart-math'
 
 export async function previewPromo(code: string): Promise<{ discountPct: number } | { error: string }> {
   const trimmed = code.trim()
@@ -38,7 +38,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
   const orderItems = buildOrderItems(input.items, products)
   if (orderItems.length === 0) return { error: 'Товари недоступні' }
 
-  const base = sumItems(orderItems.map(o => ({ id: o.product_id, name: o.name, hashrate: '', powerW: 0, priceUSDT: o.price_usdt, qty: o.qty })))
+  const base = orderItems.reduce((s, o) => s + o.price_usdt * o.qty, 0)
 
   let discountPct = 0
   let promoCode: string | null = null
@@ -52,6 +52,13 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
 
   const total = applyDiscount(base, discountPct)
 
+  // The orders table has no phone column — fold the contact phone into notes
+  // so the operator sees it on the order (order-as-request flow).
+  const phone = input.phone.trim()
+  const notes = [phone ? `Телефон: ${phone}` : '', input.notes?.trim() ?? '']
+    .filter(Boolean)
+    .join('\n') || null
+
   const { data: order, error: insErr } = await supabase
     .from('orders')
     .insert({
@@ -62,7 +69,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
       promo_code: promoCode,
       discount_pct: discountPct || null,
       nova_poshta_address: input.novaPoshta,
-      notes: input.notes ?? null,
+      notes,
     })
     .select('id')
     .single()
