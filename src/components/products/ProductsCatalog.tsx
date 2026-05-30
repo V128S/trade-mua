@@ -104,11 +104,25 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
 
           {/* Grid */}
           {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
-              {visibleProducts.map(p => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
+                {visibleProducts.map(p => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+              {hasMore && (
+                <div className="flex justify-center mt-8">
+                  <button
+                    type="button"
+                    onClick={() => setPage(p => p + 1)}
+                    className="btn-ghost px-8 py-3 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs"
+                  >
+                    <span className="material-symbols-outlined text-[14px] mr-2 align-middle">expand_more</span>
+                    Показати ще {Math.min(remaining, PAGE_SIZE)}
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="flex flex-col items-center py-24 gap-4 text-on-surface-variant">
               <span className="material-symbols-outlined text-[48px]">search_off</span>
