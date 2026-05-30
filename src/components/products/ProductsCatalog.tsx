@@ -7,6 +7,8 @@ import { ProductCard } from "./ProductCard";
 import { ProductsFilters } from "./ProductsFilters";
 import { ProductsMobileDrawer } from "./ProductsMobileDrawer";
 
+const PAGE_SIZE = 10;
+
 const SORT_LABELS: Record<SortOption, string> = {
   price_desc: "Ціна: спадання",
   price_asc:  "Ціна: зростання",
@@ -19,7 +21,6 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
   const { filters, setters, filtered, facets, globalRanges, activeCount, resetAll } =
     useProductFilters(products);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const PAGE_SIZE = 10;
   const [page, setPage] = useState(1);
 
   useEffect(() => {
