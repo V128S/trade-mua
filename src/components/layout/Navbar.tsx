@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import SlideNav from "@/components/ui/nav-header";
+import { useCart } from "@/lib/cart/useCart";
 
 const NAV_LINKS = [
   { href: "/",           label: "Головна"     },
@@ -218,6 +219,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
   const lang = useSyncExternalStore(subscribeLang, getLang, () => "uk" as const);
+  const { count, hydrated } = useCart();
 
   const toggleTheme = useCallback(() => {
     const html = document.documentElement;
@@ -253,8 +255,13 @@ export default function Navbar() {
         {/* Actions */}
         <div className="flex items-center gap-2.5">
           {/* Cart */}
-          <Link href="/cart" aria-label="Кошик" className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-200">
+          <Link href="/cart" aria-label="Кошик" className="relative w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-200">
             <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
+            {hydrated && count > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-primary text-[#0e0e0a] text-[10px] font-technical-data flex items-center justify-center">
+                {count}
+              </span>
+            )}
           </Link>
 
           {/* User menu (desktop) */}
