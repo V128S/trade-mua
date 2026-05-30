@@ -5,7 +5,6 @@ export type CartAction =
   | { type: 'REMOVE'; id: string }
   | { type: 'SET_QTY'; id: string; qty: number }
   | { type: 'CLEAR' }
-  | { type: 'HYDRATE'; items: CartItem[] }
 
 export function cartReducer(state: CartItem[], action: CartAction): CartItem[] {
   switch (action.type) {
@@ -23,8 +22,6 @@ export function cartReducer(state: CartItem[], action: CartAction): CartItem[] {
       return state.map(i => (i.id === action.id ? { ...i, qty: action.qty } : i))
     case 'CLEAR':
       return []
-    case 'HYDRATE':
-      return action.items
     default:
       return state
   }
