@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import LoginForm from '@/components/auth/LoginForm'
 
 export const metadata: Metadata = {
@@ -17,7 +18,9 @@ export default function LoginPage() {
             Введіть email та пароль для входу в кабінет
           </p>
         </div>
-        <LoginForm />
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   )
