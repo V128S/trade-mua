@@ -115,6 +115,7 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
                   <button
                     type="button"
                     onClick={() => setPage(p => p + 1)}
+                    aria-label={`Завантажити ще ${Math.min(remaining, PAGE_SIZE)} товарів`}
                     className="btn-ghost px-8 py-3 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs"
                   >
                     <span className="material-symbols-outlined text-[14px] mr-2 align-middle">expand_more</span>
