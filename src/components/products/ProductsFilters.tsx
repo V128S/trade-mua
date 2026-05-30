@@ -69,6 +69,7 @@ function FilterSection({
     <div className="border-b border-[#2e2d2b] py-3">
       <button
         type="button"
+        aria-expanded={open}
         onClick={() => setOpen(o => !o)}
         className="flex items-center justify-between w-full text-left"
       >
@@ -90,12 +91,14 @@ function FilterSection({
 
 function DualRangeSlider({
   min, max, value, onChange, format,
+  labels = ["Мінімум", "Максимум"],
 }: {
   min: number;
   max: number;
   value: [number, number];
   onChange: (v: [number, number]) => void;
   format: (v: number) => string;
+  labels?: [string, string];
 }) {
   const range = max - min || 1;
   const leftPct  = ((value[0] - min) / range) * 100;
@@ -124,6 +127,9 @@ function DualRangeSlider({
           value={value[0]}
           onChange={e => onChange([Math.min(+e.target.value, value[1] - 1), value[1]])}
           className="dual-range-input"
+          style={{ zIndex: value[0] >= (min + max) / 2 ? 5 : 3 }}
+          aria-label={labels[0]}
+          aria-valuetext={format(value[0])}
         />
         {/* Max thumb */}
         <input
@@ -134,6 +140,9 @@ function DualRangeSlider({
           value={value[1]}
           onChange={e => onChange([value[0], Math.max(+e.target.value, value[0] + 1)])}
           className="dual-range-input"
+          style={{ zIndex: value[1] <= (min + max) / 2 ? 5 : 3 }}
+          aria-label={labels[1]}
+          aria-valuetext={format(value[1])}
         />
       </div>
     </div>
@@ -162,7 +171,7 @@ export function ProductsFilters({
       </div>
 
       {/* В наявності */}
-      <div className="border-b border-[#2e2d2b] pb-3 mb-0">
+      <div className="border-b border-[#2e2d2b] py-3 mb-0">
         <CustomCheckbox
           checked={filters.stockOnly}
           onChange={() => setters.setStockOnly(!filters.stockOnly)}
@@ -244,6 +253,7 @@ export function ProductsFilters({
           value={filters.priceRange}
           onChange={setters.setPriceRange}
           format={v => `$${v.toLocaleString("uk-UA")}`}
+          labels={["Мінімальна ціна", "Максимальна ціна"]}
         />
       </FilterSection>
 
@@ -255,6 +265,7 @@ export function ProductsFilters({
           value={filters.powerRange}
           onChange={setters.setPowerRange}
           format={v => `${v.toLocaleString("uk-UA")} W`}
+          labels={["Мінімальна потужність", "Максимальна потужність"]}
         />
       </FilterSection>
     </div>
