@@ -124,6 +124,7 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
           globalRanges={globalRanges}
           activeCount={activeCount}
           resetAll={resetAll}
+          hideHeader
         />
       </ProductsMobileDrawer>
     </>

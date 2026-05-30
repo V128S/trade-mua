@@ -10,6 +10,7 @@ interface ProductsFiltersProps {
   globalRanges: GlobalRanges;
   activeCount: number;
   resetAll: () => void;
+  hideHeader?: boolean;
 }
 
 function CustomCheckbox({
@@ -150,11 +151,12 @@ function DualRangeSlider({
 }
 
 export function ProductsFilters({
-  filters, setters, facets, globalRanges, activeCount, resetAll,
+  filters, setters, facets, globalRanges, activeCount, resetAll, hideHeader = false,
 }: ProductsFiltersProps) {
   return (
     <div>
-      {/* Header */}
+      {/* Header — hidden inside mobile drawer which has its own header */}
+      {!hideHeader && (
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#2e2d2b]">
         <span className="font-label-caps text-label-caps text-on-surface uppercase tracking-widest text-[11px]">
           Фільтри
@@ -169,6 +171,7 @@ export function ProductsFilters({
           </button>
         )}
       </div>
+      )}
 
       {/* В наявності */}
       <div className="border-b border-[#2e2d2b] py-3 mb-0">
