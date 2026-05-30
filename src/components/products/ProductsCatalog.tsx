@@ -1,104 +1,24 @@
+// src/components/products/ProductsCatalog.tsx
 "use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import type { Product } from "@/lib/sheets";
-import { getProductImage } from "@/lib/product-images";
+import { useProductFilters, type SortOption } from "@/hooks/useProductFilters";
+import { ProductCard } from "./ProductCard";
+import { ProductsFilters } from "./ProductsFilters";
+import { ProductsMobileDrawer } from "./ProductsMobileDrawer";
 
-function ProductCard({ product }: { product: Product }) {
-  const imgSrc = getProductImage(product.name);
-  return (
-    <Link
-      href={`/products/${product.id}`}
-      className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col"
-    >
-      <div className="relative h-44 bg-white flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30" />
-        {imgSrc ? (
-          <Image
-            src={imgSrc}
-            alt={product.name}
-            width={160}
-            height={160}
-            className="relative z-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <span className="material-symbols-outlined text-outline-variant group-hover:text-primary/40 transition-colors text-[64px] relative z-10">
-            memory
-          </span>
-        )}
-        <div className="absolute top-3 left-3 flex gap-2 z-20">
-          {product.isNew && (
-            <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider">
-              Новинка
-            </span>
-          )}
-          <span
-            className={`chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider ${
-              product.inStock ? "bg-[#1a2b1a] text-green-400" : ""
-            }`}
-          >
-            {product.inStock ? "В наявності" : "Під замовлення"}
-          </span>
-        </div>
-      </div>
-
-      <div className="p-5 flex flex-col gap-2 border-t border-[#2e2d2b] flex-1">
-        <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
-          {product.algorithm}
-        </span>
-        <h3 className="font-technical-data text-technical-data text-on-surface leading-snug">
-          {product.name}
-        </h3>
-        <div className="flex gap-4 mt-1">
-          {product.hashrate && (
-            <span className="font-label-caps text-label-caps text-on-surface-variant">
-              {product.hashrate}
-            </span>
-          )}
-          <span className="font-label-caps text-label-caps text-on-surface-variant">
-            {product.powerW} W
-          </span>
-        </div>
-        <div className="mt-auto pt-3 flex items-center justify-between">
-          <span className="font-headline-md text-headline-md text-primary">
-            ${product.priceUSDT.toLocaleString()}
-          </span>
-          <span className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
-            Деталі
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
+const SORT_LABELS: Record<SortOption, string> = {
+  price_desc: "Ціна: спадання",
+  price_asc:  "Ціна: зростання",
+  power_asc:  "Потужність ↑",
+  power_desc: "Потужність ↓",
+  new_first:  "Новинки першими",
+};
 
 export default function ProductsCatalog({ products }: { products: Product[] }) {
-  const [search, setSearch] = useState("");
-  const [algo, setAlgo] = useState("Всі");
-  const [stockOnly, setStockOnly] = useState(false);
-
-  const algorithms = useMemo(() => {
-    const set = new Set(products.map((p) => p.algorithm));
-    return ["Всі", ...Array.from(set)];
-  }, [products]);
-
-  const filtered = useMemo(() => {
-    return products.filter((p) => {
-      if (stockOnly && !p.inStock) return false;
-      if (algo !== "Всі" && p.algorithm !== algo) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        return (
-          p.name.toLowerCase().includes(q) ||
-          p.algorithm.toLowerCase().includes(q) ||
-          p.hashrate.toLowerCase().includes(q)
-        );
-      }
-      return true;
-    });
-  }, [products, search, algo, stockOnly]);
+  const { filters, setters, filtered, facets, globalRanges, activeCount, resetAll } =
+    useProductFilters(products);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <>
@@ -111,82 +31,101 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
         <div className="h-px bg-outline-variant flex-1" />
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
-        {/* Search */}
-        <div className="relative flex-1">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
-            search
-          </span>
-          <input
-            type="text"
-            placeholder="Пошук моделі..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-card border border-[#2e2d2b] rounded pl-9 pr-4 py-2.5 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60 transition-colors"
+      <div className="flex gap-8 items-start">
+        {/* Desktop sidebar */}
+        <aside className="hidden lg:block w-64 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+          <ProductsFilters
+            filters={filters}
+            setters={setters}
+            facets={facets}
+            globalRanges={globalRanges}
+            activeCount={activeCount}
+            resetAll={resetAll}
           />
-        </div>
+        </aside>
 
-        {/* Stock toggle */}
-        <button
-          type="button"
-          onClick={() => setStockOnly(!stockOnly)}
-          aria-pressed={stockOnly}
-          className={`px-4 py-2.5 rounded border font-label-caps text-label-caps uppercase tracking-widest transition-colors whitespace-nowrap ${
-            stockOnly
-              ? "border-primary text-primary bg-primary/10"
-              : "border-[#2e2d2b] text-on-surface-variant hover:border-primary/50"
-          }`}
-        >
-          <span className="material-symbols-outlined text-[14px] mr-1 align-middle">inventory</span>
-          В наявності
-        </button>
+        {/* Main content */}
+        <div className="flex-1 min-w-0">
+          {/* Top bar: search + filters button (mobile) + sort */}
+          <div className="flex gap-3 mb-6 flex-wrap">
+            <div className="relative flex-1 min-w-0">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
+                search
+              </span>
+              <input
+                type="text"
+                placeholder="Пошук моделі..."
+                value={filters.search}
+                onChange={e => setters.setSearch(e.target.value)}
+                className="w-full bg-card border border-[#2e2d2b] rounded pl-9 pr-4 py-2.5 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60 transition-colors"
+              />
+            </div>
+
+            {/* Mobile filter button */}
+            <button
+              type="button"
+              onClick={() => setDrawerOpen(true)}
+              className={`lg:hidden px-4 py-2.5 rounded border font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors whitespace-nowrap ${
+                activeCount > 0
+                  ? "border-primary text-primary bg-primary/10"
+                  : "border-[#2e2d2b] text-on-surface-variant hover:border-primary/50"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[14px] mr-1 align-middle">tune</span>
+              Фільтри{activeCount > 0 ? ` (${activeCount})` : ""}
+            </button>
+
+            {/* Sort */}
+            <select
+              value={filters.sortBy}
+              onChange={e => setters.setSortBy(e.target.value as SortOption)}
+              className="catalog-sort bg-card border border-[#2e2d2b] rounded px-3 py-2.5 font-technical-data text-technical-data text-on-surface-variant focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
+            >
+              {(Object.entries(SORT_LABELS) as [SortOption, string][]).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Count */}
+          <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-6">
+            {filtered.length} моделей
+          </p>
+
+          {/* Grid */}
+          {filtered.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
+              {filtered.map(p => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center py-24 gap-4 text-on-surface-variant">
+              <span className="material-symbols-outlined text-[48px]">search_off</span>
+              <p className="font-body-md text-body-md">Нічого не знайдено. Спробуйте інший запит.</p>
+              <button
+                type="button"
+                onClick={resetAll}
+                className="btn-ghost px-6 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs"
+              >
+                Скинути фільтри
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Algorithm chips */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        {algorithms.map((a) => (
-          <button
-            key={a}
-            type="button"
-            onClick={() => setAlgo(a)}
-            aria-pressed={algo === a}
-            className={`px-3 py-1 rounded text-[11px] font-label-caps uppercase tracking-widest transition-colors ${
-              algo === a
-                ? "bg-primary text-on-primary"
-                : "chip hover:border-primary/50"
-            }`}
-          >
-            {a}
-          </button>
-        ))}
-      </div>
-
-      {/* Count */}
-      <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-6">
-        {filtered.length} моделей
-      </p>
-
-      {/* Grid */}
-      {filtered.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
-          {filtered.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center py-24 gap-4 text-on-surface-variant">
-          <span className="material-symbols-outlined text-[48px]">search_off</span>
-          <p className="font-body-md text-body-md">Нічого не знайдено. Спробуйте інший запит.</p>
-          <button
-            type="button"
-            onClick={() => { setSearch(""); setAlgo("Всі"); setStockOnly(false); }}
-            className="btn-ghost px-6 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs"
-          >
-            Скинути фільтри
-          </button>
-        </div>
-      )}
+      {/* Mobile drawer */}
+      <ProductsMobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <ProductsFilters
+          filters={filters}
+          setters={setters}
+          facets={facets}
+          globalRanges={globalRanges}
+          activeCount={activeCount}
+          resetAll={resetAll}
+        />
+      </ProductsMobileDrawer>
     </>
   );
 }
