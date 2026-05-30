@@ -40,3 +40,5 @@ AGENTS.md
 .aider*
 .playwright-mcp/
 .mcp.json
+.agents/
+skills-lock.json
