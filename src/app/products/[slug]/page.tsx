@@ -6,6 +6,7 @@ import { getProductsFromDB } from "@/lib/products";
 import ProductDetail from "@/components/products/ProductDetail";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 
 export const revalidate = 60;
 
@@ -150,10 +151,7 @@ export default async function ProductPage({ params }: Props) {
 
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 mt-6">
-              <Link href="/contact" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
-                <span className="material-symbols-outlined text-[18px]">shopping_cart</span>
-                {product.inStock ? "Додати в кошик" : "Замовити"}
-              </Link>
+              <AddToCartButton product={product} />
               <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px]">contact_support</span>
                 Консультація
