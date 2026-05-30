@@ -1,6 +1,6 @@
 // src/components/products/ProductsCatalog.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Product } from "@/lib/sheets";
 import { useProductFilters, type SortOption } from "@/hooks/useProductFilters";
 import { ProductCard } from "./ProductCard";
@@ -19,6 +19,16 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
   const { filters, setters, filtered, facets, globalRanges, activeCount, resetAll } =
     useProductFilters(products);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const PAGE_SIZE = 10;
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filtered]);
+
+  const visibleProducts = filtered.slice(0, page * PAGE_SIZE);
+  const hasMore = visibleProducts.length < filtered.length;
+  const remaining = filtered.length - visibleProducts.length;
 
   return (
     <>
