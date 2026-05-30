@@ -365,3 +365,65 @@ input[type="range"]::-webkit-slider-runnable-track {
   border-radius: 2px;
 }
 input[type="range"]:focus { outline: none; }
+
+/* Dual range slider — transparent tracks for stacked inputs */
+.dual-range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+.dual-range-input::-webkit-slider-runnable-track {
+  background: transparent;
+  height: 4px;
+  border: none;
+}
+.dual-range-input::-moz-range-track {
+  background: transparent;
+  height: 4px;
+  border: none;
+}
+.dual-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #ecc246;
+  cursor: pointer;
+  pointer-events: all;
+  margin-top: -6px;
+  box-shadow: 0 0 8px rgba(236, 194, 70, 0.4);
+  position: relative;
+  z-index: 1;
+}
+.dual-range-input::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #ecc246;
+  cursor: pointer;
+  pointer-events: all;
+  border: none;
+  box-shadow: 0 0 8px rgba(236, 194, 70, 0.4);
+}
+.dual-range-input:focus { outline: none; }
+
+/* Native select — dark theme */
+select.catalog-sort {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a09a8c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+select.catalog-sort option {
+  background: #1a1918;
+  color: #e5e2db;
+}
