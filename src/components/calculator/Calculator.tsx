@@ -53,7 +53,12 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
                 Поточна ціна {coinSymbol}
               </p>
               <p className="font-headline-md text-headline-md text-primary">
-                {coinPrice > 0 ? `$${coinPrice.toLocaleString()}` : "Завантаження..."}
+                {coinPrice > 0
+                  ? `$${coinPrice.toLocaleString("en-US", {
+                      minimumFractionDigits: coinPrice > 30 ? 0 : 2,
+                      maximumFractionDigits: coinPrice > 30 ? 0 : 2,
+                    })}`
+                  : "Завантаження..."}
               </p>
             </div>
           </div>
