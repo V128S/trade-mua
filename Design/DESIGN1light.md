@@ -161,3 +161,14 @@ Buttons, input fields, and tags should utilize maximum rounding (pill-shaped) wh
 - **Chips/Tags:** Always pill-shaped. Use JetBrains Mono for the text. Backgrounds are either Charcoal with white text for high emphasis or light glass with gold text for low emphasis.
 - **Progress Indicators:** Use thin, hairline tracks with a solid Antique Gold fill. The "liquid" effect can be enhanced with a subtle shimmer animation on active states.
 - **Lists:** Separated by 1px dividers at 5% opacity. Hover states should trigger a light-gold glass tint change.
+
+---
+
+## Implementation Notes
+
+This is the **alternate theme**, activated via the navbar toggle (`<html class="light">`); dark "Industrial Excellence" (`Design/DESIGN.md`) is the default.
+
+- Light tokens are implemented in `src/app/globals.css` under the `html.light` overrides, plus glass utilities `.liquid-glass`, `.liquid-glass-gold`, `.glass-card`, `.shimmer`.
+- JetBrains Mono (technical labels) loads via `next/font/google` alongside Syne and Hanken Grotesk.
+- Caveat: many shipped components currently hardcode dark hex values, so light mode is best-effort — prefer semantic token classes when building new UI so both themes render correctly.
+- Reference markup: `Design/code1light.html`.

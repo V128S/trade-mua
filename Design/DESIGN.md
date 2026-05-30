@@ -164,3 +164,14 @@ The shape language is "Soft-Technical." Elements are predominantly rectangular t
 - **Chips/Badges:** Used for "In Stock" or "New" status. Use a technical, rectangular shape with 0px or 2px radius and monospaced-style technical-data typography.
 - **Data Tables:** High-density, thin 1px horizontal dividers only. Row highlights use a very subtle `#1a1918` fill.
 - **Progress Bars:** For stock levels or shipping—ultra-thin 2px lines using Primary Gold against a Dark Neutral track.
+
+---
+
+## Implementation Notes
+
+This is the **default theme** of the live site (`<html class="dark">` in `src/app/layout.tsx`). The navbar exposes a dark/light toggle persisted to `localStorage`.
+
+- Tokens above are implemented in `src/app/globals.css` under `@theme {}` and consumed as Tailwind classes (`bg-card`, `border-card`, `text-on-surface`, `text-primary`, `btn-primary`, `btn-ghost`, `chip`, …).
+- Fonts (Syne, Hanken Grotesk, JetBrains Mono) load via `next/font/google`; Material Symbols via `<link>` in `layout.tsx`.
+- Reusable component patterns and the catalog/product/calculator layouts are documented in the `trademua:design-system` and `trademua:feature-builder` skills.
+- Reference markup: `Design/code.html`.
