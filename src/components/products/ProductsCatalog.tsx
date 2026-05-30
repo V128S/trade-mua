@@ -99,13 +99,13 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
 
           {/* Count */}
           <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-6">
-            {filtered.length} моделей
+            Показано {visibleProducts.length} з {filtered.length}
           </p>
 
           {/* Grid */}
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
-              {filtered.map(p => (
+              {visibleProducts.map(p => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
