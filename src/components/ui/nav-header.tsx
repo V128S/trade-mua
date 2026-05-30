@@ -25,7 +25,6 @@ export default function SlideNav({ items }: SlideNavProps) {
   // Move cursor to active tab whenever path changes
   useEffect(() => {
     returnToActive();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (

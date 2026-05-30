@@ -25,20 +25,26 @@ function getTheme(): "dark" | "light" {
   return document.documentElement.classList.contains("light") ? "light" : "dark";
 }
 
+// ── Language store (localStorage-backed) ─────────────────────────────────────
+function subscribeLang(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("lang-change", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("lang-change", callback);
+  };
+}
+function getLang(): "uk" | "en" {
+  return localStorage.getItem("lang") === "en" ? "en" : "uk";
+}
+
 // ── Desktop dropdown button ──────────────────────────────────────────────────
 function UserMenuButton() {
   const [open, setOpen]   = useState(false);
   const [user, setUser]   = useState<User | null | undefined>(undefined);
-  const [lang, setLang]   = useState<"uk" | "en">("uk");
   const ref               = useRef<HTMLDivElement>(null);
   const theme             = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
-
-  useEffect(() => {
-    try {
-      const s = localStorage.getItem("lang");
-      if (s === "uk" || s === "en") setLang(s);
-    } catch {}
-  }, []);
+  const lang              = useSyncExternalStore(subscribeLang, getLang, () => "uk" as const);
 
   useEffect(() => {
     if (!open) return;
@@ -68,8 +74,8 @@ function UserMenuButton() {
 
   const toggleLang = () => {
     const next = lang === "uk" ? "en" : "uk";
-    setLang(next);
     localStorage.setItem("lang", next);
+    window.dispatchEvent(new Event("lang-change"));
   };
 
   // Invisible placeholder while auth loads to prevent layout shift
@@ -209,16 +215,9 @@ function UserMenuButton() {
 // ── Main Navbar ──────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [lang, setLang]         = useState<"uk" | "en">("uk");
   const pathname = usePathname();
   const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
-
-  useEffect(() => {
-    try {
-      const s = localStorage.getItem("lang");
-      if (s === "uk" || s === "en") setLang(s);
-    } catch {}
-  }, []);
+  const lang = useSyncExternalStore(subscribeLang, getLang, () => "uk" as const);
 
   const toggleTheme = useCallback(() => {
     const html = document.documentElement;
@@ -230,8 +229,8 @@ export default function Navbar() {
 
   const toggleLang = () => {
     const next = lang === "uk" ? "en" : "uk";
-    setLang(next);
     localStorage.setItem("lang", next);
+    window.dispatchEvent(new Event("lang-change"));
   };
 
   return (

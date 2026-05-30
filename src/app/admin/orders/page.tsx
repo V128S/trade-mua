@@ -3,7 +3,6 @@ import OrdersTable from '@/components/admin/OrdersTable'
 
 export default async function AdminOrdersPage() {
   const supabase = await createClient()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: orders } = await supabase
     .from('orders')
     .select('*, profile:profiles(full_name)')

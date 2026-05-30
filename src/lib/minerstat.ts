@@ -1,7 +1,7 @@
 // Primary: WhatToMine API v1 /calculate
 // Fallback (EthHash only): CoinGecko + formula
 
-const WTM_KEY = process.env.WHATTOMINE_API_KEY ?? "7620ec9bede1243fb97c8b2b46c23b5b48df74ad21e16f6ae8e5eedfae5e17c2";
+const WTM_KEY = process.env.WHATTOMINE_API_KEY;
 const WTM_URL = "https://whattomine.com/api/v1/calculate";
 
 export const ALGO_NAMES: Record<string, string> = {
@@ -86,6 +86,11 @@ async function getEthHashFallback(): Promise<AlgoRevenue | null> {
 }
 
 export async function getMinerstatRevenue(): Promise<Record<string, AlgoRevenue>> {
+  // No key → skip the WhatToMine call. EthHash fallback (CoinGecko) still works.
+  if (!WTM_KEY) {
+    const ethHashData = await getEthHashFallback();
+    return ethHashData ? { EthHash: ethHashData } : {};
+  }
   try {
     // Single API call with all algorithms + their reference hashrates
     const algoQuery = Object.values(ALGO_CONFIGS)

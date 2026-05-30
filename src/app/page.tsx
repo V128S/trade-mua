@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getTopProductsFromDB, getRandomProductsFromDB } from "@/lib/products";
+import { getShuffledTopProductsFromDB, getRandomProductsFromDB } from "@/lib/products";
 import type { Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 import HeroCarousel from "@/components/hero/HeroCarousel";
@@ -121,17 +121,10 @@ const SERVICES = [
 ];
 
 export default async function Home() {
-  const [rawProducts, carouselProducts] = await Promise.all([
-    getTopProductsFromDB(8),
+  const [products, carouselProducts] = await Promise.all([
+    getShuffledTopProductsFromDB(8),
     getRandomProductsFromDB(10),
   ]);
-
-  // Shuffle top products so order varies each revalidation
-  const products = [...rawProducts];
-  for (let i = products.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [products[i], products[j]] = [products[j], products[i]];
-  }
 
   return (
     <div className="pb-section-gap">

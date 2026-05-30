@@ -46,6 +46,18 @@ export async function getTopProductsFromDB(limit = 8): Promise<Product[]> {
   }))
 }
 
+// Top products by price, then shuffled so display order varies each revalidation.
+// Shuffle lives here (data layer) rather than in the page render to keep the
+// Server Component pure.
+export async function getShuffledTopProductsFromDB(limit = 8): Promise<Product[]> {
+  const products = await getTopProductsFromDB(limit)
+  for (let i = products.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [products[i], products[j]] = [products[j], products[i]]
+  }
+  return products
+}
+
 export async function getRandomProductsFromDB(count: number): Promise<Product[]> {
   const supabase = await createClient()
   const { data, error } = await supabase

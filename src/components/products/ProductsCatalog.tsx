@@ -1,6 +1,6 @@
 // src/components/products/ProductsCatalog.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Product } from "@/lib/sheets";
 import { useProductFilters, type SortOption } from "@/hooks/useProductFilters";
 import { ProductCard } from "./ProductCard";
@@ -23,9 +23,14 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
+  // Reset pagination when the filtered set changes (filters/search/sort).
+  // `filtered` is memoized, so this only fires on an actual change — the
+  // React-recommended "adjust state during render" pattern instead of an effect.
+  const [prevFiltered, setPrevFiltered] = useState(filtered);
+  if (filtered !== prevFiltered) {
+    setPrevFiltered(filtered);
     setPage(1);
-  }, [filtered]);
+  }
 
   const visibleProducts = filtered.slice(0, page * PAGE_SIZE);
   const hasMore = visibleProducts.length < filtered.length;
