@@ -7,7 +7,7 @@ import { ProductCard } from "./ProductCard";
 import { ProductsFilters } from "./ProductsFilters";
 import { ProductsMobileDrawer } from "./ProductsMobileDrawer";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 9; // 3-column grid → load 3 full rows at a time
 
 const SORT_LABELS: Record<SortOption, string> = {
   price_desc: "Ціна: спадання",
@@ -17,7 +17,13 @@ const SORT_LABELS: Record<SortOption, string> = {
   new_first:  "Новинки першими",
 };
 
-export default function ProductsCatalog({ products }: { products: Product[] }) {
+export default function ProductsCatalog({
+  products,
+  revenueByAlgo = {},
+}: {
+  products: Product[];
+  revenueByAlgo?: Record<string, number>;
+}) {
   const { filters, setters, filtered, facets, globalRanges, activeCount, resetAll } =
     useProductFilters(products);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -49,7 +55,7 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
 
       <div className="flex gap-8 items-start">
         {/* Desktop sidebar */}
-        <aside className="hidden lg:block w-64 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+        <aside className="catalog-scroll hidden lg:block w-64 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-3">
           <ProductsFilters
             filters={filters}
             setters={setters}
@@ -113,7 +119,11 @@ export default function ProductsCatalog({ products }: { products: Product[] }) {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
                 {visibleProducts.map(p => (
-                  <ProductCard key={p.id} product={p} />
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    revenuePerTH={revenueByAlgo[p.algorithm] ?? 0}
+                  />
                 ))}
               </div>
               {hasMore && (

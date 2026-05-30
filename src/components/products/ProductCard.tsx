@@ -2,9 +2,26 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
+import { parseHashrateTH } from "@/lib/utils";
 
-export function ProductCard({ product }: { product: Product }) {
+// Default electricity rate for the catalog profit estimate ($/kWh).
+// Matches the product-detail mini-calculator default.
+const DEFAULT_RATE = 0.07;
+
+export function ProductCard({
+  product,
+  revenuePerTH = 0,
+}: {
+  product: Product;
+  revenuePerTH?: number;
+}) {
   const imgSrc = getProductImage(product.name);
+
+  // Estimated daily profit at the default electricity rate
+  const th = parseHashrateTH(product.hashrate);
+  const dailyRev = revenuePerTH > 0 && th > 0 ? revenuePerTH * th : 0;
+  const dailyElec = (product.powerW / 1000) * 24 * DEFAULT_RATE;
+  const dailyProfit = dailyRev > 0 ? dailyRev - dailyElec : 0;
   return (
     <Link
       href={`/products/${product.id}`}
@@ -58,13 +75,26 @@ export function ProductCard({ product }: { product: Product }) {
             {product.powerW} W
           </span>
         </div>
-        <div className="mt-auto pt-3 flex items-center justify-between">
-          <span className="font-headline-md text-headline-md text-primary">
-            ${product.priceUSDT.toLocaleString()}
-          </span>
-          <span className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
-            Деталі
-          </span>
+        <div className="mt-auto pt-3 flex flex-col gap-2.5">
+          {dailyProfit > 0 && (
+            <div className="flex items-center gap-1.5 text-green-400">
+              <span className="material-symbols-outlined text-[15px]">trending_up</span>
+              <span className="font-technical-data text-technical-data text-xs">
+                ~${dailyProfit.toFixed(2)}
+              </span>
+              <span className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">
+                / день
+              </span>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <span className="font-headline-md text-headline-md text-primary">
+              ${product.priceUSDT.toLocaleString()}
+            </span>
+            <span className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
+              Деталі
+            </span>
+          </div>
         </div>
       </div>
     </Link>
