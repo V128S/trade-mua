@@ -36,7 +36,10 @@ function ensureInit() {
 
 function persistItems() { try { localStorage.setItem(ITEMS_KEY, JSON.stringify(items)) } catch {} }
 function persistPromo() {
-  try { promo ? localStorage.setItem(PROMO_KEY, JSON.stringify(promo)) : localStorage.removeItem(PROMO_KEY) } catch {}
+  try {
+    if (promo) localStorage.setItem(PROMO_KEY, JSON.stringify(promo))
+    else localStorage.removeItem(PROMO_KEY)
+  } catch {}
 }
 
 function apply(action: CartAction) {
