@@ -3,7 +3,9 @@ import { Syne, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CryptoPriceTicker from "@/components/layout/CryptoPriceTicker";
+import NavigationProgress from "@/components/ui/NavigationProgress";
 import BackgroundSparkles from "@/components/ui/background-sparkles";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 import "./globals.css";
 
 const syne = Syne({
@@ -52,6 +54,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#111110] text-on-surface selection:bg-primary selection:text-on-primary">
+        <NavigationProgress />
         <BackgroundSparkles />
         <Navbar />
         <main className="pt-20">
@@ -59,6 +62,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <ScrollToTop />
       </body>
     </html>
   );
