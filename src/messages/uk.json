@@ -301,7 +301,40 @@
     "quickCatalog": "Переглянути каталог",
     "quickCalculator": "Калькулятор"
   },
-  "cart": {},
-  "checkout": {},
+  "cart": {
+    "pageTitle": "Кошик | Trade M",
+    "emptyTitle": "Кошик порожній",
+    "emptyDesc": "Додайте товари з каталогу або зв'яжіться з нами напряму — ми підберемо найкращий варіант.",
+    "goToCatalog": "Перейти до каталогу",
+    "ariaDecrease": "Зменшити",
+    "ariaIncrease": "Збільшити",
+    "remove": "Видалити",
+    "summary": "Разом",
+    "subtotal": "Сума",
+    "promoApplied": "Промокод {code} (−{pct}%)",
+    "promoPlaceholder": "Промокод",
+    "applyPromo": "Застос.",
+    "applying": "...",
+    "total": "Разом",
+    "goToCheckout": "Перейти до оформлення",
+    "added": "Додано",
+    "addToCart": "Додати в кошик",
+    "orderBtn": "Замовити"
+  },
+  "checkout": {
+    "pageTitle": "Оформлення | Trade M",
+    "heading": "Оформлення",
+    "emptyCart": "Кошик порожній.",
+    "toCatalog": "До каталогу",
+    "labelNovaPoshta": "Відділення Нової Пошти",
+    "placeholderNovaPoshta": "Місто, № відділення",
+    "labelPhone": "Телефон",
+    "labelComment": "Коментар (необов'язково)",
+    "submit": "Підтвердити замовлення",
+    "submitting": "Оформлення...",
+    "orderSummary": "Замовлення",
+    "promoLine": "Промокод {code}",
+    "total": "Разом"
+  },
   "auth": {}
 }

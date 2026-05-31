@@ -1,11 +1,13 @@
 'use client'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useCart } from '@/lib/cart/useCart'
 import type { Product } from '@/lib/sheets'
 
 type Props = { product: Pick<Product, 'id' | 'name' | 'hashrate' | 'powerW' | 'priceUSDT' | 'inStock'> }
 
 export default function AddToCartButton({ product }: Props) {
+  const t = useTranslations('cart')
   const { add } = useCart()
   const [added, setAdded] = useState(false)
 
@@ -28,7 +30,7 @@ export default function AddToCartButton({ product }: Props) {
       className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform"
     >
       <span className="material-symbols-outlined text-[18px]">{added ? 'check' : 'shopping_cart'}</span>
-      {added ? 'Додано' : product.inStock ? 'Додати в кошик' : 'Замовити'}
+      {added ? t('added') : product.inStock ? t('addToCart') : t('orderBtn')}
     </button>
   )
 }
