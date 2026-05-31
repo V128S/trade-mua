@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterForm() {
+  const t = useTranslations('auth')
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -16,7 +18,7 @@ export default function RegisterForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (password.length < 6) {
-      setError('Пароль мінімум 6 символів')
+      setError(t('errorShortPassword'))
       return
     }
     setLoading(true)
@@ -34,8 +36,8 @@ export default function RegisterForm() {
 
     if (error) {
       setError(error.message === 'User already registered'
-        ? 'Цей email вже зареєстрований'
-        : 'Помилка реєстрації. Спробуйте ще раз.')
+        ? t('errorEmailExists')
+        : t('errorRegisterGeneric'))
       setLoading(false)
       return
     }
@@ -48,32 +50,35 @@ export default function RegisterForm() {
       <div className="space-y-4 text-center">
         <span className="material-symbols-outlined text-primary text-[48px]">mark_email_read</span>
         <p className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">
-          Перевірте пошту
+          {t('successCheckEmail')}
         </p>
         <p className="font-body-md text-body-md text-on-surface-variant">
-          Ми надіслали лист підтвердження на{' '}
-          <strong className="text-on-surface">{email}</strong>.
-          Перейдіть за посиланням у листі для активації акаунту.
+          {t.rich('successCheckEmailDesc', {
+            email,
+            strong: (chunks) => <strong className="text-on-surface">{chunks}</strong>,
+          })}
         </p>
         <Link
           href="/login"
           className="inline-block btn-ghost py-2 px-6 rounded font-label-caps text-label-caps uppercase tracking-widest text-sm mt-4"
         >
-          На сторінку входу
+          {t('backToLogin')}
         </Link>
       </div>
     )
   }
 
+  const fields = [
+    { key: 'fullName', label: t('fullNameLabel'), value: fullName, setter: setFullName, type: 'text', placeholder: t('fullNamePlaceholder') },
+    { key: 'phone', label: t('phoneLabel'), value: phone, setter: setPhone, type: 'tel', placeholder: t('phonePlaceholder') },
+    { key: 'email', label: t('emailLabel'), value: email, setter: setEmail, type: 'email', placeholder: t('emailPlaceholder') },
+    { key: 'password', label: t('passwordLabel'), value: password, setter: setPassword, type: 'password', placeholder: t('passwordPlaceholder') },
+  ]
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {[
-        { label: "Ім'я та прізвище", value: fullName, setter: setFullName, type: 'text', placeholder: 'Іван Петренко' },
-        { label: 'Телефон', value: phone, setter: setPhone, type: 'tel', placeholder: '+380501234567' },
-        { label: 'Email', value: email, setter: setEmail, type: 'email', placeholder: 'your@email.com' },
-        { label: 'Пароль', value: password, setter: setPassword, type: 'password', placeholder: '••••••••' },
-      ].map(({ label, value, setter, type, placeholder }) => (
-        <div key={label}>
+      {fields.map(({ key, label, value, setter, type, placeholder }) => (
+        <div key={key}>
           <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]">
             {label}
           </label>
@@ -93,12 +98,12 @@ export default function RegisterForm() {
         disabled={loading}
         className="btn-primary w-full py-3 rounded font-label-caps text-label-caps uppercase tracking-widest disabled:opacity-50"
       >
-        {loading ? 'Реєстрація...' : 'Зареєструватись'}
+        {loading ? t('submittingRegister') : t('submitRegister')}
       </button>
       <p className="text-center font-label-caps text-label-caps text-on-surface-variant text-[11px] uppercase tracking-widest">
-        Вже є акаунт?{' '}
+        {t('noAccount')}{' '}
         <Link href="/login" className="text-primary hover:underline">
-          Увійти
+          {t('loginLink')}
         </Link>
       </p>
     </form>

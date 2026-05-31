@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginForm() {
+  const t = useTranslations('auth')
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,7 +23,7 @@ export default function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setError('Невірний email або пароль')
+      setError(t('errorInvalidCredentials'))
       setLoading(false)
       return
     }
@@ -37,27 +39,27 @@ export default function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]">
-          Email
+          {t('emailLabel')}
         </label>
         <input
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
-          placeholder="your@email.com"
+          placeholder={t('emailPlaceholder')}
           className="w-full bg-surface border border-[#2e2d2b] rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
         />
       </div>
       <div>
         <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]">
-          Пароль
+          {t('passwordLabel')}
         </label>
         <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
-          placeholder="••••••••"
+          placeholder={t('passwordPlaceholder')}
           className="w-full bg-surface border border-[#2e2d2b] rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
         />
       </div>
@@ -69,14 +71,14 @@ export default function LoginForm() {
         disabled={loading}
         className="btn-primary w-full py-3 rounded font-label-caps text-label-caps uppercase tracking-widest disabled:opacity-50 transition-opacity"
       >
-        {loading ? 'Вхід...' : 'Увійти'}
+        {loading ? t('submittingLogin') : t('submitLogin')}
       </button>
       <div className="flex items-center justify-between font-label-caps text-label-caps text-on-surface-variant text-[11px] uppercase tracking-widest">
         <Link href="/register" className="hover:text-primary transition-colors">
-          Реєстрація
+          {t('registerLink')}
         </Link>
         <Link href="/auth/reset-password" className="hover:text-primary transition-colors">
-          Забули пароль?
+          {t('forgotPassword')}
         </Link>
       </div>
     </form>

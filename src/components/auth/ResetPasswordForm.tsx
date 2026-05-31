@@ -1,11 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function ResetPasswordForm() {
+  const t = useTranslations('auth')
   const router = useRouter()
+  // useSearchParams is intentionally kept from next/navigation (locale-unaware is fine for query params)
   const [step, setStep] = useState<'request' | 'update'>('request')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,21 +27,21 @@ export default function ResetPasswordForm() {
     })
     setLoading(false)
     if (error) {
-      setError('Помилка. Перевірте email та спробуйте ще раз.')
+      setError(t('errorResetGeneric'))
       return
     }
-    setMessage('Лист з посиланням надіслано. Перевірте пошту.')
+    setMessage(t('successResetSent'))
   }
 
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault()
-    if (password.length < 6) { setError('Мінімум 6 символів'); return }
+    if (password.length < 6) { setError(t('errorMinPassword')); return }
     setLoading(true)
     setError(null)
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password })
     setLoading(false)
-    if (error) { setError('Помилка оновлення пароля'); return }
+    if (error) { setError(t('errorUpdatePassword')); return }
     router.push('/dashboard')
   }
 
@@ -55,20 +59,20 @@ export default function ResetPasswordForm() {
       <form onSubmit={handleUpdate} className="space-y-4">
         <div>
           <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]">
-            Новий пароль
+            {t('newPasswordLabel')}
           </label>
           <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            placeholder="••••••••"
+            placeholder={t('passwordPlaceholder')}
             className="w-full bg-surface border border-[#2e2d2b] rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
           />
         </div>
         {error && <p className="text-red-400 text-sm">{error}</p>}
         <button type="submit" disabled={loading} className="btn-primary w-full py-3 rounded font-label-caps text-label-caps uppercase tracking-widest disabled:opacity-50">
-          {loading ? 'Збереження...' : 'Зберегти пароль'}
+          {loading ? t('submittingSavePassword') : t('submitSavePassword')}
         </button>
       </form>
     )
@@ -78,27 +82,27 @@ export default function ResetPasswordForm() {
     <form onSubmit={handleRequest} className="space-y-4">
       <div>
         <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]">
-          Email
+          {t('emailLabel')}
         </label>
         <input
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
-          placeholder="your@email.com"
+          placeholder={t('emailPlaceholder')}
           className="w-full bg-surface border border-[#2e2d2b] rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
         />
       </div>
       {error && <p className="text-red-400 text-sm">{error}</p>}
       <button type="submit" disabled={loading} className="btn-primary w-full py-3 rounded font-label-caps text-label-caps uppercase tracking-widest disabled:opacity-50">
-        {loading ? 'Надсилання...' : 'Відновити пароль'}
+        {loading ? t('submittingReset') : t('submitReset')}
       </button>
       <button
         type="button"
         onClick={() => setStep('update')}
         className="w-full text-center font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[11px] hover:text-primary transition-colors"
       >
-        Вже є посилання — ввести новий пароль
+        {t('hasResetLink')}
       </button>
     </form>
   )
