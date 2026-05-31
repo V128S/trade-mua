@@ -1,6 +1,16 @@
 # Performance Improvement Plan — trade-mua.vercel.app (desktop)
 
-> **Status:** Analysis + prioritized plan. Independent of the `feat/i18n-ua-ru` branch (targets the live/main site).
+> **Status (updated 2026-05-31, after implementation):**
+> - ✅ **P0 done & shipped to prod:** tsparticles lazy-loaded (dynamic import + `requestIdleCallback` + `prefers-reduced-motion` + lower density) in `background-sparkles.tsx`; font `preconnect` added in the locale layout.
+> - ✅ **P1 framer-motion done & shipped:** the single spring animation (nav slide cursor) was replaced with a CSS transition and the dependency removed entirely.
+> - ✅ **P1 client→server: already optimal** — `CryptoPriceTicker` is a server component with ISR (`revalidate:300`); no client-side fetches exist in public components; all data is server/ISR.
+> - ✅ **P2 images: already optimal** — only `next/image` is used (no raw `<img>`), AVIF/WebP served automatically.
+> - ⚠️ **OPEN — Material Symbols render-blocking font:** subsetting by `icon_names` is UNSAFE (many icons are referenced dynamically from data, e.g. `{s.icon}`/`{tab.icon}`/`{added?'check':...}`); the `onLoad` non-blocking trick doesn't work in RSC; moving to `next/font` risks breaking the variable icon font. Needs a careful, measured change.
+> - ⏳ **Pending Lighthouse validation:** PSI API daily quota (429) blocked a fresh run; capture before/after when it resets or with a PSI key, then decide if Material Symbols / CLS tuning is worth the risk.
+>
+> Original analysis + plan follows.
+
+> **Note:** Independent of i18n (targets the live/main site).
 > **Note on numbers:** A fresh Lighthouse run was blocked at analysis time (PageSpeed Insights API `429 — daily quota exceeded` on the anonymous project; MCP rate-limited). The levers below are derived from the actual codebase/stack and standard Lighthouse findings for this setup. Re-run Lighthouse (with a PSI API key, or when quota resets) to capture exact before/after deltas. Reference report: https://pagespeed.web.dev/analysis/https-trade-mua-vercel-app/q7nxdrj9mv?form_factor=desktop
 
 ## Stack facts that drive performance
