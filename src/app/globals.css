@@ -213,6 +213,14 @@ body {
   color: #1a1c1c;
 }
 
+/* Native <button> defaults to the arrow cursor; give all enabled buttons the
+   link-style pointer so clickable controls (theme/language toggles, account
+   menu, etc.) read as interactive. Disabled buttons keep the default. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
 /* ─── Custom component classes ─── */
 /* Cannot express these as pure Tailwind variants */
 
