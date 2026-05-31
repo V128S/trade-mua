@@ -1,5 +1,5 @@
 import type { OrderStatus } from '@/lib/types/database.types'
-import { getTranslations } from 'next-intl/server'
+import { useTranslations } from 'next-intl'
 
 const STATUS_CLASSES: Record<OrderStatus, string> = {
   pending:   'bg-amber-100 text-amber-700 dark:bg-[#2b2a26] dark:text-[#ecc246]',
@@ -11,8 +11,12 @@ const STATUS_CLASSES: Record<OrderStatus, string> = {
 
 const FALLBACK_CLASSES = 'bg-surface-container-high text-on-surface-variant'
 
-export default async function StatusBadge({ status }: { status: string }) {
-  const t = await getTranslations('common')
+// Isomorphic via next-intl's useTranslations — works in BOTH server components
+// (dashboard OrderList) and client components (admin OrdersTable). The previous
+// async getTranslations() crashed with a 500 when rendered inside the client
+// OrdersTable as soon as an order existed.
+export default function StatusBadge({ status }: { status: string }) {
+  const t = useTranslations('common')
 
   const STATUS_LABELS: Record<OrderStatus, string> = {
     pending:   t('statusPending'),
