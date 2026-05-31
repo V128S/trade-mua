@@ -3,7 +3,15 @@
     "homeTitle": "Trade M | Кращий Партнер",
     "homeDescription": "Вигідні ASIC-майнери: Antminer, Whatsminer. Продаж, сервіс та майнінг-готель в Україні."
   },
-  "common": {},
+  "common": {
+    "scrollToTopAria": "Прокрутити вгору",
+    "statusPending": "Очікує",
+    "statusConfirmed": "Підтверджено",
+    "statusShipped": "Відправлено",
+    "statusDelivered": "Доставлено",
+    "statusCancelled": "Скасовано",
+    "statusUnknown": "Невідомо"
+  },
   "nav": {
     "home": "Головна",
     "products": "Продукти",
@@ -21,7 +29,15 @@
     "menuAria": "Меню",
     "accountMenuAria": "Меню акаунту"
   },
-  "footer": {},
+  "footer": {
+    "products": "Продукти",
+    "services": "Сервіси",
+    "calculator": "Калькулятор",
+    "about": "Про нас",
+    "contact": "Контакти",
+    "phone": "097-422-50-60 Денис",
+    "copyright": "© 2025 Trade M · Кращий крипто Партнер"
+  },
   "home": {},
   "products": {},
   "services": {},

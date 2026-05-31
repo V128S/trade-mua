@@ -1,15 +1,18 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 
-const LINKS = [
-  { href: "/products", label: "Продукти" },
-  { href: "/services", label: "Сервіси" },
-  { href: "/calculator", label: "Калькулятор" },
-  { href: "/about", label: "Про нас" },
-  { href: "/contact", label: "Контакти" },
-];
+export default async function Footer() {
+  const t = await getTranslations("footer");
 
-export default function Footer() {
+  const LINKS = [
+    { href: "/products", label: t("products") },
+    { href: "/services", label: t("services") },
+    { href: "/calculator", label: t("calculator") },
+    { href: "/about", label: t("about") },
+    { href: "/contact", label: t("contact") },
+  ];
+
   return (
     <footer className="w-full bg-surface-container-lowest border-t border-outline-variant/20 mt-section-gap">
       <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 flex flex-col md:flex-row justify-between items-start gap-8">
@@ -38,7 +41,7 @@ export default function Footer() {
         {/* Contacts */}
         <div className="space-y-1 text-right">
           <p className="font-technical-data text-technical-data text-on-surface-variant">
-            097-422-50-60 Денис
+            {t("phone")}
           </p>
           <a
             href="https://t.me/DenisHandsome"
@@ -53,7 +56,7 @@ export default function Footer() {
 
       <div className="border-t border-outline-variant/20 px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
         <p className="font-label-caps text-label-caps text-outline uppercase tracking-widest">
-          © 2025 Trade M · Кращий крипто Партнер
+          {t("copyright")}
         </p>
       </div>
     </footer>
