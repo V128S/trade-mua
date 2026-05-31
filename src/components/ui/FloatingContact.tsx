@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 // on every page. A single gold FAB that expands to the two channels we actually
 // answer on: Telegram (fastest) and a phone call. Client component only for the
 // open/close toggle — the actions are plain links.
-const TELEGRAM_URL = "https://t.me/DenisHandsome";
+const TELEGRAM_URL = "https://t.me/BOSSDnepra";
 const PHONE_URL = "tel:+380974225060";
 
 export default function FloatingContact() {
@@ -20,7 +20,7 @@ export default function FloatingContact() {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
       {/* Expanded actions */}
       <div
         className={`flex flex-col items-end gap-3 transition-all duration-300 ${
@@ -51,7 +51,7 @@ export default function FloatingContact() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={t("contactOpenAria")}
-        className="btn-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+        className="btn-primary w-14 h-14 cursor-pointer pointer-events-auto rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
       >
         <span
           className="material-symbols-outlined text-[26px] transition-transform duration-300"

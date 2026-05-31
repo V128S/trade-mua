@@ -12,10 +12,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
+const VALUE_ICONS = ["verified", "speed", "support_agent", "lock"];
+
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("contact");
+  const ta = await getTranslations("about");
+
+  const STATS = [
+    { value: ta("stat1Value"), label: ta("stat1Label") },
+    { value: ta("stat2Value"), label: ta("stat2Label") },
+    { value: ta("stat3Value"), label: ta("stat3Label") },
+    { value: ta("stat4Value"), label: ta("stat4Label") },
+  ];
+
+  const VALUES = [
+    { icon: VALUE_ICONS[0], title: ta("value1Title"), desc: ta("value1Desc") },
+    { icon: VALUE_ICONS[1], title: ta("value2Title"), desc: ta("value2Desc") },
+    { icon: VALUE_ICONS[2], title: ta("value3Title"), desc: ta("value3Desc") },
+    { icon: VALUE_ICONS[3], title: ta("value4Title"), desc: ta("value4Desc") },
+  ];
 
   return (
     <div className="pb-section-gap">
@@ -39,9 +56,54 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         </div>
       </section>
 
+      {/* About — story + stats */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
+        <div className="flex items-center gap-4 mb-10">
+          <div className="h-px bg-outline-variant flex-1" />
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("aboutHeading")}</h2>
+          <div className="h-px bg-outline-variant flex-1" />
+        </div>
+        <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mx-auto text-center mb-12">
+          {ta("heroBody")}
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {STATS.map((s) => (
+            <div key={s.label} className="bg-card border-card rounded-lg p-6 text-center">
+              <p className="font-display-lg text-[40px] leading-none text-primary mb-2">{s.value}</p>
+              <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Values */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
+        <div className="flex items-center gap-4 mb-10">
+          <div className="h-px bg-outline-variant flex-1" />
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{ta("valuesHeading")}</h2>
+          <div className="h-px bg-outline-variant flex-1" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
+          {VALUES.map((v) => (
+            <div key={v.title} className="bg-card border-card rounded-lg p-8 flex gap-5">
+              <span className="material-symbols-outlined text-primary text-[28px] shrink-0 mt-1">{v.icon}</span>
+              <div>
+                <h3 className="font-headline-md text-headline-md text-on-surface text-base uppercase tracking-widest mb-2">{v.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant">{v.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Contacts grid */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-px bg-outline-variant flex-1" />
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("heroLabel")}</h2>
+          <div className="h-px bg-outline-variant flex-1" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
 
           {/* Phone */}
           <a
@@ -64,7 +126,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
           {/* Telegram */}
           <a
-            href="https://t.me/DenisHandsome"
+            href="https://t.me/BOSSDnepra"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
@@ -83,9 +145,30 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             </div>
           </a>
 
+          {/* Telegram channel (informational) */}
+          <a
+            href="https://t.me/TRADEM_UA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+          >
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary text-[28px]">campaign</span>
+              <p className="font-label-caps text-sm text-on-surface-variant uppercase tracking-widest group-hover:text-primary transition-colors">{t("channelLabel")}</p>
+            </div>
+            <div>
+              <p className="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">
+                {t("channelHandle")}
+              </p>
+              <p className="font-technical-data text-technical-data text-on-surface-variant mt-1">
+                {t("channelDesc")}
+              </p>
+            </div>
+          </a>
+
           {/* Working hours */}
           <a
-            href="https://t.me/DenisHandsome"
+            href="https://t.me/BOSSDnepra"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"

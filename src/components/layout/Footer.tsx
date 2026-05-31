@@ -9,7 +9,6 @@ export default async function Footer() {
     { href: "/products", label: t("products") },
     { href: "/services", label: t("services") },
     { href: "/calculator", label: t("calculator") },
-    { href: "/about", label: t("about") },
     { href: "/contact", label: t("contact") },
   ];
 
@@ -44,12 +43,12 @@ export default async function Footer() {
             {t("phone")}
           </p>
           <a
-            href="https://t.me/DenisHandsome"
+            href="https://t.me/BOSSDnepra"
             target="_blank"
             rel="noopener noreferrer"
             className="font-label-caps text-label-caps text-primary uppercase tracking-widest hover:text-secondary transition-colors"
           >
-            @DenisHandsome
+            @BOSSDnepra
           </a>
         </div>
       </div>

@@ -324,17 +324,17 @@ export default async function Home({
           {TESTIMONIALS.map((testimonial) => (
             <div key={testimonial.name} className="bg-card border border-[#2e2d2b] rounded-lg p-6 flex flex-col gap-4 cursor-default">
               {/* Stars + verified badge */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex gap-0.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex gap-0.5 shrink-0">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className={`material-symbols-outlined text-[16px] ${i < testimonial.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                    <span key={i} className={`material-symbols-outlined text-[15px] ${i < testimonial.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
                       star
                     </span>
                   ))}
                 </div>
-                <span className="inline-flex items-center gap-1 font-label-caps text-[9px] text-green-400 uppercase tracking-widest shrink-0">
-                  <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                  {t("testimonialVerified")}
+                <span className="inline-flex items-start gap-1 min-w-0 font-label-caps text-[9px] leading-tight text-green-400 uppercase tracking-wide text-right">
+                  <span className="material-symbols-outlined text-[13px] shrink-0 mt-px" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                  <span className="break-words">{t("testimonialVerified")}</span>
                 </span>
               </div>
               {/* Quote */}

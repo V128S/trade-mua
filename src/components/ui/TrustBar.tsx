@@ -23,16 +23,18 @@ export default async function TrustBar({ compact = false }: { compact?: boolean 
       {items.map((item) => (
         <div
           key={item.title}
-          className={`bg-card flex items-start gap-3 ${compact ? "p-4" : "p-5 sm:p-6"}`}
+          className={`bg-card flex flex-col items-center text-center ${compact ? "gap-2.5 p-4" : "gap-3 p-5 sm:p-6"}`}
         >
-          <span className="material-symbols-outlined text-primary text-[24px] shrink-0">
-            {item.icon}
+          <span className="flex items-center justify-center w-11 h-11 rounded-full bg-primary/10 border border-primary/20 shrink-0">
+            <span className="material-symbols-outlined text-primary text-[22px]">
+              {item.icon}
+            </span>
           </span>
           <div className="min-w-0">
             <p className="font-technical-data text-technical-data text-on-surface leading-tight">
               {item.title}
             </p>
-            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mt-1 leading-snug">
+            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mt-1.5 leading-snug">
               {item.desc}
             </p>
           </div>

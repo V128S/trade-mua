@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  async redirects() {
+    // /about was merged into /contact (story + stats + values now live there).
+    // Keep the old URLs alive with permanent redirects for both locales.
+    return [
+      { source: "/about", destination: "/contact", permanent: true },
+      { source: "/ru/about", destination: "/ru/contact", permanent: true },
+    ];
+  },
+};
 
 // Defaults to ./src/i18n/request.ts
 const withNextIntl = createNextIntlPlugin();
