@@ -6,7 +6,7 @@ import { stripLocale, isProtectedPath } from "@/lib/auth-routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // 1) Locale routing first (may rewrite/redirect for prefixes)
   const intlResponse = intlMiddleware(request);
 
