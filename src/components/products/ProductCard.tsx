@@ -52,13 +52,15 @@ export function ProductCard({
               {t("badgeNew")}
             </span>
           )}
-          <span
-            className={`chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider ${
-              product.inStock ? "bg-[#1a2b1a] text-green-400" : ""
-            }`}
-          >
-            {product.inStock ? t("inStock") : t("onOrder")}
-          </span>
+          {/* Only the positive in-stock state gets a badge on the image — pre-order
+              is shown as a calm delivery line in the body instead of an alarming chip,
+              so the catalog reads as "available, ships soon" rather than "nothing here". */}
+          {product.inStock && (
+            <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider bg-[#16301a] text-green-400 inline-flex items-center gap-1">
+              <span className="material-symbols-outlined text-[12px]">check_circle</span>
+              {t("inStock")}
+            </span>
+          )}
         </div>
       </div>
 
@@ -91,12 +93,31 @@ export function ProductCard({
               </span>
             </div>
           )}
-          <div className="flex items-center justify-between">
+          {/* Stock/delivery signal on every card — in-stock is reassuring green,
+              pre-order is a neutral "ships in 10–14 days" rather than a hard stop. */}
+          {product.inStock ? (
+            <div className="flex items-center gap-1.5 text-green-400">
+              <span className="material-symbols-outlined text-[15px]">local_shipping</span>
+              <span className="font-label-caps text-[10px] uppercase tracking-widest">
+                {t("readyToShip")}
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 text-on-surface-variant">
+              <span className="material-symbols-outlined text-[15px]">schedule</span>
+              <span className="font-label-caps text-[10px] uppercase tracking-widest">
+                {t("deliveryEstimate")}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center justify-between gap-2">
             <span className="font-headline-md text-headline-md text-primary">
               ${product.priceUSDT.toLocaleString()}
             </span>
-            <span className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
+            {/* CTA fills gold on card hover (group-hover) to pull the eye toward the click. */}
+            <span className="inline-flex items-center gap-1.5 border border-[#2e2d2b] px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs text-on-surface transition-colors duration-300 group-hover:bg-primary-container group-hover:border-primary group-hover:text-[#0e0e0a]">
               {t("details")}
+              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </span>
           </div>
         </div>

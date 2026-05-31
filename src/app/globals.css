@@ -76,7 +76,9 @@
   --font-technical-data:   var(--font-hanken), sans-serif;
 
   /* Font sizes + line-height + letter-spacing */
-  --text-display-lg: 72px;
+  /* Fluid: stays 72px on desktop, scales down on narrow screens so long
+     single words (e.g. "МАЙНЕРИ") never overflow the mobile viewport. */
+  --text-display-lg: clamp(2.75rem, 9vw, 72px);
   --text-display-lg--line-height: 80px;
   --text-display-lg--letter-spacing: 0.04em;
   --text-display-lg--font-weight: 800;
