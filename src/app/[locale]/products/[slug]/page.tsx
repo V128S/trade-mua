@@ -14,6 +14,12 @@ export const revalidate = 60;
 
 const SITE_URL = "https://trade-mua.vercel.app";
 
+// Offer needs a future priceValidUntil. Computed once at module load (refreshes
+// on each deploy/ISR rebuild) so it isn't an impure call during render.
+const PRICE_VALID_UNTIL = new Date(Date.now() + 365 * 86400000)
+  .toISOString()
+  .slice(0, 10);
+
 // Strip hashrate suffix to get base model name
 // "Antminer S21 Hydro 335Th" → "Antminer S21 Hydro"
 function getBaseName(name: string): string {
@@ -109,7 +115,7 @@ export default async function ProductPage({ params }: Props) {
       availability: product.inStock
         ? "https://schema.org/InStock"
         : "https://schema.org/PreOrder",
-      priceValidUntil: new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
+      priceValidUntil: PRICE_VALID_UNTIL,
       url: productUrl,
       seller: { "@type": "Organization", name: "Trade M" },
     },
