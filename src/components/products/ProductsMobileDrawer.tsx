@@ -1,6 +1,7 @@
 // src/components/products/ProductsMobileDrawer.tsx
 "use client";
 import { useEffect, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 interface ProductsMobileDrawerProps {
   open: boolean;
@@ -9,6 +10,8 @@ interface ProductsMobileDrawerProps {
 }
 
 export function ProductsMobileDrawer({ open, onClose, children }: ProductsMobileDrawerProps) {
+  const t = useTranslations("products");
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -29,7 +32,7 @@ export function ProductsMobileDrawer({ open, onClose, children }: ProductsMobile
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Фільтри"
+        aria-label={t("drawerTitle")}
         className={`fixed inset-x-0 bottom-0 z-50 h-[85vh] rounded-t-2xl bg-card border-t border-[#2e2d2b] transition-transform duration-300 ease-out lg:hidden flex flex-col ${
           open ? "translate-y-0" : "translate-y-full"
         }`}
@@ -41,11 +44,11 @@ export function ProductsMobileDrawer({ open, onClose, children }: ProductsMobile
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-[#2e2d2b] shrink-0">
-          <span className="font-headline-md text-[16px] text-on-surface">Фільтри</span>
+          <span className="font-headline-md text-[16px] text-on-surface">{t("drawerTitle")}</span>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Закрити фільтри"
+            aria-label={t("drawerCloseAria")}
             className="text-on-surface-variant hover:text-on-surface transition-colors p-1"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>

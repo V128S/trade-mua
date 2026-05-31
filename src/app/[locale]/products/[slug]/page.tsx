@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { getProductsFromDB } from "@/lib/products";
 import ProductDetail from "@/components/products/ProductDetail";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const revalidate = 60;
 
@@ -23,21 +24,31 @@ function getCooling(name: string): string {
 }
 
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const products = await getProductsFromDB();
+  const { locale, slug } = await params;
+  const [products, t] = await Promise.all([
+    getProductsFromDB(),
+    getTranslations({ locale, namespace: "products" }),
+  ]);
   const product = products.find((p) => p.id === slug);
   if (!product) return { title: "Trade M" };
   return {
     title: `${product.name} | Trade M`,
-    description: `${product.name} — ${product.hashrate}, ${product.powerW}W. Купити ASIC-майнер в Trade M.`,
+    description: t("metaSlugDescription", {
+      name: product.name,
+      hashrate: product.hashrate,
+      power: product.powerW,
+    }),
   };
 }
 
 export default async function ProductPage({ params }: Props) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("products");
+
   const [products, revenueMap] = await Promise.all([getProductsFromDB(), getMinerstatRevenue()]);
 
   const product = products.find((p) => p.id === slug);
@@ -61,11 +72,13 @@ export default async function ProductPage({ params }: Props) {
     .slice(0, 4);
 
   const specs = [
-    { label: "Алгоритм", value: product.algorithm },
-    { label: "Хешрейт", value: product.hashrate || "—" },
-    { label: "Енергоспоживання", value: `${product.powerW} W` },
-    { label: "Охолодження", value: cooling },
+    { label: t("specAlgorithm"), value: product.algorithm },
+    { label: t("specHashrate"), value: product.hashrate || "—" },
+    { label: t("specPower"), value: `${product.powerW} W` },
+    { label: t("specCooling"), value: cooling },
   ];
+
+  const descKey = cooling === "Hydro" ? "descHydro" : cooling === "Immersion" ? "descImmersion" : "descAir";
 
   return (
     <div className="pb-section-gap">
@@ -75,9 +88,9 @@ export default async function ProductPage({ params }: Props) {
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-10">
-          <Link href="/" className="hover:text-primary transition-colors">Головна</Link>
+          <Link href="/" className="hover:text-primary transition-colors">{t("breadcrumbHome")}</Link>
           <span className="material-symbols-outlined text-[12px]">chevron_right</span>
-          <Link href="/products" className="hover:text-primary transition-colors">Майнери</Link>
+          <Link href="/products" className="hover:text-primary transition-colors">{t("breadcrumbProducts")}</Link>
           <span className="material-symbols-outlined text-[12px]">chevron_right</span>
           <span className="text-on-surface truncate max-w-[220px] uppercase">{product.name}</span>
         </nav>
@@ -104,10 +117,10 @@ export default async function ProductPage({ params }: Props) {
                 )}
                 <div className="absolute top-4 left-4 flex gap-2 z-20">
                   {product.isNew && (
-                    <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">Новинка</span>
+                    <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">{t("badgeNew")}</span>
                   )}
                   <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
-                    {product.inStock ? "In Stock" : "Під замовлення"}
+                    {product.inStock ? t("inStock") : t("onOrder")}
                   </span>
                 </div>
               </div>
@@ -131,22 +144,18 @@ export default async function ProductPage({ params }: Props) {
 
             {/* Description */}
             <p className="font-body-md text-body-md text-on-surface-variant mt-3 max-w-md">
-              {cooling === "Hydro"
-                ? "Флагманська модель з водяним охолодженням для максимальної стабільності та тихої роботи."
-                : cooling === "Immersion"
-                ? "Майнер для занурювального охолодження — максимальна ефективність у промислових умовах."
-                : "Повітряне охолодження, компактний корпус, оптимальна ефективність для домашнього майнінгу."}
+              {t(descKey)}
             </p>
 
             {/* Price */}
             <div className="mt-6">
               <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">
-                {product.inStock ? "Ціна (в наявності)" : "Ціна (під замовлення)"}
+                {product.inStock ? t("priceLabelInStock") : t("priceLabelOnOrder")}
               </p>
               <p className="font-display-lg text-[52px] leading-none text-primary">
                 ${product.priceUSDT.toLocaleString()}
               </p>
-              <p className="font-label-caps text-[10px] text-on-surface-variant mt-1">USDT / USD / Готівка</p>
+              <p className="font-label-caps text-[10px] text-on-surface-variant mt-1">{t("priceCurrency")}</p>
             </div>
 
             {/* Buttons */}
@@ -154,7 +163,7 @@ export default async function ProductPage({ params }: Props) {
               <AddToCartButton product={product} />
               <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                Консультація
+                {t("consultButton")}
               </Link>
             </div>
 
@@ -179,7 +188,7 @@ export default async function ProductPage({ params }: Props) {
         <div className="flex items-center gap-4 mb-6">
           <div className="h-px bg-outline-variant flex-1" />
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap text-base">
-            Технічні Характеристики
+            {t("specsSectionTitle")}
           </h2>
           <div className="h-px bg-outline-variant flex-1" />
         </div>
@@ -204,7 +213,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="flex items-center gap-4 mb-8">
             <div className="h-px bg-outline-variant flex-1" />
             <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap text-base">
-              Схожі Моделі
+              {t("similarModelsHeading")}
             </h2>
             <div className="h-px bg-outline-variant flex-1" />
           </div>
@@ -225,7 +234,7 @@ export default async function ProductPage({ params }: Props) {
                     <span className="material-symbols-outlined text-gray-300 group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
                   )}
                   <span className={`absolute top-2 left-2 chip px-2 py-0.5 text-[9px] font-technical-data uppercase ${p.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
-                    {p.inStock ? "В наявності" : "Замовлення"}
+                    {p.inStock ? t("similarInStock") : t("similarOnOrder")}
                   </span>
                 </div>
                 <div className="p-4 border-t border-[#2e2d2b] flex flex-col gap-1 flex-1">
@@ -243,7 +252,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="flex justify-center mt-10">
             <Link href="/products" className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 text-xs">
               <span className="material-symbols-outlined text-[16px]">grid_view</span>
-              Весь каталог
+              {t("allCatalog")}
             </Link>
           </div>
         </section>

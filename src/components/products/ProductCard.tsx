@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 import { parseHashrateTH } from "@/lib/utils";
@@ -15,6 +18,7 @@ export function ProductCard({
   product: Product;
   revenuePerTH?: number;
 }) {
+  const t = useTranslations("products");
   const imgSrc = getProductImage(product.name);
 
   // Estimated daily profit at the default electricity rate
@@ -45,7 +49,7 @@ export function ProductCard({
         <div className="absolute top-3 left-3 flex gap-2 z-20">
           {product.isNew && (
             <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider">
-              Новинка
+              {t("badgeNew")}
             </span>
           )}
           <span
@@ -53,7 +57,7 @@ export function ProductCard({
               product.inStock ? "bg-[#1a2b1a] text-green-400" : ""
             }`}
           >
-            {product.inStock ? "В наявності" : "Під замовлення"}
+            {product.inStock ? t("inStock") : t("onOrder")}
           </span>
         </div>
       </div>
@@ -83,7 +87,7 @@ export function ProductCard({
                 ~${dailyProfit.toFixed(2)}
               </span>
               <span className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">
-                / день
+                {t("perDay")}
               </span>
             </div>
           )}
@@ -92,7 +96,7 @@ export function ProductCard({
               ${product.priceUSDT.toLocaleString()}
             </span>
             <span className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
-              Деталі
+              {t("details")}
             </span>
           </div>
         </div>

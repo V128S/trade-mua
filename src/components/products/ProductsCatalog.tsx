@@ -1,6 +1,7 @@
 // src/components/products/ProductsCatalog.tsx
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { useProductFilters, type SortOption } from "@/hooks/useProductFilters";
 import { ProductCard } from "./ProductCard";
@@ -9,14 +10,6 @@ import { ProductsMobileDrawer } from "./ProductsMobileDrawer";
 
 const PAGE_SIZE = 9; // 3-column grid → load 3 full rows at a time
 
-const SORT_LABELS: Record<SortOption, string> = {
-  price_desc: "Ціна: спадання",
-  price_asc:  "Ціна: зростання",
-  power_asc:  "Потужність ↑",
-  power_desc: "Потужність ↓",
-  new_first:  "Новинки першими",
-};
-
 export default function ProductsCatalog({
   products,
   revenueByAlgo = {},
@@ -24,6 +17,16 @@ export default function ProductsCatalog({
   products: Product[];
   revenueByAlgo?: Record<string, number>;
 }) {
+  const t = useTranslations("products");
+
+  const SORT_LABELS: Record<SortOption, string> = {
+    price_desc: t("sortPriceDesc"),
+    price_asc:  t("sortPriceAsc"),
+    power_asc:  t("sortPowerAsc"),
+    power_desc: t("sortPowerDesc"),
+    new_first:  t("sortNewFirst"),
+  };
+
   const { filters, setters, filtered, facets, globalRanges, activeCount, resetAll } =
     useProductFilters(products);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -41,6 +44,7 @@ export default function ProductsCatalog({
   const visibleProducts = filtered.slice(0, page * PAGE_SIZE);
   const hasMore = visibleProducts.length < filtered.length;
   const remaining = filtered.length - visibleProducts.length;
+  const loadCount = Math.min(remaining, PAGE_SIZE);
 
   return (
     <>
@@ -48,7 +52,7 @@ export default function ProductsCatalog({
       <div className="flex items-center gap-4 mb-10">
         <div className="h-px bg-outline-variant flex-1" />
         <h1 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
-          Каталог ASIC
+          {t("catalogHeading")}
         </h1>
         <div className="h-px bg-outline-variant flex-1" />
       </div>
@@ -76,7 +80,7 @@ export default function ProductsCatalog({
               </span>
               <input
                 type="text"
-                placeholder="Пошук моделі..."
+                placeholder={t("searchPlaceholder")}
                 value={filters.search}
                 onChange={e => setters.setSearch(e.target.value)}
                 className="w-full bg-card border border-[#2e2d2b] rounded pl-9 pr-4 py-2.5 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60 transition-colors"
@@ -94,7 +98,7 @@ export default function ProductsCatalog({
               }`}
             >
               <span className="material-symbols-outlined text-[14px] mr-1 align-middle">tune</span>
-              Фільтри{activeCount > 0 ? ` (${activeCount})` : ""}
+              {t("filtersButton")}{activeCount > 0 ? ` (${activeCount})` : ""}
             </button>
 
             {/* Sort */}
@@ -111,7 +115,7 @@ export default function ProductsCatalog({
 
           {/* Count */}
           <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-6">
-            Показано {visibleProducts.length} з {filtered.length}
+            {t("shownCount", { shown: visibleProducts.length, total: filtered.length })}
           </p>
 
           {/* Grid */}
@@ -131,11 +135,11 @@ export default function ProductsCatalog({
                   <button
                     type="button"
                     onClick={() => setPage(p => p + 1)}
-                    aria-label={`Завантажити ще ${Math.min(remaining, PAGE_SIZE)} товарів`}
+                    aria-label={t("loadMoreAria", { count: loadCount })}
                     className="btn-ghost px-8 py-3 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs"
                   >
                     <span className="material-symbols-outlined text-[14px] mr-2 align-middle">expand_more</span>
-                    Показати ще {Math.min(remaining, PAGE_SIZE)}
+                    {t("loadMore", { count: loadCount })}
                   </button>
                 </div>
               )}
@@ -143,13 +147,13 @@ export default function ProductsCatalog({
           ) : (
             <div className="flex flex-col items-center py-24 gap-4 text-on-surface-variant">
               <span className="material-symbols-outlined text-[48px]">search_off</span>
-              <p className="font-body-md text-body-md">Нічого не знайдено. Спробуйте інший запит.</p>
+              <p className="font-body-md text-body-md">{t("emptyState")}</p>
               <button
                 type="button"
                 onClick={resetAll}
                 className="btn-ghost px-6 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs"
               >
-                Скинути фільтри
+                {t("resetFilters")}
               </button>
             </div>
           )}

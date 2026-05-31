@@ -1,6 +1,7 @@
 // src/components/products/ProductsFilters.tsx
 "use client";
 import { useState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import type { FilterState, FilterSetters, Facets, GlobalRanges } from "@/hooks/useProductFilters";
 
 interface ProductsFiltersProps {
@@ -92,14 +93,14 @@ function FilterSection({
 
 function DualRangeSlider({
   min, max, value, onChange, format,
-  labels = ["Мінімум", "Максимум"],
+  labels,
 }: {
   min: number;
   max: number;
   value: [number, number];
   onChange: (v: [number, number]) => void;
   format: (v: number) => string;
-  labels?: [string, string];
+  labels: [string, string];
 }) {
   const range = max - min || 1;
   const leftPct  = ((value[0] - min) / range) * 100;
@@ -153,13 +154,15 @@ function DualRangeSlider({
 export function ProductsFilters({
   filters, setters, facets, globalRanges, activeCount, resetAll, hideHeader = false,
 }: ProductsFiltersProps) {
+  const t = useTranslations("products");
+
   return (
     <div>
       {/* Header — hidden inside mobile drawer which has its own header */}
       {!hideHeader && (
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#2e2d2b]">
         <span className="font-label-caps text-label-caps text-on-surface uppercase tracking-widest text-[11px]">
-          Фільтри
+          {t("filtersPanelTitle")}
         </span>
         {activeCount > 0 && (
           <button
@@ -167,24 +170,24 @@ export function ProductsFilters({
             onClick={resetAll}
             className="btn-ghost px-2 py-1 rounded font-label-caps text-[10px] uppercase tracking-widest"
           >
-            Скинути все
+            {t("filtersResetAll")}
           </button>
         )}
       </div>
       )}
 
-      {/* В наявності */}
+      {/* In stock */}
       <div className="border-b border-[#2e2d2b] py-3 mb-0">
         <CustomCheckbox
           checked={filters.stockOnly}
           onChange={() => setters.setStockOnly(!filters.stockOnly)}
-          label="В наявності"
+          label={t("filterInStock")}
         />
       </div>
 
-      {/* Виробник */}
+      {/* Brand */}
       {Object.keys(facets.brands).length > 0 && (
-        <FilterSection title="Виробник">
+        <FilterSection title={t("filterBrand")}>
           {Object.entries(facets.brands)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([brand, count]) => (
@@ -199,9 +202,9 @@ export function ProductsFilters({
         </FilterSection>
       )}
 
-      {/* Алгоритм */}
+      {/* Algorithm */}
       {Object.keys(facets.algorithms).length > 0 && (
-        <FilterSection title="Алгоритм">
+        <FilterSection title={t("filterAlgorithm")}>
           {Object.entries(facets.algorithms)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([algo, count]) => (
@@ -216,9 +219,9 @@ export function ProductsFilters({
         </FilterSection>
       )}
 
-      {/* Монети */}
+      {/* Coins */}
       {Object.keys(facets.coins).length > 0 && (
-        <FilterSection title="Монети">
+        <FilterSection title={t("filterCoins")}>
           {Object.entries(facets.coins)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([coin, count]) => (
@@ -233,9 +236,9 @@ export function ProductsFilters({
         </FilterSection>
       )}
 
-      {/* Охолодження */}
+      {/* Cooling */}
       {Object.keys(facets.coolingTypes).length > 0 && (
-        <FilterSection title="Охолодження">
+        <FilterSection title={t("filterCooling")}>
           {Object.entries(facets.coolingTypes).map(([type, count]) => (
             <CustomCheckbox
               key={type}
@@ -248,27 +251,27 @@ export function ProductsFilters({
         </FilterSection>
       )}
 
-      {/* Ціна */}
-      <FilterSection title="Ціна $">
+      {/* Price */}
+      <FilterSection title={t("filterPrice")}>
         <DualRangeSlider
           min={globalRanges.price[0]}
           max={globalRanges.price[1]}
           value={filters.priceRange}
           onChange={setters.setPriceRange}
           format={v => `$${v.toLocaleString("uk-UA")}`}
-          labels={["Мінімальна ціна", "Максимальна ціна"]}
+          labels={[t("filterPriceMin"), t("filterPriceMax")]}
         />
       </FilterSection>
 
-      {/* Потужність */}
-      <FilterSection title="Потужність W">
+      {/* Power */}
+      <FilterSection title={t("filterPower")}>
         <DualRangeSlider
           min={globalRanges.power[0]}
           max={globalRanges.power[1]}
           value={filters.powerRange}
           onChange={setters.setPowerRange}
           format={v => `${v.toLocaleString("uk-UA")} W`}
-          labels={["Мінімальна потужність", "Максимальна потужність"]}
+          labels={[t("filterPowerMin"), t("filterPowerMax")]}
         />
       </FilterSection>
     </div>

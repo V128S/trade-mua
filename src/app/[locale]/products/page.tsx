@@ -1,16 +1,33 @@
 import type { Metadata } from "next";
 import { getProductsFromDB } from "@/lib/products";
 import { getMinerstatRevenue } from "@/lib/minerstat";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import ProductsCatalog from "@/components/products/ProductsCatalog";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Каталог ASIC-майнерів | Trade M",
-  description: "Весь асортимент Antminer, Whatsminer та інших ASIC-майнерів з актуальними цінами. В наявності та під замовлення.",
-};
+type Props = { params: Promise<{ locale: string }> };
 
-export default async function ProductsPage() {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "products" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: {
+      languages: {
+        uk: "/products",
+        ru: "/ru/products",
+        "x-default": "/products",
+      },
+    },
+  };
+}
+
+export default async function ProductsPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const [products, revenueMap] = await Promise.all([
     getProductsFromDB(),
     getMinerstatRevenue(),
