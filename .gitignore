@@ -42,3 +42,8 @@ AGENTS.md
 .mcp.json
 .agents/
 skills-lock.json
+
+# Local QA screenshots in repo root (not site assets — those live in public/)
+/*.png
+/*.jpeg
+/*.jpg
