@@ -2,14 +2,14 @@ import type { OrderStatus } from '@/lib/types/database.types'
 import { getTranslations } from 'next-intl/server'
 
 const STATUS_CLASSES: Record<OrderStatus, string> = {
-  pending:   'bg-[#2b2a26] text-[#ecc246]',
-  confirmed: 'bg-[#1a2520] text-emerald-400',
-  shipped:   'bg-[#1a2030] text-blue-400',
-  delivered: 'bg-[#1a2b1a] text-green-400',
-  cancelled: 'bg-[#2b1a1a] text-red-400',
+  pending:   'bg-amber-100 text-amber-700 dark:bg-[#2b2a26] dark:text-[#ecc246]',
+  confirmed: 'bg-emerald-100 text-emerald-700 dark:bg-[#1a2520] dark:text-emerald-400',
+  shipped:   'bg-blue-100 text-blue-700 dark:bg-[#1a2030] dark:text-blue-400',
+  delivered: 'bg-green-100 text-green-700 dark:bg-[#1a2b1a] dark:text-green-400',
+  cancelled: 'bg-red-100 text-red-700 dark:bg-[#2b1a1a] dark:text-red-400',
 }
 
-const FALLBACK_CLASSES = 'bg-[#2b2a26] text-on-surface-variant'
+const FALLBACK_CLASSES = 'bg-surface-container-high text-on-surface-variant'
 
 export default async function StatusBadge({ status }: { status: string }) {
   const t = await getTranslations('common')

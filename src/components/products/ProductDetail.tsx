@@ -49,7 +49,7 @@ export default function ProductDetail({ product, configs, revenuePerTH }: Props)
                   className={`p-3 rounded border transition-colors duration-200 flex flex-col gap-0.5 ${
                     isCurrent
                       ? "border-primary bg-primary/10"
-                      : "border-[#2e2d2b] hover:border-primary/50 bg-card"
+                      : "border-card-border hover:border-primary/50 bg-card"
                   }`}
                 >
                   <span className={`font-technical-data text-technical-data text-sm ${isCurrent ? "text-primary" : "text-on-surface"}`}>

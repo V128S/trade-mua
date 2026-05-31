@@ -144,7 +144,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                 ))}
               </ul>
 
-              <div className="border-t border-[#2e2d2b] pt-4 flex justify-between items-center">
+              <div className="border-t border-card-border pt-4 flex justify-between items-center">
                 <div>
                   <p className="font-label-caps text-label-caps text-primary uppercase tracking-widest">{s.price}</p>
                   <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider">{s.time}</p>

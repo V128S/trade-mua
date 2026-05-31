@@ -16,7 +16,7 @@ export default async function TrustBar({ compact = false }: { compact?: boolean 
 
   return (
     <div
-      className={`grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#2e2d2b] border-card rounded-lg overflow-hidden ${
+      className={`grid grid-cols-2 lg:grid-cols-4 gap-px bg-card-border border-card rounded-lg overflow-hidden ${
         compact ? "" : ""
       }`}
     >

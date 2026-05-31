@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Bind the `dark:` variant to the `.dark` class on <html> (the site toggles
+   themes via class, not prefers-color-scheme), so `dark:` utilities follow
+   the active theme. Base utilities are the light-mode values. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ─── Design Tokens ─── */
 @theme {
   /* Surfaces & Backgrounds */
@@ -25,6 +30,8 @@
   /* Borders */
   --color-outline:         #99907b;
   --color-outline-variant: #4d4635;
+  /* Card/divider border — adaptive equivalent of the legacy #2e2d2b hardcode */
+  --color-card-border:     #2e2d2b;
 
   /* Gold — Primary */
   --color-primary:               #ecc246;
@@ -162,6 +169,7 @@
   /* Borders */
   --color-outline:                   #7f7663;
   --color-outline-variant:           #d1c5af;
+  --color-card-border:               rgba(117, 91, 0, 0.12);
 
   /* Gold — light primary is darker bronze */
   --color-primary:                   #755b00;
@@ -290,16 +298,6 @@ body {
   border-color: rgba(117, 91, 0, 0.3);
   transform: translateY(-4px);
 }
-.shimmer {
-  background: linear-gradient(90deg, transparent, rgba(236, 194, 70, 0.1), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite;
-}
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
 /* ─── Hero carousel ─── */
 
 /* Fade overlays — must match body background */
@@ -454,4 +452,8 @@ select.catalog-sort {
 select.catalog-sort option {
   background: #1a1918;
   color: #e5e2db;
+}
+.light select.catalog-sort option {
+  background: #ffffff;
+  color: #1a1c1c;
 }

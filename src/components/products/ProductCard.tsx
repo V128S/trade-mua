@@ -56,7 +56,7 @@ export function ProductCard({
               is shown as a calm delivery line in the body instead of an alarming chip,
               so the catalog reads as "available, ships soon" rather than "nothing here". */}
           {product.inStock && (
-            <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider bg-[#16301a] text-green-400 inline-flex items-center gap-1">
+            <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider bg-green-100 text-green-700 dark:bg-[#16301a] dark:text-green-400 inline-flex items-center gap-1">
               <span className="material-symbols-outlined text-[12px]">check_circle</span>
               {t("inStock")}
             </span>
@@ -64,7 +64,7 @@ export function ProductCard({
         </div>
       </div>
 
-      <div className="p-5 flex flex-col gap-2 border-t border-[#2e2d2b] flex-1">
+      <div className="p-5 flex flex-col gap-2 border-t border-card-border flex-1">
         <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
           {product.algorithm}
         </span>
@@ -115,7 +115,7 @@ export function ProductCard({
               ${product.priceUSDT.toLocaleString()}
             </span>
             {/* CTA fills gold on card hover (group-hover) to pull the eye toward the click. */}
-            <span className="inline-flex items-center gap-1.5 border border-[#2e2d2b] px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs text-on-surface transition-colors duration-300 group-hover:bg-primary-container group-hover:border-primary group-hover:text-[#0e0e0a]">
+            <span className="inline-flex items-center gap-1.5 border border-card-border px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs text-on-surface transition-colors duration-300 group-hover:bg-primary-container group-hover:border-primary group-hover:text-[#0e0e0a]">
               {t("details")}
               <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </span>

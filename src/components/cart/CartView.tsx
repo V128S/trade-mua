@@ -74,7 +74,7 @@ export default function CartView() {
                 <p className="font-headline-md text-headline-md text-primary mt-1">${i.priceUSDT.toLocaleString()}</p>
               </div>
               <div className="flex flex-col items-end gap-2">
-                <div className="flex items-center border border-[#2e2d2b] rounded">
+                <div className="flex items-center border border-card-border rounded">
                   <button type="button" aria-label={t('ariaDecrease')} onClick={() => setQty(i.id, i.qty - 1)} className="w-8 h-8 text-on-surface-variant hover:text-primary">−</button>
                   <span className="w-8 text-center font-technical-data text-technical-data text-on-surface">{i.qty}</span>
                   <button type="button" aria-label={t('ariaIncrease')} onClick={() => setQty(i.id, i.qty + 1)} className="w-8 h-8 text-on-surface-variant hover:text-primary">+</button>
@@ -109,7 +109,7 @@ export default function CartView() {
                 value={code}
                 onChange={e => setCode(e.target.value)}
                 placeholder={t('promoPlaceholder')}
-                className="flex-1 min-w-0 bg-surface border border-[#2e2d2b] rounded px-3 py-2 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60"
+                className="flex-1 min-w-0 bg-surface border border-card-border rounded px-3 py-2 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60"
               />
               <button type="button" onClick={handleApplyPromo} disabled={checking} className="btn-ghost px-4 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs disabled:opacity-50">
                 {checking ? t('applying') : t('applyPromo')}
@@ -120,7 +120,7 @@ export default function CartView() {
         </div>
 
         {promo && (
-          <div className="flex justify-between font-body-md text-body-md text-on-surface border-t border-[#2e2d2b] pt-3">
+          <div className="flex justify-between font-body-md text-body-md text-on-surface border-t border-card-border pt-3">
             <span className="uppercase font-label-caps tracking-widest text-[11px]">{t('total')}</span>
             <span className="font-headline-md text-headline-md text-primary">${total.toLocaleString()}</span>
           </div>

@@ -66,14 +66,14 @@ export default function PromosManager({ promos }: { promos: Promo[] }) {
                 onChange={e => setter(e.target.value)}
                 required={required}
                 placeholder={placeholder}
-                className="w-full bg-surface border border-[#2e2d2b] rounded px-3 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors text-sm"
+                className="w-full bg-surface border border-card-border rounded px-3 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors text-sm"
               />
             </div>
           ))}
           <div>
             <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[10px]">Діє до</label>
             <input type="date" value={expires} onChange={e => setExpires(e.target.value)}
-              className="w-full bg-surface border border-[#2e2d2b] rounded px-3 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors text-sm" />
+              className="w-full bg-surface border border-card-border rounded px-3 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors text-sm" />
           </div>
           {error && <p className="col-span-full text-red-400 text-sm">{error}</p>}
           <div className="col-span-full">
@@ -87,7 +87,7 @@ export default function PromosManager({ promos }: { promos: Promo[] }) {
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b border-[#2e2d2b]">
+            <tr className="border-b border-card-border">
               {['Код', 'Знижка', 'Використано', 'Закінчується', 'Статус', ''].map(h => (
                 <th key={h} className="pb-3 pr-4 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">{h}</th>
               ))}
@@ -95,7 +95,7 @@ export default function PromosManager({ promos }: { promos: Promo[] }) {
           </thead>
           <tbody>
             {promos.map(p => (
-              <tr key={p.id} className="border-b border-[#2e2d2b]/50">
+              <tr key={p.id} className="border-b border-card-border">
                 <td className="py-3 pr-4 font-technical-data text-technical-data text-primary">{p.code}</td>
                 <td className="py-3 pr-4 font-body-md text-body-md text-on-surface">{p.discount_pct}%</td>
                 <td className="py-3 pr-4 font-body-md text-body-md text-on-surface-variant text-sm">{p.uses_count}{p.max_uses ? ` / ${p.max_uses}` : ''}</td>
@@ -104,7 +104,7 @@ export default function PromosManager({ promos }: { promos: Promo[] }) {
                 </td>
                 <td className="py-3 pr-4">
                   <button onClick={() => toggleActive(p)}
-                    className={`chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider cursor-pointer ${p.is_active ? 'bg-[#1a2b1a] text-green-400' : 'bg-[#2b1a1a] text-red-400'}`}>
+                    className={`chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider cursor-pointer ${p.is_active ? 'bg-green-100 text-green-700 dark:bg-[#1a2b1a] dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-[#2b1a1a] dark:text-red-400'}`}>
                     {p.is_active ? 'Активний' : 'Деактивовано'}
                   </button>
                 </td>

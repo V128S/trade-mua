@@ -83,7 +83,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             value={hashrate}
             onChange={(e) => setHashrate(e.target.value)}
             placeholder={t("hashratePlaceholder")}
-            className="w-full bg-card border border-[#2e2d2b] rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
+            className="w-full bg-card border border-card-border rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
           />
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
             {t("hashrateHint")}
@@ -147,7 +147,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             value={price || ""}
             onChange={(e) => setPrice(Math.max(0, Number(e.target.value)))}
             placeholder={t("equipmentPricePlaceholder")}
-            className="w-full bg-card border border-[#2e2d2b] rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
+            className="w-full bg-card border border-card-border rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
           />
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
             {t("equipmentPriceHint")}

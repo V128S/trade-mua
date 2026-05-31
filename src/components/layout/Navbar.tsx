@@ -85,7 +85,7 @@ function UserMenuButton() {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="dropdown-in absolute right-0 top-[calc(100%+10px)] w-56 bg-card border border-[#2e2d2b] rounded-lg shadow-2xl z-50 overflow-hidden">
+        <div className="dropdown-in absolute right-0 top-[calc(100%+10px)] w-56 bg-card border border-card-border rounded-lg shadow-2xl z-50 overflow-hidden">
 
           {/* Auth info */}
           {user && (
@@ -94,7 +94,7 @@ function UserMenuButton() {
                 <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">{t("account")}</p>
                 <p className="font-technical-data text-[11px] text-on-surface truncate">{user.email}</p>
               </div>
-              <div className="border-t border-[#2e2d2b]" />
+              <div className="border-t border-card-border" />
             </>
           )}
 
@@ -104,7 +104,7 @@ function UserMenuButton() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="w-full flex items-center justify-between px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+              className="w-full flex items-center justify-between px-2.5 py-2.5 rounded hover:bg-surface-container-high transition-colors group"
             >
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">
@@ -138,7 +138,7 @@ function UserMenuButton() {
             </div>
           </div>
 
-          <div className="border-t border-[#2e2d2b]" />
+          <div className="border-t border-card-border" />
 
           {/* Auth actions */}
           <div className="p-1.5">
@@ -147,7 +147,7 @@ function UserMenuButton() {
                 <Link
                   href="/dashboard"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+                  className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-surface-container-high transition-colors group"
                 >
                   <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">space_dashboard</span>
                   <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">{t("dashboard")}</span>
@@ -160,7 +160,7 @@ function UserMenuButton() {
                     setOpen(false);
                     window.location.href = locale === "ru" ? "/ru" : "/";
                   }}
-                  className="w-full flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+                  className="w-full flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-surface-container-high transition-colors group"
                 >
                   <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-red-400 transition-colors">logout</span>
                   <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-red-400 uppercase tracking-widest transition-colors">{t("logout")}</span>
@@ -170,7 +170,7 @@ function UserMenuButton() {
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
+                className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-surface-container-high transition-colors group"
               >
                 <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">login</span>
                 <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">{t("login")}</span>
@@ -230,7 +230,7 @@ export default function Navbar() {
           <Link href="/cart" aria-label={t("cartAria")} className="relative w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-200">
             <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
             {hydrated && count > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-primary text-[#0e0e0a] text-[10px] font-technical-data flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-primary text-on-primary text-[10px] font-technical-data flex items-center justify-center">
                 {count}
               </span>
             )}
@@ -254,7 +254,7 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-card border-t border-[#2e2d2b] px-margin-mobile py-4 space-y-1">
+        <div className="md:hidden bg-card border-t border-card-border px-margin-mobile py-4 space-y-1">
           {NAV_LINKS.map((l) => {
             const isActive = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
             return (

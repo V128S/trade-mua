@@ -33,17 +33,17 @@ export function ProductsMobileDrawer({ open, onClose, children }: ProductsMobile
         role="dialog"
         aria-modal="true"
         aria-label={t("drawerTitle")}
-        className={`fixed inset-x-0 bottom-0 z-50 h-[85vh] rounded-t-2xl bg-card border-t border-[#2e2d2b] transition-transform duration-300 ease-out lg:hidden flex flex-col ${
+        className={`fixed inset-x-0 bottom-0 z-50 h-[85vh] rounded-t-2xl bg-card border-t border-card-border transition-transform duration-300 ease-out lg:hidden flex flex-col ${
           open ? "translate-y-0" : "translate-y-full"
         }`}
       >
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 shrink-0">
-          <div className="w-10 h-1 rounded-full bg-[#2e2d2b]" />
+          <div className="w-10 h-1 rounded-full bg-card-border" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[#2e2d2b] shrink-0">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-card-border shrink-0">
           <span className="font-headline-md text-[16px] text-on-surface">{t("drawerTitle")}</span>
           <button
             type="button"

@@ -33,7 +33,7 @@ export default function FloatingContact() {
             href={a.href}
             {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
             onClick={() => setOpen(false)}
-            className="group flex items-center gap-3 bg-card border border-[#2e2d2b] rounded-full pl-4 pr-1.5 py-1.5 shadow-lg hover:border-primary transition-colors"
+            className="group flex items-center gap-3 bg-card border border-card-border rounded-full pl-4 pr-1.5 py-1.5 shadow-lg hover:border-primary transition-colors"
           >
             <span className="font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-on-surface group-hover:text-primary transition-colors whitespace-nowrap">
               {a.label}

@@ -90,7 +90,7 @@ export default function ProfileForm({ profile, userId }: { profile: Profile; use
             type={type}
             value={value}
             onChange={e => setter(e.target.value)}
-            className="w-full bg-surface border border-[#2e2d2b] rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
+            className="w-full bg-surface border border-card-border rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
           />
         </div>
       ))}

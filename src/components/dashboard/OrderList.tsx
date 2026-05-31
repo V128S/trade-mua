@@ -35,7 +35,7 @@ export default function OrderList({ orders }: { orders: Order[] }) {
             <StatusBadge status={order.status} />
           </div>
 
-          <div className="border-t border-[#2e2d2b] pt-4 space-y-2">
+          <div className="border-t border-card-border pt-4 space-y-2">
             {(Array.isArray(order.items) ? order.items as { name: string; qty: number; price_usdt: number }[] : []).map((item, i) => (
               <div key={i} className="flex justify-between items-center">
                 <span className="font-body-md text-body-md text-on-surface">{item.name}</span>
@@ -46,7 +46,7 @@ export default function OrderList({ orders }: { orders: Order[] }) {
             ))}
           </div>
 
-          <div className="border-t border-[#2e2d2b] pt-3 flex flex-wrap justify-between items-center gap-3">
+          <div className="border-t border-card-border pt-3 flex flex-wrap justify-between items-center gap-3">
             <div>
               <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
                 Адреса доставки

@@ -72,7 +72,7 @@ export default function ProductsSyncPanel({
           <li>Збережіть. Тригери → Додати тригер → onEdit → On edit</li>
           <li>У Властивостях скрипту встановіть SYNC_SECRET</li>
         </ol>
-        <pre className="bg-surface border border-[#2e2d2b] rounded p-4 text-[11px] text-on-surface-variant overflow-x-auto font-mono whitespace-pre-wrap">
+        <pre className="bg-surface border border-card-border rounded p-4 text-[11px] text-on-surface-variant overflow-x-auto font-mono whitespace-pre-wrap">
 {`function onEdit(e) {
   const secret = PropertiesService
     .getScriptProperties()

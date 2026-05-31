@@ -28,12 +28,12 @@ function CustomCheckbox({
         className={`w-3.5 h-3.5 shrink-0 rounded-sm border transition-colors flex items-center justify-center ${
           checked
             ? "bg-primary border-primary"
-            : "border-[#2e2d2b] group-hover:border-primary/60"
+            : "border-card-border group-hover:border-primary/60"
         }`}
       >
         {checked && (
           <span
-            className="material-symbols-outlined text-[#0e0e0a]"
+            className="material-symbols-outlined text-on-primary"
             style={{ fontSize: 10, fontVariationSettings: "'FILL' 1, 'wght' 700" }}
           >
             check
@@ -68,7 +68,7 @@ function FilterSection({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-[#2e2d2b] py-3">
+    <div className="border-b border-card-border py-3">
       <button
         type="button"
         aria-expanded={open}
@@ -114,7 +114,7 @@ function DualRangeSlider({
       </div>
       <div className="relative h-5 flex items-center">
         {/* Track base */}
-        <div className="absolute left-0 right-0 h-1 rounded-full bg-[#2e2d2b] pointer-events-none" />
+        <div className="absolute left-0 right-0 h-1 rounded-full bg-outline-variant pointer-events-none" />
         {/* Active fill */}
         <div
           className="absolute h-1 rounded-full bg-primary pointer-events-none"
@@ -160,7 +160,7 @@ export function ProductsFilters({
     <div>
       {/* Header — hidden inside mobile drawer which has its own header */}
       {!hideHeader && (
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#2e2d2b]">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-card-border">
         <span className="font-label-caps text-label-caps text-on-surface uppercase tracking-widest text-[11px]">
           {t("filtersPanelTitle")}
         </span>
@@ -177,7 +177,7 @@ export function ProductsFilters({
       )}
 
       {/* In stock */}
-      <div className="border-b border-[#2e2d2b] py-3 mb-0">
+      <div className="border-b border-card-border py-3 mb-0">
         <CustomCheckbox
           checked={filters.stockOnly}
           onChange={() => setters.setStockOnly(!filters.stockOnly)}

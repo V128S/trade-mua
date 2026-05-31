@@ -83,7 +83,7 @@ export default function ProductsCatalog({
                 placeholder={t("searchPlaceholder")}
                 value={filters.search}
                 onChange={e => setters.setSearch(e.target.value)}
-                className="w-full bg-card border border-[#2e2d2b] rounded pl-9 pr-4 py-2.5 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60 transition-colors"
+                className="w-full bg-card border border-card-border rounded pl-9 pr-4 py-2.5 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60 transition-colors"
               />
             </div>
 
@@ -94,7 +94,7 @@ export default function ProductsCatalog({
               className={`lg:hidden px-4 py-2.5 rounded border font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors whitespace-nowrap ${
                 activeCount > 0
                   ? "border-primary text-primary bg-primary/10"
-                  : "border-[#2e2d2b] text-on-surface-variant hover:border-primary/50"
+                  : "border-card-border text-on-surface-variant hover:border-primary/50"
               }`}
             >
               <span className="material-symbols-outlined text-[14px] mr-1 align-middle">tune</span>
@@ -105,7 +105,7 @@ export default function ProductsCatalog({
             <select
               value={filters.sortBy}
               onChange={e => setters.setSortBy(e.target.value as SortOption)}
-              className="catalog-sort bg-card border border-[#2e2d2b] rounded px-3 py-2.5 font-technical-data text-technical-data text-on-surface-variant focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
+              className="catalog-sort bg-card border border-card-border rounded px-3 py-2.5 font-technical-data text-technical-data text-on-surface-variant focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
             >
               {(Object.entries(SORT_LABELS) as [SortOption, string][]).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>

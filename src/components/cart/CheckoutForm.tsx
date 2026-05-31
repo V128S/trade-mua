@@ -44,7 +44,7 @@ export default function CheckoutForm({ defaultPhone }: { defaultPhone: string })
     router.push(`/dashboard/orders?success=${res.orderId}`)
   }
 
-  const field = "w-full bg-surface border border-[#2e2d2b] rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
+  const field = "w-full bg-surface border border-card-border rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
   const labelCls = "font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]"
 
   return (
@@ -77,11 +77,11 @@ export default function CheckoutForm({ defaultPhone }: { defaultPhone: string })
           </div>
         ))}
         {promo && (
-          <div className="flex justify-between font-body-md text-sm text-on-surface-variant border-t border-[#2e2d2b] pt-2">
+          <div className="flex justify-between font-body-md text-sm text-on-surface-variant border-t border-card-border pt-2">
             <span>{t('promoLine', { code: promo.code })}</span><span>−{promo.pct}%</span>
           </div>
         )}
-        <div className="flex justify-between border-t border-[#2e2d2b] pt-3">
+        <div className="flex justify-between border-t border-card-border pt-3">
           <span className="font-label-caps text-label-caps uppercase tracking-widest text-[11px] text-on-surface-variant">{t('total')}</span>
           <span className="font-headline-md text-headline-md text-primary">${total.toLocaleString()}</span>
         </div>

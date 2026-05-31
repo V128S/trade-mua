@@ -171,7 +171,7 @@ export default async function ProductPage({ params }: Props) {
                   {product.isNew && (
                     <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">{t("badgeNew")}</span>
                   )}
-                  <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
+                  <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-green-100 text-green-700 dark:bg-[#1a2b1a] dark:text-green-400" : ""}`}>
                     {product.inStock ? t("inStock") : t("onOrder")}
                   </span>
                 </div>
@@ -290,11 +290,11 @@ export default async function ProductPage({ params }: Props) {
                   ) : (
                     <span className="material-symbols-outlined text-gray-300 group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
                   )}
-                  <span className={`absolute top-2 left-2 chip px-2 py-0.5 text-[9px] font-technical-data uppercase ${p.inStock ? "bg-[#1a2b1a] text-green-400" : ""}`}>
+                  <span className={`absolute top-2 left-2 chip px-2 py-0.5 text-[9px] font-technical-data uppercase ${p.inStock ? "bg-green-100 text-green-700 dark:bg-[#1a2b1a] dark:text-green-400" : ""}`}>
                     {p.inStock ? t("similarInStock") : t("similarOnOrder")}
                   </span>
                 </div>
-                <div className="p-4 border-t border-[#2e2d2b] flex flex-col gap-1 flex-1">
+                <div className="p-4 border-t border-card-border flex flex-col gap-1 flex-1">
                   <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">{p.algorithm}</span>
                   <h3 className="font-technical-data text-technical-data text-on-surface text-sm leading-snug">{p.name}</h3>
                   <p className="font-headline-md text-headline-md text-primary mt-auto pt-2 text-base">

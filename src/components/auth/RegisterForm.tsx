@@ -88,7 +88,7 @@ export default function RegisterForm() {
             onChange={e => setter(e.target.value)}
             required
             placeholder={placeholder}
-            className="w-full bg-surface border border-[#2e2d2b] rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
+            className="w-full bg-surface border border-card-border rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
           />
         </div>
       ))}

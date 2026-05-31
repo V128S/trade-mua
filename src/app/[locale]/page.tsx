@@ -218,14 +218,14 @@ export default async function Home({
               <div className="service-flip-inner h-full">
 
                 {/* ── Front ── */}
-                <div className="service-flip-face bg-card border border-[#2e2d2b] rounded-lg px-8 pt-8 pb-10 h-full flex flex-col items-center text-center gap-4 cursor-default">
+                <div className="service-flip-face bg-card border border-card-border rounded-lg px-8 pt-8 pb-10 h-full flex flex-col items-center text-center gap-4 cursor-default">
                   <span className="material-symbols-outlined text-primary text-[32px]">{s.icon}</span>
                   <h3 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">{s.title}</h3>
                   <p className="font-body-md text-body-md text-on-surface-variant">{s.desc}</p>
                 </div>
 
                 {/* ── Back ── */}
-                <div className="service-flip-face service-flip-back bg-[#1a1918] border border-primary/30 rounded-lg p-8 flex flex-col items-center justify-center gap-6 text-center">
+                <div className="service-flip-face service-flip-back bg-card border border-primary/30 rounded-lg p-8 flex flex-col items-center justify-center gap-6 text-center">
                   <span className="material-symbols-outlined text-primary text-[40px]">{s.icon}</span>
                   <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{s.back}</p>
                   <Link
@@ -322,7 +322,7 @@ export default async function Home({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
           {TESTIMONIALS.map((testimonial) => (
-            <div key={testimonial.name} className="bg-card border border-[#2e2d2b] rounded-lg p-6 flex flex-col gap-4 cursor-default">
+            <div key={testimonial.name} className="bg-card border border-card-border rounded-lg p-6 flex flex-col gap-4 cursor-default">
               {/* Stars + verified badge */}
               <div className="flex items-start justify-between gap-2">
                 <div className="flex gap-0.5 shrink-0">
@@ -342,7 +342,7 @@ export default async function Home({
                 &ldquo;{testimonial.text}&rdquo;
               </p>
               {/* Author */}
-              <div className="border-t border-[#2e2d2b] pt-4 flex items-center gap-3">
+              <div className="border-t border-card-border pt-4 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
                   <span className="font-headline-md text-primary text-[13px]">{testimonial.name[0]}</span>
                 </div>

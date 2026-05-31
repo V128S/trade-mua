@@ -15,7 +15,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           Особистий кабінет
         </h1>
       </div>
-      <nav className="flex gap-1 mb-8 border-b border-[#2e2d2b]">
+      <nav className="flex gap-1 mb-8 border-b border-card-border">
         {[
           { href: '/dashboard/profile', label: 'Профіль', icon: 'manage_accounts' },
           { href: '/dashboard/orders', label: 'Замовлення', icon: 'receipt_long' },

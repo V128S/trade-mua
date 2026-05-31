@@ -60,7 +60,7 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
                 value={order.status}
                 disabled={updating === order.id}
                 onChange={e => updateStatus(order.id, e.target.value as OrderStatus)}
-                className="bg-surface border border-[#2e2d2b] rounded px-2 py-1 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] focus:outline-none focus:border-primary/60 disabled:opacity-50"
+                className="bg-surface border border-card-border rounded px-2 py-1 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] focus:outline-none focus:border-primary/60 disabled:opacity-50"
               >
                 {STATUSES.map(s => (
                   <option key={s} value={s}>{STATUS_UA[s]}</option>
@@ -68,7 +68,7 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
               </select>
             </div>
           </div>
-          <div className="flex flex-wrap justify-between items-end gap-3 border-t border-[#2e2d2b] pt-3">
+          <div className="flex flex-wrap justify-between items-end gap-3 border-t border-card-border pt-3">
             <div>
               <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">Нова Пошта</p>
               <p className="font-body-md text-body-md text-on-surface mt-0.5">{order.nova_poshta_address ?? '—'}</p>

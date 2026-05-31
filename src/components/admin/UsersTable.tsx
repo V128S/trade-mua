@@ -11,7 +11,7 @@ export default function UsersTable({ users }: { users: Profile[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-left">
         <thead>
-          <tr className="border-b border-[#2e2d2b]">
+          <tr className="border-b border-card-border">
             {["Ім'я", 'Телефон', 'Дата реєстрації', 'Замовлень', ''].map(h => (
               <th key={h} className="pb-3 pr-4 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
                 {h}
@@ -21,7 +21,7 @@ export default function UsersTable({ users }: { users: Profile[] }) {
         </thead>
         <tbody>
           {users.map(u => (
-            <tr key={u.id} className="border-b border-[#2e2d2b]/50 hover:bg-card/50 transition-colors">
+            <tr key={u.id} className="border-b border-card-border hover:bg-card/50 transition-colors">
               <td className="py-3 pr-4 font-body-md text-body-md text-on-surface">{u.full_name ?? '—'}</td>
               <td className="py-3 pr-4 font-body-md text-body-md text-on-surface-variant text-sm">{u.phone ?? '—'}</td>
               <td className="py-3 pr-4 font-label-caps text-label-caps text-on-surface-variant text-[11px]">
