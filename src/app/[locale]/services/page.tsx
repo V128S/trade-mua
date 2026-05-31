@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import JsonLd from "@/components/seo/JsonLd";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -79,8 +80,20 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
     { q: t("faq8Q"), a: t("faq8A") },
   ];
 
+  // FAQPage structured data — mirrors the visible FAQ section below
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
   return (
     <div className="pb-section-gap">
+      <JsonLd data={faqLd} />
 
       {/* Hero */}
       <section className="relative py-24 px-margin-mobile md:px-margin-desktop overflow-hidden">
