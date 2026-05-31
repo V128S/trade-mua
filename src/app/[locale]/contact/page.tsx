@@ -113,26 +113,37 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("officesHeading")}</h2>
           <div className="h-px bg-outline-variant flex-1" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-2xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
           {[
-            { city: t("office1City"), desc: t("office1Desc") },
-            { city: t("office2City"), desc: t("office2Desc") },
+            { city: t("office1City"), desc: t("office1Desc"), address: t("office1Address"), mapQuery: "Butyshiv Ln 19, Kyiv, 01010" },
+            { city: t("office2City"), desc: t("office2Desc"), address: t("office2Address"), mapQuery: "Kosmichna St 19, Dnipro, 49000" },
           ].map((o) => (
-            <div key={o.city} className="bg-card border-card rounded-lg p-6 flex gap-4">
-              <span className="material-symbols-outlined text-primary text-[28px] shrink-0">location_on</span>
-              <div>
-                <h3 className="font-headline-md text-headline-md text-on-surface text-base uppercase tracking-widest mb-1">{o.city}</h3>
-                <p className="font-body-md text-body-md text-on-surface-variant text-sm">{o.desc}</p>
-                <a
-                  href="https://t.me/DenisHandsome"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 mt-3 font-label-caps text-label-caps text-primary uppercase tracking-widest text-[10px] hover:text-secondary transition-colors"
-                >
-                  {t("officeAddressLink")}
-                  <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
-                </a>
+            <div key={o.city} className="bg-card border-card rounded-lg overflow-hidden flex flex-col">
+              <div className="p-6 flex gap-4">
+                <span className="material-symbols-outlined text-primary text-[28px] shrink-0">location_on</span>
+                <div>
+                  <h3 className="font-headline-md text-headline-md text-on-surface text-base uppercase tracking-widest mb-1">{o.city}</h3>
+                  <p className="font-body-md text-body-md text-on-surface-variant text-sm">{o.desc}</p>
+                  <p className="font-technical-data text-technical-data text-on-surface text-sm mt-2">{o.address}</p>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(o.mapQuery)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 mt-3 font-label-caps text-label-caps text-primary uppercase tracking-widest text-[10px] hover:text-secondary transition-colors"
+                  >
+                    {t("mapDirections")}
+                    <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
+                  </a>
+                </div>
               </div>
+              <iframe
+                src={`https://www.google.com/maps?q=${encodeURIComponent(o.mapQuery)}&hl=uk&output=embed`}
+                title={`${o.city} — ${o.address}`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-56 border-0 grayscale-[0.3] contrast-[1.1] mt-auto"
+                allowFullScreen
+              />
             </div>
           ))}
         </div>

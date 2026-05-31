@@ -8,6 +8,7 @@ import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import JsonLd from "@/components/seo/JsonLd";
+import TrustBar from "@/components/ui/TrustBar";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const revalidate = 60;
@@ -232,6 +233,11 @@ export default async function ProductPage({ params }: Props) {
             />
           </div>
         </div>
+      </section>
+
+      {/* ── Trust strip ── */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-16">
+        <TrustBar />
       </section>
 
       {/* ── Tech specs ── */}

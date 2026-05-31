@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { getShuffledTopProductsFromDB, getRandomProductsFromDB } from "@/lib/products";
 import HeroCarousel from "@/components/hero/HeroCarousel";
 import BrandTicker from "@/components/ui/BrandTicker";
+import TrustBar from "@/components/ui/TrustBar";
 import { ProductCard } from "@/components/products/ProductCard";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -163,6 +164,11 @@ export default async function Home({
         <BrandTicker />
       </div>
 
+      {/* ── Trust strip ── */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-16">
+        <TrustBar />
+      </section>
+
       {/* ── Top Products ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         {/* Heading */}
@@ -263,6 +269,33 @@ export default async function Home({
         </div>
       </section>
 
+      {/* ── Achievements / social proof counters ── */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
+        <div className="bg-card border-card rounded-lg p-8 md:p-12 relative overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "24px 24px" }}
+          />
+          <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { value: t("statSoldValue"), label: t("statSoldLabel") },
+              { value: t("statClientsValue"), label: t("statClientsLabel") },
+              { value: t("statYearsValue"), label: t("statYearsLabel") },
+              { value: t("statWarrantyValue"), label: t("statWarrantyLabel") },
+            ].map((s) => (
+              <div key={s.label} className="text-center cursor-default">
+                <div className="font-display-lg text-[40px] md:text-[52px] leading-none text-primary">
+                  {s.value}
+                </div>
+                <div className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mt-2">
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Testimonials ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         <div className="flex items-center gap-4 mb-10">
@@ -276,13 +309,19 @@ export default async function Home({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
           {TESTIMONIALS.map((testimonial) => (
             <div key={testimonial.name} className="bg-card border border-[#2e2d2b] rounded-lg p-6 flex flex-col gap-4 cursor-default">
-              {/* Stars */}
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`material-symbols-outlined text-[16px] ${i < testimonial.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                    star
-                  </span>
-                ))}
+              {/* Stars + verified badge */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className={`material-symbols-outlined text-[16px] ${i < testimonial.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                      star
+                    </span>
+                  ))}
+                </div>
+                <span className="inline-flex items-center gap-1 font-label-caps text-[9px] text-green-400 uppercase tracking-widest shrink-0">
+                  <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                  {t("testimonialVerified")}
+                </span>
               </div>
               {/* Quote */}
               <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed flex-1">
@@ -295,7 +334,9 @@ export default async function Home({
                 </div>
                 <div>
                   <p className="font-technical-data text-sm text-on-surface leading-tight">{testimonial.name}</p>
-                  <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mt-0.5">{testimonial.location}</p>
+                  <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mt-0.5">
+                    {testimonial.location} · {t("testimonialSource")}
+                  </p>
                 </div>
               </div>
             </div>
