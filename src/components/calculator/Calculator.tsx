@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { parseHashrateTH } from "@/lib/utils";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH, revenue24h, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
+  const t = useTranslations("calculator");
   const [hashrate, setHashrate] = useState(initialHashrate);
   const [powerW, setPowerW] = useState(initialPower);
   const [electricityRate, setElectricityRate] = useState(0.07);
@@ -38,6 +40,12 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
     };
   }, [hashrate, powerW, electricityRate, revenuePerTH, revenue24h, price]);
 
+  const periods = [
+    { key: "periodDay", data: result?.daily },
+    { key: "periodMonth", data: result?.monthly },
+    { key: "periodYear", data: result?.annual },
+  ] as const;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-12">
 
@@ -50,7 +58,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             <span className="material-symbols-outlined text-primary text-[20px]">currency_bitcoin</span>
             <div>
               <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
-                Поточна ціна {coinSymbol}
+                {t("coinPriceLabel", { coinSymbol })}
               </p>
               <p className="font-headline-md text-headline-md text-primary">
                 {coinPrice > 0
@@ -58,7 +66,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
                       minimumFractionDigits: coinPrice > 30 ? 0 : 2,
                       maximumFractionDigits: coinPrice > 30 ? 0 : 2,
                     })}`
-                  : "Завантаження..."}
+                  : t("coinPriceLoading")}
               </p>
             </div>
           </div>
@@ -68,17 +76,17 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
         {/* Hashrate */}
         <div className="space-y-2">
           <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] block">
-            Хешрейт
+            {t("hashrateLabel")}
           </label>
           <input
             type="text"
             value={hashrate}
             onChange={(e) => setHashrate(e.target.value)}
-            placeholder="наприклад: 335 TH/s або 335"
+            placeholder={t("hashratePlaceholder")}
             className="w-full bg-card border border-[#2e2d2b] rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
           />
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
-            TH/s, GH/s, MH/s, kH/s або kSol/s
+            {t("hashrateHint")}
           </p>
         </div>
 
@@ -86,7 +94,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
         <div className="space-y-2">
           <div className="flex justify-between">
             <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
-              Споживання
+              {t("powerLabel")}
             </label>
             <span className="font-technical-data text-technical-data text-primary">{powerW} W</span>
           </div>
@@ -108,9 +116,9 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
         <div className="space-y-2">
           <div className="flex justify-between">
             <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
-              Тариф електроенергії
+              {t("electricityLabel")}
             </label>
-            <span className="font-technical-data text-technical-data text-primary">${electricityRate.toFixed(3)}/кВт·год</span>
+            <span className="font-technical-data text-technical-data text-primary">{t("unitKwhRate", { rate: `$${electricityRate.toFixed(3)}` })}</span>
           </div>
           <input
             type="range"
@@ -122,7 +130,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
           />
           <div className="flex justify-between font-label-caps text-[10px] text-on-surface-variant">
             <span>$0.02</span>
-            <span className="text-primary">$0.07 (готель)</span>
+            <span className="text-primary">{t("electricityHotelMark")}</span>
             <span>$0.30</span>
           </div>
         </div>
@@ -130,7 +138,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
         {/* Equipment price (optional — enables payback calc) */}
         <div className="space-y-2">
           <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] block">
-            Вартість обладнання ($)
+            {t("equipmentPriceLabel")}
           </label>
           <input
             type="number"
@@ -138,11 +146,11 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             inputMode="numeric"
             value={price || ""}
             onChange={(e) => setPrice(Math.max(0, Number(e.target.value)))}
-            placeholder="наприклад: 5000"
+            placeholder={t("equipmentPricePlaceholder")}
             className="w-full bg-card border border-[#2e2d2b] rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
           />
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
-            Вкажіть, щоб розрахувати окупність
+            {t("equipmentPriceHint")}
           </p>
         </div>
 
@@ -151,10 +159,10 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
           <span className="material-symbols-outlined text-primary text-[18px] mt-0.5">warehouse</span>
           <div>
             <p className="font-technical-data text-technical-data text-on-surface text-sm">
-              Майнінг-готель Trade M — $0.07/кВт·год
+              {t("hotelPromoTitle")}
             </p>
             <p className="font-label-caps text-[10px] text-on-surface-variant mt-0.5">
-              Промисловий тариф, 24/7 моніторинг, Київ / Дніпро
+              {t("hotelPromoDesc")}
             </p>
           </div>
         </div>
@@ -163,33 +171,29 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
       {/* Results */}
       <div className="space-y-4">
         <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-6">
-          Розрахунок
+          {t("resultsHeading")}
         </h2>
 
         {result ? (
           <>
-            {[
-              { label: "На день", data: result.daily },
-              { label: "На місяць", data: result.monthly },
-              { label: "На рік", data: result.annual },
-            ].map(({ label, data }) => (
-              <div key={label} className="bg-card border-card rounded-lg p-5">
+            {periods.map(({ key, data }) => (
+              <div key={key} className="bg-card border-card rounded-lg p-5">
                 <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-3">
-                  {label}
+                  {t(key)}
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <p className="font-label-caps text-[10px] text-on-surface-variant mb-1">Дохід</p>
-                    <p className="font-technical-data text-technical-data text-green-400">${data.revenue.toFixed(2)}</p>
+                    <p className="font-label-caps text-[10px] text-on-surface-variant mb-1">{t("colRevenue")}</p>
+                    <p className="font-technical-data text-technical-data text-green-400">${data!.revenue.toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="font-label-caps text-[10px] text-on-surface-variant mb-1">Витрати</p>
-                    <p className="font-technical-data text-technical-data text-red-400">−${data.cost.toFixed(2)}</p>
+                    <p className="font-label-caps text-[10px] text-on-surface-variant mb-1">{t("colCost")}</p>
+                    <p className="font-technical-data text-technical-data text-red-400">−${data!.cost.toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="font-label-caps text-[10px] text-on-surface-variant mb-1">Прибуток</p>
-                    <p className={`font-technical-data text-technical-data ${data.profit > 0 ? "text-primary" : "text-red-400"}`}>
-                      {data.profit > 0 ? `+$${data.profit.toFixed(2)}` : "−$0"}
+                    <p className="font-label-caps text-[10px] text-on-surface-variant mb-1">{t("colProfit")}</p>
+                    <p className={`font-technical-data text-technical-data ${data!.profit > 0 ? "text-primary" : "text-red-400"}`}>
+                      {data!.profit > 0 ? `+$${data!.profit.toFixed(2)}` : "−$0"}
                     </p>
                   </div>
                 </div>
@@ -200,37 +204,37 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             <div className="bg-card border-card rounded-lg p-5 flex items-center justify-between">
               <div>
                 <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-1">
-                  Окупність обладнання
+                  {t("roiHeading")}
                 </p>
                 <p className="font-body-md text-body-md text-on-surface-variant text-sm">
-                  При поточному курсі та тарифі
+                  {t("roiSubtitle")}
                 </p>
               </div>
               <div className="text-right">
                 {!result.hasPrice ? (
                   <p className="font-label-caps text-[10px] text-on-surface-variant max-w-[140px]">
-                    Вкажіть вартість обладнання
+                    {t("roiNeedPrice")}
                   </p>
                 ) : isFinite(result.roi) ? (
                   <>
-                    <p className="font-headline-md text-headline-md text-primary">{result.roi} днів</p>
-                    <p className="font-label-caps text-[10px] text-on-surface-variant">≈{Math.ceil(result.roi / 30)} місяців</p>
+                    <p className="font-headline-md text-headline-md text-primary">{t("roiDays", { days: result.roi })}</p>
+                    <p className="font-label-caps text-[10px] text-on-surface-variant">{t("roiMonths", { months: Math.ceil(result.roi / 30) })}</p>
                   </>
                 ) : (
-                  <p className="font-headline-md text-headline-md text-red-400">Збиток</p>
+                  <p className="font-headline-md text-headline-md text-red-400">{t("roiLoss")}</p>
                 )}
               </div>
             </div>
 
             <p className="font-label-caps text-[10px] text-on-surface-variant text-center pt-2">
-              * Розрахунок орієнтовний. Реальний прибуток залежить від складності мережі та курсу BTC.
+              {t("disclaimer")}
             </p>
           </>
         ) : (
           <div className="bg-card border-card rounded-lg p-12 flex flex-col items-center gap-4 text-on-surface-variant">
             <span className="material-symbols-outlined text-[48px]">calculate</span>
             <p className="font-body-md text-body-md text-center">
-              Введіть хешрейт для розрахунку
+              {t("emptyState")}
             </p>
           </div>
         )}

@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import Calculator from "@/components/calculator/Calculator";
 import { getMinerstatRevenue, ALGO_NAMES } from "@/lib/minerstat";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Калькулятор прибутковості | Trade M",
-  description: "Розрахуйте прибутковість ASIC-майнера з урахуванням поточного курсу та складності мережі.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return {
+    title: t("calculatorTitle"),
+    description: t("calculatorDescription"),
+    alternates: { languages: { uk: "/calculator", ru: "/ru/calculator", "x-default": "/calculator" } },
+  };
+}
 
 type Props = {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     hashrate?: string;
     power?: string;
@@ -18,10 +25,14 @@ type Props = {
   }>;
 };
 
-export default async function CalculatorPage({ searchParams }: Props) {
-  const [revenueMap, params] = await Promise.all([getMinerstatRevenue(), searchParams]);
+export default async function CalculatorPage({ params, searchParams }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("calculator");
 
-  const requestedAlgo = params.algorithm ?? "SHA256";
+  const [revenueMap, sp] = await Promise.all([getMinerstatRevenue(), searchParams]);
+
+  const requestedAlgo = sp.algorithm ?? "SHA256";
   const algo = Object.keys(ALGO_NAMES).includes(requestedAlgo) ? requestedAlgo : "SHA256";
   const algoData = revenueMap[algo] ?? revenueMap["SHA256"];
 
@@ -31,7 +42,7 @@ export default async function CalculatorPage({ searchParams }: Props) {
       <div className="flex items-center gap-4 mb-8">
         <div className="h-px bg-outline-variant flex-1" />
         <h1 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
-          Калькулятор Прибутковості
+          {t("pageHeading")}
         </h1>
         <div className="h-px bg-outline-variant flex-1" />
       </div>
@@ -44,9 +55,9 @@ export default async function CalculatorPage({ searchParams }: Props) {
           const isActive = a === algo;
           const qs = new URLSearchParams({
             algorithm: a,
-            ...(params.hashrate ? { hashrate: params.hashrate } : {}),
-            ...(params.power   ? { power:   params.power   } : {}),
-            ...(params.price   ? { price:   params.price   } : {}),
+            ...(sp.hashrate ? { hashrate: sp.hashrate } : {}),
+            ...(sp.power   ? { power:   sp.power   } : {}),
+            ...(sp.price   ? { price:   sp.price   } : {}),
           }).toString();
           return (
             <a
@@ -67,9 +78,9 @@ export default async function CalculatorPage({ searchParams }: Props) {
         coinSymbol={algoData?.coin ?? "BTC"}
         revenuePerTH={algoData?.revenuePerTH ?? 0}
         revenue24h={algoData?.revenue24h}
-        initialHashrate={params.hashrate ?? ""}
-        initialPower={params.power ? Number(params.power) : 3500}
-        initialPrice={params.price ? Number(params.price) : 0}
+        initialHashrate={sp.hashrate ?? ""}
+        initialPower={sp.power ? Number(sp.power) : 3500}
+        initialPrice={sp.price ? Number(sp.price) : 0}
       />
     </div>
   );
