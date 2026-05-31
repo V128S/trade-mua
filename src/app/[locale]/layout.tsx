@@ -11,7 +11,10 @@ import CryptoPriceTicker from "@/components/layout/CryptoPriceTicker";
 import NavigationProgress from "@/components/ui/NavigationProgress";
 import BackgroundSparkles from "@/components/ui/background-sparkles";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import JsonLd from "@/components/seo/JsonLd";
 import "../globals.css";
+
+const SITE_URL = "https://trade-mua.vercel.app";
 
 const syne = Syne({ subsets: ["latin"], weight: ["700", "800"], variable: "--font-syne", display: "swap" });
 const hanken = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-hanken", display: "swap" });
@@ -43,6 +46,22 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages();
 
+  // Site-wide structured data (built from our own constants, not user input)
+  const orgLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Trade M",
+    url: SITE_URL,
+    logo: `${SITE_URL}/icon.png`,
+  };
+  const websiteLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Trade M",
+    url: SITE_URL,
+    inLanguage: locale === "ru" ? "ru-RU" : "uk-UA",
+  };
+
   return (
     <html lang={locale} className={`dark ${syne.variable} ${hanken.variable} ${jetbrains.variable}`}>
       <head>
@@ -59,6 +78,7 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="bg-[#111110] text-on-surface selection:bg-primary selection:text-on-primary">
+        <JsonLd data={[orgLd, websiteLd]} />
         <NextIntlClientProvider messages={messages}>
           <NavigationProgress />
           <BackgroundSparkles />
