@@ -13,6 +13,9 @@
   },
   "common": {
     "scrollToTopAria": "Прокрутить вверх",
+    "contactOpenAria": "Открыть быстрый контакт",
+    "contactWriteTelegram": "Написать в Telegram",
+    "contactCall": "Позвонить",
     "statusPending": "Ожидает",
     "statusConfirmed": "Подтверждено",
     "statusShipped": "Отправлено",

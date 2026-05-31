@@ -11,6 +11,7 @@ import CryptoPriceTicker from "@/components/layout/CryptoPriceTicker";
 import NavigationProgress from "@/components/ui/NavigationProgress";
 import BackgroundSparkles from "@/components/ui/background-sparkles";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import FloatingContact from "@/components/ui/FloatingContact";
 import JsonLd from "@/components/seo/JsonLd";
 import "../globals.css";
 
@@ -93,6 +94,7 @@ export default async function LocaleLayout({
           </main>
           <Footer />
           <ScrollToTop />
+          <FloatingContact />
         </NextIntlClientProvider>
       </body>
       {process.env.NODE_ENV === "production" && <GoogleAnalytics gaId="G-PFXVHGW9JT" />}
