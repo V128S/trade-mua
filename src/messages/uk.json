@@ -390,6 +390,10 @@
     "scryptH1": "ASIC-майнери на Scrypt (Litecoin / Dogecoin)",
     "scryptTitle": "ASIC для майнінгу Litecoin та Dogecoin (Scrypt) — купити | Trade M",
     "scryptDescription": "Каталог ASIC-майнерів на алгоритмі Scrypt для видобутку Litecoin та Dogecoin: Antminer L7, L9, L11, ElphaPex DG та інші. Актуальні ціни, доставка по Україні, сервіс та майнінг-готель.",
-    "scryptIntro": "Scrypt — алгоритм мереж Litecoin і Dogecoin: майнери видобувають LTC та DOGE одночасно (поєднаний майнінг). Тут зібрані ASIC на Scrypt — порівняйте хешрейт (GH/s), споживання та дохідність або розрахуйте окупність у калькуляторі."
+    "scryptIntro": "Scrypt — алгоритм мереж Litecoin і Dogecoin: майнери видобувають LTC та DOGE одночасно (поєднаний майнінг). Тут зібрані ASIC на Scrypt — порівняйте хешрейт (GH/s), споживання та дохідність або розрахуйте окупність у калькуляторі.",
+    "kaspaH1": "ASIC-майнери на KHeavyHash (Kaspa)",
+    "kaspaTitle": "ASIC для майнінгу Kaspa (KHeavyHash) — купити | Trade M",
+    "kaspaDescription": "Каталог ASIC-майнерів на алгоритмі KHeavyHash для видобутку Kaspa (KAS): Antminer KS7 та інші. Актуальні ціни, доставка по Україні, сервіс та майнінг-готель.",
+    "kaspaIntro": "KHeavyHash — алгоритм мережі Kaspa (KAS), однієї з найшвидших блокчейн-мереж. Тут зібрані ASIC-майнери для видобутку Kaspa. Порівняйте хешрейт (TH/s), споживання та дохідність або розрахуйте окупність у калькуляторі."
   }
 }

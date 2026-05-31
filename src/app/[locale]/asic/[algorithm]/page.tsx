@@ -16,6 +16,7 @@ const SITE_URL = "https://trade-mua.vercel.app";
 const HUBS: Record<string, { dbAlgo: string }> = {
   sha256: { dbAlgo: "SHA256" },
   scrypt: { dbAlgo: "Scrypt" },
+  kaspa: { dbAlgo: "KHeavyHash" },
 };
 
 export function generateStaticParams() {

@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getProductsFromDB } from "@/lib/products";
 
 const BASE = "https://trade-mua.vercel.app";
-const STATIC_PATHS = ["", "/products", "/services", "/calculator", "/about", "/contact", "/asic/sha256", "/asic/scrypt"];
+const STATIC_PATHS = ["", "/products", "/services", "/calculator", "/about", "/contact", "/asic/sha256", "/asic/scrypt", "/asic/kaspa"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await getProductsFromDB();
