@@ -17,11 +17,12 @@ import "../globals.css";
 
 const SITE_URL = "https://trade-mua.vercel.app";
 
-// Material Symbols — subset to ONLY the icons actually used on the site (54),
+// Material Symbols — subset to ONLY the icons actually used on the site (56),
 // so the font payload shrinks from the full variable set (~MBs) to a few KB.
 // `icon_names` must be alphabetically sorted for the Google Fonts API.
-// NOTE: any new <span class="material-symbols-outlined">NAME</span> (incl.
-// dynamic icon: values) MUST be added here or it renders as raw ligature text.
+// NOTE: any new <span class="material-symbols-outlined">NAME</span> — including
+// dynamic ones from `icon:` props AND bare string arrays (e.g. VALUE_ICONS) —
+// MUST be added here, or it renders as raw ligature text in production.
 const MATERIAL_SYMBOLS_ICONS = [
   "account_circle", "admin_panel_settings", "arrow_forward", "bolt", "build",
   "calculate", "call", "campaign", "chat", "check", "check_circle",
@@ -31,8 +32,9 @@ const MATERIAL_SYMBOLS_ICONS = [
   "local_shipping", "location_on", "lock", "login", "logout", "manage_accounts",
   "mark_email_read", "memory", "menu", "payments", "person", "phone",
   "receipt_long", "schedule", "search", "search_off", "send", "settings",
-  "shield", "shopping_cart", "space_dashboard", "star", "sync", "translate",
-  "trending_up", "tune", "verified", "warehouse",
+  "shield", "shopping_cart", "space_dashboard", "speed", "star",
+  "support_agent", "sync", "translate", "trending_up", "tune", "verified",
+  "warehouse",
 ].join(",");
 
 const MATERIAL_SYMBOLS_HREF =
