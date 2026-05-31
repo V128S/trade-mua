@@ -2,8 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
 interface NavItem { href: string; label: string; }
 interface SlideNavProps { items: NavItem[]; }

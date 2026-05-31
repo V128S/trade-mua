@@ -21,8 +21,13 @@ export async function middleware(request: NextRequest) {
           getAll() {
             return request.cookies.getAll();
           },
-          setAll() {
-            /* read-only here; intlResponse carries cookies */
+          setAll(cookiesToSet) {
+            // Persist any refreshed Supabase auth cookies onto the response
+            // next-intl produced, otherwise token refresh is silently dropped
+            // and the user gets logged out on protected routes.
+            cookiesToSet.forEach(({ name, value, options }) =>
+              intlResponse.cookies.set(name, value, options)
+            );
           },
         },
       }
