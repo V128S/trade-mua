@@ -1,26 +1,38 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "Про компанію | Trade M",
-  description: "Trade M — офіційний постачальник ASIC-майнерів в Україні. Antminer, Whatsminer, повний сервіс.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return {
+    title: t("aboutTitle"),
+    description: t("aboutDescription"),
+    alternates: { languages: { uk: "/about", ru: "/ru/about", "x-default": "/about" } },
+  };
+}
 
-const STATS = [
-  { value: "300+", label: "Клієнтів" },
-  { value: "1000+", label: "Пристроїв продано" },
-  { value: "3 роки", label: "Досвіду" },
-  { value: "24/7", label: "Підтримка" },
-];
+const VALUE_ICONS = ["verified", "speed", "support_agent", "lock"];
 
-const VALUES = [
-  { icon: "verified", title: "Офіційні поставки", desc: "Прямі контракти з виробниками. Лише оригінальне обладнання з гарантією." },
-  { icon: "speed", title: "Швидка доставка", desc: "Доставка з Китаю за 10–14 днів. Фіксована ціна на весь час доставки." },
-  { icon: "support_agent", title: "Повний сервіс", desc: "Ремонт, прошивка, налаштування та розміщення — все під одним дахом." },
-  { icon: "lock", title: "Прозорі умови", desc: "Договір, гарантія, звітність. Ніяких прихованих платежів." },
-];
+export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("about");
 
-export default function AboutPage() {
+  const STATS = [
+    { value: t("stat1Value"), label: t("stat1Label") },
+    { value: t("stat2Value"), label: t("stat2Label") },
+    { value: t("stat3Value"), label: t("stat3Label") },
+    { value: t("stat4Value"), label: t("stat4Label") },
+  ];
+
+  const VALUES = [
+    { icon: VALUE_ICONS[0], title: t("value1Title"), desc: t("value1Desc") },
+    { icon: VALUE_ICONS[1], title: t("value2Title"), desc: t("value2Desc") },
+    { icon: VALUE_ICONS[2], title: t("value3Title"), desc: t("value3Desc") },
+    { icon: VALUE_ICONS[3], title: t("value4Title"), desc: t("value4Desc") },
+  ];
+
   return (
     <div className="pb-section-gap">
 
@@ -36,14 +48,13 @@ export default function AboutPage() {
         <div className="max-w-container-max mx-auto relative z-10 max-w-3xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-primary" />
-            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Кращий крипто Партнер</span>
+            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">{t("heroLabel")}</span>
           </div>
           <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none mb-6">
-            Trade <span className="text-primary">M</span>
+            {t("heroTitle")} <span className="text-primary">{t("heroTitleHighlight")}</span>
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant">
-            Ми — команда фахівців із майнінгу, яка виросла з власного досвіду управління фермами.
-            Trade M заснована з єдиною метою: зробити промисловий майнінг доступним і прозорим в Україні.
+            {t("heroBody")}
           </p>
         </div>
       </section>
@@ -64,7 +75,7 @@ export default function AboutPage() {
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px bg-outline-variant flex-1" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">Наші Принципи</h2>
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("valuesHeading")}</h2>
           <div className="h-px bg-outline-variant flex-1" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
@@ -85,11 +96,11 @@ export default function AboutPage() {
         <div className="flex flex-wrap gap-4 justify-center">
           <Link href="/products" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
             <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-            Каталог товарів
+            {t("ctaCatalog")}
           </Link>
           <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">contact_support</span>
-            Зв&apos;язатися
+            {t("ctaContact")}
           </Link>
         </div>
       </section>

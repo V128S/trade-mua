@@ -1,98 +1,84 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "Сервіси | Trade M",
-  description: "Ремонт та діагностика ASIC-майнерів, прошивка, налаштування та майнінг-готель в Україні.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return {
+    title: t("servicesTitle"),
+    description: t("servicesDescription"),
+    alternates: { languages: { uk: "/services", ru: "/ru/services", "x-default": "/services" } },
+  };
+}
 
-const SERVICES = [
-  {
-    icon: "build",
-    title: "Ремонт та Діагностика",
-    short: "Відновлення несправних майнерів будь-якої складності",
-    desc: "Власна сертифікована майстерня у Дніпрі та Києві. Оригінальні запчастини зі складу — без очікування постачання. Гарантія на виконані роботи 3 місяці.",
-    items: [
-      "Повна діагностика хешбордів, PSU та плати управління",
-      "Заміна ASIC-чипів: BM1370, BM1368, BM1366, BM1362",
-      "Ремонт та заміна блоків живлення",
-      "Усунення короткого замикання та наслідків перегріву",
-      "Чищення, нанесення термопасти, заміна вентиляторів",
-      "Стрес-тест під навантаженням 24+ год з протоколом",
-    ],
-    price: "Від $30",
-    time: "24–72 год",
-  },
-  {
-    icon: "settings",
-    title: "Прошивка та Налаштування",
-    short: "Максимальна прибутковість під ваш тариф електроенергії",
-    desc: "Індивідуальний підбір режиму роботи для вашого тарифу та умов охолодження. Підтримуємо Antminer, Whatsminer, Avalon та інші платформи.",
-    items: [
-      "Оновлення офіційної прошивки до останньої версії",
-      "Встановлення кастомної OS: Braiins OS+, VNish, LuxOS",
-      "Налаштування майнінг-пулу, воркера та резервного пулу",
-      "Розгін та підбір оптимального профілю хешрейт/енергія",
-      "Налаштування авто-тюнінгу під температурний діапазон",
-      "Підключення моніторингу, сповіщень та Telegram-бота",
-    ],
-    price: "Від $20",
-    time: "1–4 год",
-  },
-  {
-    icon: "warehouse",
-    title: "Майнінг-Готель",
-    short: "Промисловий об'єкт з тарифом від $0.07/кВт·год",
-    desc: "Виділений майданчик із промисловим живленням 380V, надпотужним охолодженням та цілодобовою охороною. Ви отримуєте щомісячний звіт та доступ до онлайн-моніторингу.",
-    items: [
-      "Промисловий об'єкт 380V / 50 Hz, виділений трансформатор",
-      "Конкурентний тариф $0.07–$0.09/кВт·год (залежно від обсягу)",
-      "Потужна вентиляція та кондиціонування — температура до +25°C",
-      "Відеоспостереження 24/7, охоронна сигналізація",
-      "Цілодобовий технічний моніторинг, перезавантаження на запит",
-      "Щомісячний детальний звіт про споживання та хешрейт",
-    ],
-    price: "$0.07–0.09/кВт·год",
-    time: "Від 1 місяця",
-  },
-];
+export default async function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("services");
 
-const FAQ = [
-  {
-    q: "Скільки коштує діагностика?",
-    a: "Безкоштовна при замовленні ремонту. Якщо ви відмовляєтесь від ремонту — $10. Висновок надаємо письмово.",
-  },
-  {
-    q: "Яка гарантія після ремонту?",
-    a: "3 місяці на виконані роботи. На замінені компоненти — гарантія виробника. Якщо поломка повторилась — усуваємо безкоштовно.",
-  },
-  {
-    q: "Як здати пристрій на ремонт?",
-    a: "Самовивіз у Київ або Дніпро. Також приймаємо відправлення Новою Поштою — пакуємо та повертаємо за наш рахунок.",
-  },
-  {
-    q: "Які мінімальні вимоги для майнінг-готелю?",
-    a: "Від 1 пристрою. Укладаємо договір, надаємо доступ до онлайн-моніторингу та щомісячний звіт.",
-  },
-  {
-    q: "Чи можна встановити кастомну прошивку на будь-який майнер?",
-    a: "Braiins OS+ та VNish підтримують більшість моделей Antminer. Для Whatsminer — LuxOS. Уточнюйте сумісність для вашої моделі.",
-  },
-  {
-    q: "Скільки часу займає прошивка та налаштування?",
-    a: "Як правило 1–4 години. Дистанційно — якщо майнер підключений до мережі. Виїзд або сервісний центр — за домовленістю.",
-  },
-  {
-    q: "Яке живлення у майнінг-готелі?",
-    a: "Промислова мережа 380V / 50Hz з виділеним трансформатором. ДБЖ на критичній інфраструктурі, автоматичне переключення.",
-  },
-  {
-    q: "Чи можна відвідати майнінг-готель особисто?",
-    a: "Так, за попередньою домовленістю. Надаємо екскурсію та показуємо умови розміщення вашого обладнання.",
-  },
-];
+  const SERVICES = [
+    {
+      icon: "build",
+      title: t("service1Title"),
+      short: t("service1Short"),
+      desc: t("service1Desc"),
+      items: [
+        t("service1Item1"),
+        t("service1Item2"),
+        t("service1Item3"),
+        t("service1Item4"),
+        t("service1Item5"),
+        t("service1Item6"),
+      ],
+      price: t("service1Price"),
+      time: t("service1Time"),
+    },
+    {
+      icon: "settings",
+      title: t("service2Title"),
+      short: t("service2Short"),
+      desc: t("service2Desc"),
+      items: [
+        t("service2Item1"),
+        t("service2Item2"),
+        t("service2Item3"),
+        t("service2Item4"),
+        t("service2Item5"),
+        t("service2Item6"),
+      ],
+      price: t("service2Price"),
+      time: t("service2Time"),
+    },
+    {
+      icon: "warehouse",
+      title: t("service3Title"),
+      short: t("service3Short"),
+      desc: t("service3Desc"),
+      items: [
+        t("service3Item1"),
+        t("service3Item2"),
+        t("service3Item3"),
+        t("service3Item4"),
+        t("service3Item5"),
+        t("service3Item6"),
+      ],
+      price: t("service3Price"),
+      time: t("service3Time"),
+    },
+  ];
 
-export default function ServicesPage() {
+  const FAQ = [
+    { q: t("faq1Q"), a: t("faq1A") },
+    { q: t("faq2Q"), a: t("faq2A") },
+    { q: t("faq3Q"), a: t("faq3A") },
+    { q: t("faq4Q"), a: t("faq4A") },
+    { q: t("faq5Q"), a: t("faq5A") },
+    { q: t("faq6Q"), a: t("faq6A") },
+    { q: t("faq7Q"), a: t("faq7A") },
+    { q: t("faq8Q"), a: t("faq8A") },
+  ];
+
   return (
     <div className="pb-section-gap">
 
@@ -105,14 +91,14 @@ export default function ServicesPage() {
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-primary" />
             <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">
-              Trade M
+              {t("heroLabel")}
             </span>
           </div>
           <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none mb-6">
-            Наші <span className="text-primary">Сервіси</span>
+            {t("heroTitle1")} <span className="text-primary">{t("heroTitle2")}</span>
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
-            Повний цикл обслуговування ASIC-майнерів — від ремонту до розміщення на промисловому об&apos;єкті.
+            {t("heroBody")}
           </p>
         </div>
       </section>
@@ -151,7 +137,7 @@ export default function ServicesPage() {
                   <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider">{s.time}</p>
                 </div>
                 <Link href="/contact" className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs flex items-center gap-1">
-                  Замовити
+                  {t("orderButton")}
                   <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </Link>
               </div>
@@ -165,7 +151,7 @@ export default function ServicesPage() {
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px bg-outline-variant flex-1" />
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
-            Часті Питання
+            {t("faqHeading")}
           </h2>
           <div className="h-px bg-outline-variant flex-1" />
         </div>
@@ -187,19 +173,19 @@ export default function ServicesPage() {
             style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
           <div className="relative z-10 space-y-4">
             <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">
-              Готові до роботи
+              {t("ctaHeading")}
             </h2>
             <p className="font-body-md text-body-md text-on-surface-variant max-w-lg mx-auto">
-              Зв&apos;яжіться з нами, щоб отримати консультацію або здати пристрій на сервіс.
+              {t("ctaBody")}
             </p>
             <div className="flex flex-wrap gap-4 justify-center pt-2">
               <Link href="/contact" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
                 <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                Зв&apos;язатися
+                {t("ctaContact")}
               </Link>
               <Link href="/products" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-                Каталог
+                {t("ctaCatalog")}
               </Link>
             </div>
           </div>
