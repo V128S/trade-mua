@@ -124,7 +124,6 @@ export default async function LocaleLayout({
             )};document.head.appendChild(l);})();`,
           }}
         />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <noscript>
           <link rel="stylesheet" href={MATERIAL_SYMBOLS_HREF} />
         </noscript>
