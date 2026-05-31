@@ -10,8 +10,7 @@ import SlideNav from "@/components/ui/nav-header";
 import { useCart } from "@/lib/cart/useCart";
 import LocaleSwitcher from "@/components/layout/LocaleSwitcher";
 
-const NAV_HREFS = ["/", "/products", "/services", "/calculator", "/contact"] as const;
-type NavHref = (typeof NAV_HREFS)[number];
+type NavHref = "/" | "/products" | "/services" | "/calculator" | "/contact";
 
 function subscribe(callback: () => void) {
   const observer = new MutationObserver(callback);
