@@ -94,6 +94,7 @@ export default async function ProductPage({ params }: Props) {
     "@type": "Product",
     name: product.name,
     sku: product.id,
+    description: t(descKey),
     brand: { "@type": "Brand", name: product.name.split(" ")[0] },
     ...(productImg ? { image: `${SITE_URL}${productImg}` } : {}),
     additionalProperty: [
@@ -108,6 +109,7 @@ export default async function ProductPage({ params }: Props) {
       availability: product.inStock
         ? "https://schema.org/InStock"
         : "https://schema.org/PreOrder",
+      priceValidUntil: new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
       url: productUrl,
       seller: { "@type": "Organization", name: "Trade M" },
     },
