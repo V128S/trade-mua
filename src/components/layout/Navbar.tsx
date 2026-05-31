@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import SlideNav from "@/components/ui/nav-header";
 import { useCart } from "@/lib/cart/useCart";
+import LocaleSwitcher from "@/components/layout/LocaleSwitcher";
 
 const NAV_HREFS = ["/", "/products", "/services", "/calculator", "/contact"] as const;
 type NavHref = (typeof NAV_HREFS)[number];
@@ -21,26 +22,12 @@ function getTheme(): "dark" | "light" {
   return document.documentElement.classList.contains("light") ? "light" : "dark";
 }
 
-// ── Language store (localStorage-backed) ─────────────────────────────────────
-function subscribeLang(callback: () => void) {
-  window.addEventListener("storage", callback);
-  window.addEventListener("lang-change", callback);
-  return () => {
-    window.removeEventListener("storage", callback);
-    window.removeEventListener("lang-change", callback);
-  };
-}
-function getLang(): "uk" | "en" {
-  return localStorage.getItem("lang") === "en" ? "en" : "uk";
-}
-
 // ── Desktop dropdown button ──────────────────────────────────────────────────
 function UserMenuButton() {
   const [open, setOpen]   = useState(false);
   const [user, setUser]   = useState<User | null | undefined>(undefined);
   const ref               = useRef<HTMLDivElement>(null);
   const theme             = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
-  const lang              = useSyncExternalStore(subscribeLang, getLang, () => "uk" as const);
   const t                 = useTranslations("nav");
 
   useEffect(() => {
@@ -68,12 +55,6 @@ function UserMenuButton() {
     html.classList.add(next);
     localStorage.setItem("theme", next);
   }, []);
-
-  const toggleLang = () => {
-    const next = lang === "uk" ? "en" : "uk";
-    localStorage.setItem("lang", next);
-    window.dispatchEvent(new Event("lang-change"));
-  };
 
   // Invisible placeholder while auth loads to prevent layout shift
   if (user === undefined) {
@@ -148,20 +129,13 @@ function UserMenuButton() {
             </button>
 
             {/* Language */}
-            <button
-              type="button"
-              onClick={toggleLang}
-              className="w-full flex items-center justify-between px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
-            >
+            <div className="w-full flex items-center justify-between px-2.5 py-2.5 rounded">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">translate</span>
+                <span className="material-symbols-outlined text-[15px] text-on-surface-variant">translate</span>
                 <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">{t("language")}</span>
               </div>
-              <div className="flex rounded overflow-hidden border border-outline-variant/30">
-                <span className={`px-2 py-0.5 font-label-caps text-[9px] uppercase tracking-wider transition-colors ${lang === "uk" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>UA</span>
-                <span className={`px-2 py-0.5 font-label-caps text-[9px] uppercase tracking-wider transition-colors ${lang === "en" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>EN</span>
-              </div>
-            </button>
+              <LocaleSwitcher />
+            </div>
           </div>
 
           <div className="border-t border-[#2e2d2b]" />
@@ -214,7 +188,6 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
-  const lang = useSyncExternalStore(subscribeLang, getLang, () => "uk" as const);
   const { count, hydrated } = useCart();
   const t = useTranslations("nav");
 
@@ -233,12 +206,6 @@ export default function Navbar() {
     html.classList.add(next);
     localStorage.setItem("theme", next);
   }, []);
-
-  const toggleLang = () => {
-    const next = lang === "uk" ? "en" : "uk";
-    localStorage.setItem("lang", next);
-    window.dispatchEvent(new Event("lang-change"));
-  };
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30">
@@ -325,20 +292,13 @@ export default function Navbar() {
               </div>
             </button>
 
-            <button
-              type="button"
-              onClick={toggleLang}
-              className="w-full flex items-center justify-between py-3 group"
-            >
+            <div className="w-full flex items-center justify-between py-3">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">translate</span>
+                <span className="material-symbols-outlined text-[18px] text-on-surface-variant">translate</span>
                 <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">{t("language")}</span>
               </div>
-              <div className="flex rounded overflow-hidden border border-outline-variant/30">
-                <span className={`px-2.5 py-1 font-label-caps text-[10px] uppercase tracking-wider transition-colors ${lang === "uk" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>UA</span>
-                <span className={`px-2.5 py-1 font-label-caps text-[10px] uppercase tracking-wider transition-colors ${lang === "en" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>EN</span>
-              </div>
-            </button>
+              <LocaleSwitcher />
+            </div>
 
             <Link
               href="/login"
