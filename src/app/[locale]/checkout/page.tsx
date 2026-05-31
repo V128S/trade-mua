@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import CheckoutForm from '@/components/cart/CheckoutForm'
+import HowItWorks from '@/components/ui/HowItWorks'
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -27,6 +28,7 @@ export default async function CheckoutPage({ params }: Props) {
     .single()
 
   const t = await getTranslations({ locale, namespace: 'checkout' })
+  const tHiw = await getTranslations({ locale, namespace: 'howItWorks' })
 
   return (
     <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-16 pb-section-gap">
@@ -35,6 +37,15 @@ export default async function CheckoutPage({ params }: Props) {
         <h1 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t('heading')}</h1>
         <div className="h-px bg-outline-variant flex-1" />
       </div>
+
+      {/* Set expectations: the order is a request — show what happens after submit */}
+      <div className="mb-12">
+        <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-5">
+          {tHiw('checkoutHeading')}
+        </p>
+        <HowItWorks />
+      </div>
+
       <CheckoutForm defaultPhone={profile?.phone ?? ''} />
     </div>
   )

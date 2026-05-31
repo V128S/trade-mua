@@ -4,6 +4,7 @@ import { getShuffledTopProductsFromDB, getRandomProductsFromDB } from "@/lib/pro
 import HeroCarousel from "@/components/hero/HeroCarousel";
 import BrandTicker from "@/components/ui/BrandTicker";
 import TrustBar from "@/components/ui/TrustBar";
+import HowItWorks from "@/components/ui/HowItWorks";
 import { ProductCard } from "@/components/products/ProductCard";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -23,6 +24,7 @@ export default async function Home({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("home");
+  const tHiw = await getTranslations("howItWorks");
 
   const TESTIMONIALS = [
     {
@@ -239,6 +241,18 @@ export default async function Home({
             </div>
           ))}
         </div>
+      </section>
+
+      {/* ── How it works ── */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
+        <div className="flex items-center gap-4 mb-10">
+          <div className="h-px bg-outline-variant flex-1" />
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+            {tHiw("heading")}
+          </h2>
+          <div className="h-px bg-outline-variant flex-1" />
+        </div>
+        <HowItWorks />
       </section>
 
       {/* ── Calculator CTA ── */}
