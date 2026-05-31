@@ -15,6 +15,7 @@ const SITE_URL = "https://trade-mua.vercel.app";
 // (the largest cluster); add more entries to spin up new hubs.
 const HUBS: Record<string, { dbAlgo: string }> = {
   sha256: { dbAlgo: "SHA256" },
+  scrypt: { dbAlgo: "Scrypt" },
 };
 
 export function generateStaticParams() {
