@@ -72,7 +72,7 @@ function UserMenuButton() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={t("accountMenuAria")}
-        className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-200 ${
+        className={`w-8 h-8 rounded-full border flex items-center justify-center cursor-pointer transition-all duration-200 ${
           open
             ? "border-primary text-primary bg-primary/10"
             : "border-outline-variant/50 text-on-surface-variant hover:border-primary/60 hover:text-primary"
