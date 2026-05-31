@@ -324,16 +324,14 @@ body {
 .animate-brand-scroll {
   animation: brand-scroll 28s linear infinite;
 }
-@keyframes crypto-up {
-  0%, 100% { transform: translateY(0);   opacity: 1;   }
-  50%       { transform: translateY(-2px); opacity: 0.65; }
+/* Crypto ticker — mobile marquee (бегущая строка) */
+@keyframes crypto-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-@keyframes crypto-down {
-  0%, 100% { transform: translateY(0);  opacity: 1;   }
-  50%       { transform: translateY(2px); opacity: 0.65; }
+.animate-crypto-marquee {
+  animation: crypto-marquee 22s linear infinite;
 }
-.crypto-up   { animation: crypto-up   2.8s ease-in-out infinite; }
-.crypto-down { animation: crypto-down 2.8s ease-in-out infinite; }
 
 @keyframes dropdown-in {
   from { opacity: 0; transform: translateY(-6px) scale(0.97); }

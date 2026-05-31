@@ -1,4 +1,4 @@
-// Server component — static crypto prices bar with direction animations
+// Server component — static crypto prices bar
 const COINS = [
   { id: "bitcoin",      symbol: "BTC"  },
   { id: "litecoin",     symbol: "LTC"  },
@@ -39,45 +39,55 @@ export default async function CryptoPriceTicker() {
     change: prices?.[coin.id]?.usd_24h_change  ?? null,
   }));
 
+  const renderItem = (coin: (typeof items)[number], key: string) => {
+    const isUp    = (coin.change ?? 0) >= 0;
+    const hasData = coin.price != null;
+    return (
+      <div
+        key={key}
+        className="flex items-center gap-1.5 group cursor-default shrink-0"
+      >
+        {/* Symbol */}
+        <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">
+          {coin.symbol}
+        </span>
+
+        {/* Price */}
+        {hasData ? (
+          <span className="font-technical-data text-[11px] text-on-surface group-hover:text-primary transition-colors duration-200">
+            ${formatPrice(coin.price!)}
+          </span>
+        ) : (
+          <span className="font-technical-data text-[10px] text-on-surface-variant/30">—</span>
+        )}
+
+        {/* Change badge */}
+        {coin.change != null && (
+          <span
+            className={`font-technical-data text-[9px] leading-none ${
+              isUp ? "text-green-400" : "text-red-400"
+            }`}
+          >
+            {isUp ? "▲" : "▼"}&thinsp;{Math.abs(coin.change).toFixed(2)}%
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="w-full h-9 flex items-center select-none border-b border-[#2e2d2b]/40">
-      <div className="max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop flex items-center justify-between gap-3 overflow-x-auto scrollbar-hide">
-        {items.map((coin, i) => {
-          const isUp   = (coin.change ?? 0) >= 0;
-          const hasData = coin.price != null;
-          return (
-            <div
-              key={coin.symbol}
-              className="flex items-center gap-1.5 group cursor-default shrink-0"
-            >
-              {/* Symbol */}
-              <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">
-                {coin.symbol}
-              </span>
+    <div className="w-full h-9 flex items-center select-none border-b border-[#2e2d2b]/40 overflow-hidden">
+      {/* Desktop — static, evenly spaced */}
+      <div className="hidden md:flex max-w-container-max mx-auto w-full px-margin-desktop items-center justify-between gap-3">
+        {items.map((coin) => renderItem(coin, coin.symbol))}
+      </div>
 
-              {/* Price */}
-              {hasData ? (
-                <span className="font-technical-data text-[11px] text-on-surface group-hover:text-primary transition-colors duration-200">
-                  ${formatPrice(coin.price!)}
-                </span>
-              ) : (
-                <span className="font-technical-data text-[10px] text-on-surface-variant/30">—</span>
-              )}
-
-              {/* Change badge */}
-              {coin.change != null && (
-                <span
-                  className={`font-technical-data text-[9px] leading-none ${
-                    isUp ? "text-green-400 crypto-up" : "text-red-400 crypto-down"
-                  }`}
-                  style={{ animationDelay: `${i * 0.35}s` }}
-                >
-                  {isUp ? "▲" : "▼"}&thinsp;{Math.abs(coin.change).toFixed(2)}%
-                </span>
-              )}
-            </div>
-          );
-        })}
+      {/* Mobile — marquee (бегущая строка), content duplicated for a seamless loop */}
+      <div className="md:hidden w-full overflow-hidden">
+        <div className="flex w-max items-center gap-5 animate-crypto-marquee">
+          {items.map((coin) => renderItem(coin, `a-${coin.symbol}`))}
+          {items.map((coin) => renderItem(coin, `b-${coin.symbol}`))}
+        </div>
       </div>
     </div>
   );
