@@ -7,9 +7,12 @@ import ProductDetail from "@/components/products/ProductDetail";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import JsonLd from "@/components/seo/JsonLd";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const revalidate = 60;
+
+const SITE_URL = "https://trade-mua.vercel.app";
 
 // Strip hashrate suffix to get base model name
 // "Antminer S21 Hydro 335Th" → "Antminer S21 Hydro"
@@ -82,8 +85,46 @@ export default async function ProductPage({ params }: Props) {
 
   const descKey = cooling === "Hydro" ? "descHydro" : cooling === "Immersion" ? "descImmersion" : "descAir";
 
+  // ── Structured data (built from live catalog data) ──
+  const localePrefix = locale === "ru" ? "/ru" : "";
+  const productUrl = `${SITE_URL}${localePrefix}/products/${product.id}`;
+  const productImg = getProductImage(product.name);
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    sku: product.id,
+    brand: { "@type": "Brand", name: product.name.split(" ")[0] },
+    ...(productImg ? { image: `${SITE_URL}${productImg}` } : {}),
+    additionalProperty: [
+      { "@type": "PropertyValue", name: "Algorithm", value: product.algorithm },
+      ...(product.hashrate ? [{ "@type": "PropertyValue", name: "Hashrate", value: product.hashrate }] : []),
+      { "@type": "PropertyValue", name: "Power", value: `${product.powerW} W` },
+    ],
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD",
+      price: String(product.priceUSDT),
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/PreOrder",
+      url: productUrl,
+      seller: { "@type": "Organization", name: "Trade M" },
+    },
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t("breadcrumbHome"), item: `${SITE_URL}${localePrefix}/` },
+      { "@type": "ListItem", position: 2, name: t("breadcrumbProducts"), item: `${SITE_URL}${localePrefix}/products` },
+      { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
+    ],
+  };
+
   return (
     <div className="pb-section-gap">
+      <JsonLd data={[productLd, breadcrumbLd]} />
 
       {/* ── Hero section ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto pt-10 pb-16">
