@@ -322,9 +322,10 @@ export default async function Home({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
           {TESTIMONIALS.map((testimonial) => (
-            <div key={testimonial.name} className="bg-card border border-card-border rounded-lg p-6 flex flex-col gap-4 cursor-default">
-              {/* Stars + verified badge */}
-              <div className="flex items-start justify-between gap-2">
+            <div key={testimonial.name} className="group bg-card border border-card-border rounded-lg p-6 flex flex-col gap-4 cursor-default">
+              {/* Stars + verified badge — checkmark pinned right; the label stays
+                  collapsed and slides out smoothly on card hover. */}
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex gap-0.5 shrink-0">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i} className={`material-symbols-outlined text-[15px] ${i < testimonial.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -332,9 +333,11 @@ export default async function Home({
                     </span>
                   ))}
                 </div>
-                <span className="inline-flex items-start gap-1 min-w-0 font-label-caps text-[9px] leading-tight text-green-400 uppercase tracking-wide text-right">
-                  <span className="material-symbols-outlined text-[13px] shrink-0 mt-px" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                  <span className="break-words">{t("testimonialVerified")}</span>
+                <span className="inline-flex items-center text-green-400" title={t("testimonialVerified")}>
+                  <span className="max-w-0 -translate-x-1 opacity-0 overflow-hidden whitespace-nowrap font-label-caps text-[9px] uppercase tracking-wide transition-all duration-500 ease-out group-hover:max-w-[140px] group-hover:translate-x-0 group-hover:opacity-100 group-hover:mr-1 motion-reduce:transition-none">
+                    {t("testimonialVerified")}
+                  </span>
+                  <span className="material-symbols-outlined text-[13px] shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                 </span>
               </div>
               {/* Quote */}
