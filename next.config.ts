@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
+  // Tree-shake barrel imports so unused exports don't bloat client bundles.
+  experimental: {
+    optimizePackageImports: ["next-intl"],
+  },
   async redirects() {
     // /about was merged into /contact (story + stats + values now live there).
     // Keep the old URLs alive with permanent redirects for both locales.

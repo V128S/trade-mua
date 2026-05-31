@@ -17,6 +17,26 @@ import "../globals.css";
 
 const SITE_URL = "https://trade-mua.vercel.app";
 
+// Material Symbols — subset to ONLY the icons actually used on the site (52),
+// so the font payload shrinks from the full variable set (~MBs) to a few KB.
+// `icon_names` must be alphabetically sorted for the Google Fonts API.
+const MATERIAL_SYMBOLS_ICONS = [
+  "account_circle", "admin_panel_settings", "arrow_forward", "bolt", "build",
+  "calculate", "call", "campaign", "chat", "check", "check_circle",
+  "chevron_right", "close", "contact_support", "currency_bitcoin", "dark_mode",
+  "delete", "description", "expand_more", "forum", "grid_view", "group",
+  "keyboard_arrow_up", "light_mode", "local_offer", "local_shipping",
+  "location_on", "lock", "login", "logout", "manage_accounts",
+  "mark_email_read", "memory", "menu", "payments", "person", "phone",
+  "receipt_long", "schedule", "search_off", "send", "settings", "shield",
+  "shopping_cart", "space_dashboard", "star", "sync", "translate",
+  "trending_up", "tune", "verified", "warehouse",
+].join(",");
+
+const MATERIAL_SYMBOLS_HREF =
+  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" +
+  `&icon_names=${MATERIAL_SYMBOLS_ICONS}&display=swap`;
+
 const syne = Syne({ subsets: ["latin"], weight: ["700", "800"], variable: "--font-syne", display: "swap" });
 const hanken = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-hanken", display: "swap" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], weight: ["500"], variable: "--font-jetbrains", display: "swap" });
@@ -33,6 +53,10 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
   return {
+    // Makes every page's relative `alternates.languages` (hreflang) resolve to
+    // absolute URLs — fixes the PageSpeed SEO "Document doesn't have a valid
+    // hreflang" flag (Google requires absolute hreflang hrefs).
+    metadataBase: new URL(SITE_URL),
     title: t("homeTitle"),
     description: t("homeDescription"),
     verification: { google: "GUtZWvOqzDL18Dibg_f1RtVsE8o2kaNPEZErzjycOsc" },
@@ -47,6 +71,17 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const messages = await getMessages();
+
+  // Only ship namespaces that CLIENT components actually use to the browser —
+  // server components translate on the server and don't need messages hydrated.
+  // (Halves the i18n payload in every page's RSC stream. Audited: every
+  // "use client" component's useTranslations namespace is listed here.)
+  const CLIENT_NAMESPACES = [
+    "auth", "calculator", "cart", "checkout", "common", "home", "nav", "products",
+  ];
+  const clientMessages = Object.fromEntries(
+    Object.entries(messages).filter(([ns]) => CLIENT_NAMESPACES.includes(ns))
+  );
 
   // Site-wide structured data (built from our own constants, not user input)
   const orgLd = {
@@ -74,17 +109,25 @@ export default async function LocaleLayout({
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Material Symbols icon font is intentionally global (icons used site-wide);
-            next/font can't cleanly load this variable icon font, so we keep the link. */}
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        {/* Material Symbols icon font — loaded NON-render-blocking. The stylesheet is
+            injected at runtime instead of a plain <link rel="stylesheet">, so it never
+            gates first paint (was the #1 PageSpeed issue: ~20.8s render-block on mobile).
+            Subsetted via icon_names + display=swap, so the brief pre-load window is tiny. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(
+              MATERIAL_SYMBOLS_HREF
+            )};document.head.appendChild(l);})();`,
+          }}
         />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <noscript>
+          <link rel="stylesheet" href={MATERIAL_SYMBOLS_HREF} />
+        </noscript>
       </head>
       <body className="bg-[#111110] text-on-surface selection:bg-primary selection:text-on-primary">
         <JsonLd data={[orgLd, websiteLd]} />
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={clientMessages}>
           <NavigationProgress />
           <BackgroundSparkles />
           <Navbar />
