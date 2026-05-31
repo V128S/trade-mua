@@ -1,21 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import SlideNav from "@/components/ui/nav-header";
 import { useCart } from "@/lib/cart/useCart";
 
-const NAV_LINKS = [
-  { href: "/",           label: "Головна"     },
-  { href: "/products",   label: "Продукти"    },
-  { href: "/services",   label: "Сервіси"     },
-  { href: "/calculator", label: "Калькулятор" },
-  { href: "/contact",    label: "Контакти"    },
-];
+const NAV_HREFS = ["/", "/products", "/services", "/calculator", "/contact"] as const;
+type NavHref = (typeof NAV_HREFS)[number];
 
 function subscribe(callback: () => void) {
   const observer = new MutationObserver(callback);
@@ -46,6 +41,7 @@ function UserMenuButton() {
   const ref               = useRef<HTMLDivElement>(null);
   const theme             = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
   const lang              = useSyncExternalStore(subscribeLang, getLang, () => "uk" as const);
+  const t                 = useTranslations("nav");
 
   useEffect(() => {
     if (!open) return;
@@ -94,7 +90,7 @@ function UserMenuButton() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        aria-label="Меню акаунту"
+        aria-label={t("accountMenuAria")}
         className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-200 ${
           open
             ? "border-primary text-primary bg-primary/10"
@@ -114,7 +110,7 @@ function UserMenuButton() {
           {user && (
             <>
               <div className="px-4 py-3">
-                <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Акаунт</p>
+                <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">{t("account")}</p>
                 <p className="font-technical-data text-[11px] text-on-surface truncate">{user.email}</p>
               </div>
               <div className="border-t border-[#2e2d2b]" />
@@ -134,7 +130,7 @@ function UserMenuButton() {
                   {theme === "dark" ? "light_mode" : "dark_mode"}
                 </span>
                 <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">
-                  {theme === "dark" ? "Світла тема" : "Темна тема"}
+                  {theme === "dark" ? t("themeLight") : t("themeDark")}
                 </span>
               </div>
               {/* Toggle pill */}
@@ -159,7 +155,7 @@ function UserMenuButton() {
             >
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">translate</span>
-                <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">Мова</span>
+                <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">{t("language")}</span>
               </div>
               <div className="flex rounded overflow-hidden border border-outline-variant/30">
                 <span className={`px-2 py-0.5 font-label-caps text-[9px] uppercase tracking-wider transition-colors ${lang === "uk" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>UA</span>
@@ -180,7 +176,7 @@ function UserMenuButton() {
                   className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
                 >
                   <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">space_dashboard</span>
-                  <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">Кабінет</span>
+                  <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">{t("dashboard")}</span>
                 </Link>
                 <button
                   type="button"
@@ -193,7 +189,7 @@ function UserMenuButton() {
                   className="w-full flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
                 >
                   <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-red-400 transition-colors">logout</span>
-                  <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-red-400 uppercase tracking-widest transition-colors">Вийти</span>
+                  <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-red-400 uppercase tracking-widest transition-colors">{t("logout")}</span>
                 </button>
               </>
             ) : (
@@ -203,7 +199,7 @@ function UserMenuButton() {
                 className="flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
               >
                 <span className="material-symbols-outlined text-[15px] text-on-surface-variant group-hover:text-primary transition-colors">login</span>
-                <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">Увійти</span>
+                <span className="font-label-caps text-[9px] text-on-surface-variant group-hover:text-primary uppercase tracking-widest transition-colors">{t("login")}</span>
               </Link>
             )}
           </div>
@@ -220,6 +216,15 @@ export default function Navbar() {
   const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
   const lang = useSyncExternalStore(subscribeLang, getLang, () => "uk" as const);
   const { count, hydrated } = useCart();
+  const t = useTranslations("nav");
+
+  const NAV_LINKS: { href: NavHref; label: string }[] = [
+    { href: "/",           label: t("home")       },
+    { href: "/products",   label: t("products")   },
+    { href: "/services",   label: t("services")   },
+    { href: "/calculator", label: t("calculator") },
+    { href: "/contact",    label: t("contact")    },
+  ];
 
   const toggleTheme = useCallback(() => {
     const html = document.documentElement;
@@ -255,7 +260,7 @@ export default function Navbar() {
         {/* Actions */}
         <div className="flex items-center gap-2.5">
           {/* Cart */}
-          <Link href="/cart" aria-label="Кошик" className="relative w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-200">
+          <Link href="/cart" aria-label={t("cartAria")} className="relative w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-200">
             <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
             {hydrated && count > 0 && (
               <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-primary text-[#0e0e0a] text-[10px] font-technical-data flex items-center justify-center">
@@ -271,7 +276,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Меню"
+            aria-label={t("menuAria")}
             aria-expanded={menuOpen}
             className="md:hidden w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
           >
@@ -312,7 +317,7 @@ export default function Navbar() {
                   {theme === "dark" ? "light_mode" : "dark_mode"}
                 </span>
                 <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
-                  {theme === "dark" ? "Світла тема" : "Темна тема"}
+                  {theme === "dark" ? t("themeLight") : t("themeDark")}
                 </span>
               </div>
               <div className={`w-8 h-4 rounded-full flex items-center px-0.5 transition-all duration-300 ${theme === "light" ? "bg-primary" : "bg-outline-variant/30"}`}>
@@ -327,7 +332,7 @@ export default function Navbar() {
             >
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">translate</span>
-                <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Мова</span>
+                <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">{t("language")}</span>
               </div>
               <div className="flex rounded overflow-hidden border border-outline-variant/30">
                 <span className={`px-2.5 py-1 font-label-caps text-[10px] uppercase tracking-wider transition-colors ${lang === "uk" ? "bg-primary text-[#0e0e0a]" : "text-on-surface-variant"}`}>UA</span>
@@ -341,7 +346,7 @@ export default function Navbar() {
               className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-200"
             >
               <span className="material-symbols-outlined text-[18px]">login</span>
-              Увійти
+              {t("login")}
             </Link>
           </div>
         </div>
