@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { Link, usePathname } from "@/i18n/navigation";
 
 interface NavItem { href: string; label: string; }
@@ -95,11 +94,12 @@ function SlideCursor({
   position: { left: number; width: number; opacity: number };
 }) {
   return (
-    <motion.li
+    // CSS transition replaces framer-motion's spring — same slide effect,
+    // zero animation-library JS in the bundle.
+    <li
       aria-hidden
-      animate={position}
-      transition={{ type: "spring", stiffness: 500, damping: 40 }}
-      className="absolute z-0 top-1 bottom-1 rounded-full bg-primary/10 border border-primary/40 pointer-events-none"
+      style={{ left: position.left, width: position.width, opacity: position.opacity }}
+      className="absolute z-0 top-1 bottom-1 rounded-full bg-primary/10 border border-primary/40 pointer-events-none transition-[left,width,opacity] duration-300 ease-out"
     />
   );
 }
