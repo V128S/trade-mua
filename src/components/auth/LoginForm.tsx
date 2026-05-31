@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginForm() {
   const t = useTranslations('auth')
+  const locale = useLocale()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +33,7 @@ export default function LoginForm() {
     const redirect = searchParams.get('redirect')
     // Only allow same-origin relative paths (reject protocol-relative "//host")
     const safe = redirect && redirect.startsWith('/') && !redirect.startsWith('//')
-    window.location.href = safe ? redirect : '/dashboard'
+    window.location.href = safe ? redirect : (locale === 'ru' ? '/ru/dashboard' : '/dashboard')
   }
 
   return (

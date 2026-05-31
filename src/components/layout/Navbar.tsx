@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
@@ -29,6 +29,7 @@ function UserMenuButton() {
   const ref               = useRef<HTMLDivElement>(null);
   const theme             = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
   const t                 = useTranslations("nav");
+  const locale            = useLocale();
 
   useEffect(() => {
     if (!open) return;
@@ -158,7 +159,7 @@ function UserMenuButton() {
                     const sb = createClient();
                     await sb.auth.signOut();
                     setOpen(false);
-                    window.location.href = "/";
+                    window.location.href = locale === "ru" ? "/ru" : "/";
                   }}
                   className="w-full flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-[#252422] transition-colors group"
                 >

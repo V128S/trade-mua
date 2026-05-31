@@ -31,7 +31,6 @@ export async function generateMetadata({
   return {
     title: t("homeTitle"),
     description: t("homeDescription"),
-    alternates: { languages: { uk: "/", ru: "/ru", "x-default": "/" } },
   };
 }
 

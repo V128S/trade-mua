@@ -7,7 +7,10 @@ type Props = { params: Promise<{ locale: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'auth' })
-  return { title: t('resetTitle') }
+  return {
+    title: t('resetTitle'),
+    alternates: { languages: { uk: '/auth/reset-password', ru: '/ru/auth/reset-password', 'x-default': '/auth/reset-password' } },
+  }
 }
 
 export default async function ResetPasswordPage({ params }: Props) {

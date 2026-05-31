@@ -8,6 +8,7 @@ import { getProductImage } from "@/lib/product-images";
 
 export default function HeroCarousel({ products }: { products: Product[] }) {
   const t = useTranslations("home");
+  const tp = useTranslations("products");
   const items = [...products, ...products]; // duplicate for seamless infinite loop
 
   return (
@@ -56,7 +57,7 @@ export default function HeroCarousel({ products }: { products: Product[] }) {
                   </span>
                   <span
                     className={`w-2 h-2 rounded-full shrink-0 ${product.inStock ? "bg-green-400" : "bg-yellow-400"}`}
-                    title={product.inStock ? t("productInStock") : t("productOnOrder")}
+                    title={product.inStock ? tp("inStock") : tp("onOrder")}
                   />
                 </div>
               </div>

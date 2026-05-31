@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { getShuffledTopProductsFromDB, getRandomProductsFromDB } from "@/lib/products";
 import HeroCarousel from "@/components/hero/HeroCarousel";
@@ -6,6 +7,12 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const revalidate = 60; // refresh every minute
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    alternates: { languages: { uk: "/", ru: "/ru", "x-default": "/" } },
+  };
+}
 
 export default async function Home({
   params,

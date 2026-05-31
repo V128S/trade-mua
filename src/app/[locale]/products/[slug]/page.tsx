@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   ]);
   const product = products.find((p) => p.id === slug);
   if (!product) return { title: "Trade M" };
+  const path = `/products/${slug}`;
   return {
     title: `${product.name} | Trade M`,
     description: t("metaSlugDescription", {
@@ -41,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       hashrate: product.hashrate,
       power: product.powerW,
     }),
+    alternates: { languages: { uk: path, ru: `/ru${path}`, "x-default": path } },
   };
 }
 
