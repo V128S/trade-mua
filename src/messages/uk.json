@@ -2,5 +2,17 @@
   "meta": {
     "homeTitle": "Trade M | Кращий Партнер",
     "homeDescription": "Вигідні ASIC-майнери: Antminer, Whatsminer. Продаж, сервіс та майнінг-готель в Україні."
-  }
+  },
+  "common": {},
+  "nav": {},
+  "footer": {},
+  "home": {},
+  "products": {},
+  "services": {},
+  "calculator": {},
+  "about": {},
+  "contact": {},
+  "cart": {},
+  "checkout": {},
+  "auth": {}
 }
