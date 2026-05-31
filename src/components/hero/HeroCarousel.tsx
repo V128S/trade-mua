@@ -29,14 +29,14 @@ export default function HeroCarousel({ products }: { products: Product[] }) {
               className="group bg-card border-card rounded-lg overflow-hidden shrink-0 hover-primary-border transition-colors duration-300 flex items-center gap-3 px-3 py-2.5"
             >
               {/* Image */}
-              <div className="w-16 h-16 bg-white rounded flex items-center justify-center shrink-0 overflow-hidden">
+              <div className="relative w-16 h-16 bg-white rounded flex items-center justify-center shrink-0 overflow-hidden">
                 {imgSrc ? (
                   <Image
                     src={imgSrc}
                     alt={product.name}
-                    width={56}
-                    height={56}
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    fill
+                    sizes="64px"
+                    className="object-contain p-1.5 group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
                   <span className="material-symbols-outlined text-outline-variant text-[32px]">memory</span>

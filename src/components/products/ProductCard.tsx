@@ -37,9 +37,9 @@ export function ProductCard({
           <Image
             src={imgSrc}
             alt={product.name}
-            width={160}
-            height={160}
-            className="relative z-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px"
+            className="relative z-10 object-contain p-4 drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
           <span className="material-symbols-outlined text-outline-variant group-hover:text-primary/40 transition-colors text-[64px] relative z-10">

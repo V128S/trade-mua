@@ -159,9 +159,9 @@ export default async function ProductPage({ params }: Props) {
                   <Image
                     src={imgSrc}
                     alt={product.name}
-                    width={420}
-                    height={420}
-                    className="relative z-10 object-contain drop-shadow-2xl"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 45vw"
+                    className="relative z-10 object-contain p-8 drop-shadow-2xl"
                     priority
                   />
                 ) : (
@@ -286,7 +286,7 @@ export default async function ProductPage({ params }: Props) {
               >
                 <div className="relative h-36 bg-white flex items-center justify-center">
                   {simImg ? (
-                    <Image src={simImg} alt={p.name} width={120} height={120} className="relative z-10 object-contain group-hover:scale-105 transition-transform duration-500" />
+                    <Image src={simImg} alt={p.name} fill sizes="(max-width: 640px) 50vw, 200px" className="relative z-10 object-contain p-3 group-hover:scale-105 transition-transform duration-500" />
                   ) : (
                     <span className="material-symbols-outlined text-gray-300 group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
                   )}
