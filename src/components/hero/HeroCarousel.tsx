@@ -1,15 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 
 export default function HeroCarousel({ products }: { products: Product[] }) {
+  const t = useTranslations("home");
   const items = [...products, ...products]; // duplicate for seamless infinite loop
 
   return (
-    <div className="relative h-[500px] overflow-hidden select-none" aria-label="Топ майнери">
+    <div className="relative h-[500px] overflow-hidden select-none" aria-label={t("carouselAriaLabel")}>
       {/* Top fade */}
       <div className="hero-fade-top absolute top-0 inset-x-0 h-24 z-10 pointer-events-none" />
       {/* Bottom fade */}
@@ -52,7 +54,10 @@ export default function HeroCarousel({ products }: { products: Product[] }) {
                   <span className="font-headline-md text-primary text-sm">
                     ${product.priceUSDT.toLocaleString()}
                   </span>
-                  <span className={`w-2 h-2 rounded-full shrink-0 ${product.inStock ? "bg-green-400" : "bg-yellow-400"}`} title={product.inStock ? "В наявності" : "Під замовлення"} />
+                  <span
+                    className={`w-2 h-2 rounded-full shrink-0 ${product.inStock ? "bg-green-400" : "bg-yellow-400"}`}
+                    title={product.inStock ? t("productInStock") : t("productOnOrder")}
+                  />
                 </div>
               </div>
             </Link>

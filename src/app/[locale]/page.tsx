@@ -1,14 +1,15 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { getShuffledTopProductsFromDB, getRandomProductsFromDB } from "@/lib/products";
 import type { Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 import HeroCarousel from "@/components/hero/HeroCarousel";
 import BrandTicker from "@/components/ui/BrandTicker";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const revalidate = 60; // refresh every minute
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, t }: { product: Product; t: Awaited<ReturnType<typeof getTranslations<"home">>> }) {
   const imgSrc = getProductImage(product.name);
   return (
     <Link href={`/products/${product.id}`} className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col">
@@ -31,12 +32,12 @@ function ProductCard({ product }: { product: Product }) {
         <div className="absolute top-3 left-3 flex gap-2 z-20">
           {product.isNew && (
             <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider">
-              Новинка
+              {t("productBadgeNew")}
             </span>
           )}
           <span className={`chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-[#1a2b1a] text-green-400" : ""
             }`}>
-            {product.inStock ? "В наявності" : "Під замовлення"}
+            {product.inStock ? t("productInStock") : t("productOnOrder")}
           </span>
         </div>
       </div>
@@ -64,7 +65,7 @@ function ProductCard({ product }: { product: Product }) {
             ${product.priceUSDT.toLocaleString()}
           </span>
           <span className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors">
-            Деталі
+            {t("productDetails")}
           </span>
         </div>
       </div>
@@ -72,55 +73,63 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-const TESTIMONIALS = [
-  {
-    name: "Олексій Д.",
-    location: "Дніпро",
-    stars: 5,
-    text: "Замовив Antminer S21 Pro, доставка за 12 днів. Ціна нижча ніж у конкурентів, гарантія справжня. Рекомендую всім серйозним майнерам.",
-  },
-  {
-    name: "Ігор М.",
-    location: "Київ",
-    stars: 5,
-    text: "Здав на ремонт два Whatsminer M60S — обидва відновили за день. Майстри знають своє діло, запчастини оригінальні. Вже третій раз звертаюсь.",
-  },
-  {
-    name: "Катерина В.",
-    location: "Харків",
-    stars: 5,
-    text: "Розмістила 8 машин у майнінг-готель. Тариф чесний, моніторинг 24/7, щомісяця детальний звіт. Спокій за обладнання — безцінно.",
-  },
-  {
-    name: "Ростислав П.",
-    location: "Одеса",
-    stars: 4,
-    text: "Прошивка під наш тариф дала +11% до прибутку. Менеджер пояснив кожен параметр. Зв'язок швидкий, питань не залишилось.",
-  },
-];
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("home");
 
-const SERVICES = [
-  {
-    icon: "build",
-    title: "Ремонт та Діагностика",
-    desc: "Повна діагностика несправностей, ремонт хешбордів та блоків живлення протягом 24 годин.",
-    back: "Відновимо ваш майнер у найкоротший термін. Власна майстерня, оригінальні запчастини, гарантія на роботи.",
-  },
-  {
-    icon: "settings",
-    title: "Прошивка та Налаштування",
-    desc: "Оновлення прошивки, налаштування пулу, розгін під ваш тариф електроенергії.",
-    back: "Максимізуємо прибутковість вашого обладнання. Індивідуальний підбір режиму під тариф та умови.",
-  },
-  {
-    icon: "warehouse",
-    title: "Майнінг-Готель",
-    desc: "Розміщення обладнання на промисловому об'єкті. Тариф від $0.07/кВт·год, 24/7 моніторинг.",
-    back: "Промисловий об'єкт з надійним живленням і охолодженням. Ваше обладнання під цілодобовою охороною.",
-  },
-];
+  const TESTIMONIALS = [
+    {
+      name: t("testimonial1Name"),
+      location: t("testimonial1Location"),
+      stars: 5,
+      text: t("testimonial1Text"),
+    },
+    {
+      name: t("testimonial2Name"),
+      location: t("testimonial2Location"),
+      stars: 5,
+      text: t("testimonial2Text"),
+    },
+    {
+      name: t("testimonial3Name"),
+      location: t("testimonial3Location"),
+      stars: 5,
+      text: t("testimonial3Text"),
+    },
+    {
+      name: t("testimonial4Name"),
+      location: t("testimonial4Location"),
+      stars: 4,
+      text: t("testimonial4Text"),
+    },
+  ];
 
-export default async function Home() {
+  const SERVICES = [
+    {
+      icon: "build",
+      title: t("service1Title"),
+      desc: t("service1Desc"),
+      back: t("service1Back"),
+    },
+    {
+      icon: "settings",
+      title: t("service2Title"),
+      desc: t("service2Desc"),
+      back: t("service2Back"),
+    },
+    {
+      icon: "warehouse",
+      title: t("service3Title"),
+      desc: t("service3Desc"),
+      back: t("service3Back"),
+    },
+  ];
+
   const [products, carouselProducts] = await Promise.all([
     getShuffledTopProductsFromDB(8),
     getRandomProductsFromDB(10),
@@ -154,41 +163,40 @@ export default async function Home() {
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-primary" />
                 <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">
-                  Кращий крипто Партнер
+                  {t("heroLabel")}
                 </span>
               </div>
 
               {/* Headline */}
               <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none">
-                Вигідні{" "}
+                {t("heroTitle1")}{" "}
                 <span className="text-primary">ASIC</span>
                 <br />
-                Майнери
+                {t("heroTitle2")}
               </h1>
 
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
-                Antminer, Whatsminer, Avalon — ми офіційні постачальники. Доставка з Китаю 10–14 днів.
-                Фіксована ціна під час замовлення.
+                {t("heroBody")}
               </p>
 
               {/* CTAs */}
               <div className="flex flex-wrap gap-4 pt-2">
                 <Link href="/products" className="btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform">
                   <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-                  Каталог товарів
+                  {t("heroCta1")}
                 </Link>
                 <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
                   <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                  Консультація
+                  {t("heroCta2")}
                 </Link>
               </div>
 
               {/* Trust stats */}
               <div className="flex flex-wrap gap-8 pt-4 border-t border-outline-variant/30">
                 {[
-                  { value: "10–14", label: "Днів доставка" },
-                  { value: "24/7", label: "Підтримка" },
-                  { value: "Київ / Дніпро", label: "Офіси" },
+                  { value: "10–14", label: t("statDeliveryLabel") },
+                  { value: "24/7", label: t("statSupportLabel") },
+                  { value: t("statOfficesValue"), label: t("statOfficesLabel") },
                 ].map((s) => (
                   <div key={s.label}>
                     <div className="font-headline-md text-headline-md text-primary">{s.value}</div>
@@ -220,7 +228,7 @@ export default async function Home() {
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px bg-outline-variant flex-1" />
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
-            Топ Моделі
+            {t("topModelsHeading")}
           </h2>
           <div className="h-px bg-outline-variant flex-1" />
         </div>
@@ -228,19 +236,19 @@ export default async function Home() {
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
             {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} t={t} />
             ))}
           </div>
         ) : (
           <p className="text-center font-body-md text-body-md text-on-surface-variant py-16">
-            Завантаження каталогу...
+            {t("catalogLoading")}
           </p>
         )}
 
         <div className="flex justify-center mt-10">
           <Link href="/products" className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">grid_view</span>
-            Весь каталог
+            {t("allCatalog")}
           </Link>
         </div>
       </section>
@@ -250,7 +258,7 @@ export default async function Home() {
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px bg-outline-variant flex-1" />
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
-            Наші Сервіси
+            {t("servicesHeading")}
           </h2>
           <div className="h-px bg-outline-variant flex-1" />
         </div>
@@ -275,7 +283,7 @@ export default async function Home() {
                     href="/services"
                     className="btn-primary py-2.5 px-6 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-1.5 text-[11px]"
                   >
-                    Детальніше
+                    {t("serviceLearnMore")}
                     <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                   </Link>
                 </div>
@@ -300,15 +308,15 @@ export default async function Home() {
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-3 max-w-xl cursor-default">
               <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">
-                Калькулятор Прибутковості
+                {t("calcHeading")}
               </h2>
               <p className="font-body-md text-body-md text-on-surface-variant">
-                Розрахуйте окупність вашого майнера. Враховуємо поточний курс та складність мережі.
+                {t("calcBody")}
               </p>
             </div>
             <Link href="/calculator" className="shrink-0 btn-primary py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap">
               <span className="material-symbols-outlined text-[18px]">calculate</span>
-              Розрахувати
+              {t("calcCta")}
             </Link>
           </div>
         </div>
@@ -319,34 +327,34 @@ export default async function Home() {
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px bg-outline-variant flex-1" />
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
-            Відгуки Клієнтів
+            {t("testimonialsHeading")}
           </h2>
           <div className="h-px bg-outline-variant flex-1" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="bg-card border border-[#2e2d2b] rounded-lg p-6 flex flex-col gap-4 cursor-default">
+          {TESTIMONIALS.map((testimonial) => (
+            <div key={testimonial.name} className="bg-card border border-[#2e2d2b] rounded-lg p-6 flex flex-col gap-4 cursor-default">
               {/* Stars */}
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`material-symbols-outlined text-[16px] ${i < t.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                  <span key={i} className={`material-symbols-outlined text-[16px] ${i < testimonial.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
                     star
                   </span>
                 ))}
               </div>
               {/* Quote */}
               <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed flex-1">
-                &ldquo;{t.text}&rdquo;
+                &ldquo;{testimonial.text}&rdquo;
               </p>
               {/* Author */}
               <div className="border-t border-[#2e2d2b] pt-4 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                  <span className="font-headline-md text-primary text-[13px]">{t.name[0]}</span>
+                  <span className="font-headline-md text-primary text-[13px]">{testimonial.name[0]}</span>
                 </div>
                 <div>
-                  <p className="font-technical-data text-sm text-on-surface leading-tight">{t.name}</p>
-                  <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mt-0.5">{t.location}</p>
+                  <p className="font-technical-data text-sm text-on-surface leading-tight">{testimonial.name}</p>
+                  <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mt-0.5">{testimonial.location}</p>
                 </div>
               </div>
             </div>
