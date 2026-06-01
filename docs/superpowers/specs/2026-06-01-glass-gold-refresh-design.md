@@ -26,7 +26,7 @@ Phase 1: port the shared glass-gold-crypto design system + fully restyle the **h
 | Floating coins | **Removed.** Do NOT port `.coin` ₿ glyphs or the rotating `coin-disc`. The abstract gold-dot network canvas (`#net`) is kept as background atmosphere. |
 | Industrial Excellence | Already absent from the live codebase (only in handoff HTML). Requirement satisfied by simply not introducing it. |
 | "Про нас" | New glass **About section on the home page**, reusing the existing `about` i18n namespace. |
-| Dnipro map | Google Maps embed on the **contact page**, Dnipro office only. Pin = handoff placeholder `просп. Дмитра Яворницького, 22, Дніпро`. |
+| Dnipro map | The live contact page already embeds maps for **both** offices (Kyiv + Dnipro, real addresses). Phase-1 change: **remove the Kyiv map iframe, keep only the Dnipro map** with its existing **real** address `Kosmichna St 19, Dnipro, 49000` (the Kyiv office info card stays, just without an embedded map). The handoff placeholder address is NOT used. |
 
 ## Architecture / approach
 
@@ -74,7 +74,7 @@ Apply glass-gold per section, structure unchanged:
 - **Hero headline** (`home.heroTitle1`): `Вигідні` → **`Промислові та домашні`** (uk) / **`Промышленные и домашние`** (ru). `heroTitle2` (`Майнери`/`Майнеры`) unchanged. Net hero reads "Промислові та домашні ASIC Майнери".
 - **Industrial Excellence:** none present — ensure none is introduced (footer tagline, meta stay neutral / current).
 - **«Про нас» home section:** new glass section (placed after Services), reusing `about` namespace — `heroBody` (story), the 4 `valueN` principles, the 4 `statN` stat pairs. Heading "Про нас". Optional "Докладніше" link reserved for a future `/about` page (not built in Phase 1).
-- **Dnipro map** (`contact/page.tsx`): add a responsive Google Maps `<iframe>` embed (lazy-loaded) for the Dnipro office only, styled to sit in a glass/bordered frame. Pin address = `просп. Дмитра Яворницького, 22, Дніпро`.
+- **Dnipro map** (`contact/page.tsx`): the offices grid currently renders a map `<iframe>` for both Kyiv and Dnipro. Change so only the **Dnipro** office card embeds a map (keep its existing real `mapQuery` `Kosmichna St 19, Dnipro, 49000`); the Kyiv card keeps its address + "directions" link but drops the embedded iframe. This is a targeted content edit on the otherwise-unstyled-this-phase contact page.
 
 ## Out of scope (Phase 2+)
 - Full restyle of catalog, services, calculator, contact, product-detail pages (they inherit the shared layer in Phase 1 but aren't individually polished).
