@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { subtotal, applyDiscount, buildOrderItems } from './cart-math'
+import { subtotal, applyDiscount, buildOrderItems, MAX_LINE_QTY } from './cart-math'
 import type { CartItem } from './types'
 
 const item = (id: string, priceUSDT: number, qty: number): CartItem =>
@@ -35,5 +35,16 @@ describe('buildOrderItems', () => {
   })
   it('skips unknown products and non-positive quantities', () => {
     expect(buildOrderItems([{ id: 'x', qty: 1 }, { id: 'b', qty: 0 }], products)).toEqual([])
+  })
+  it('caps quantity at MAX_LINE_QTY and floors non-integers', () => {
+    expect(buildOrderItems([{ id: 'a', qty: 100000 }], products)).toEqual([
+      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: MAX_LINE_QTY },
+    ])
+    expect(buildOrderItems([{ id: 'a', qty: 2.9 }], products)).toEqual([
+      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: 2 },
+    ])
+  })
+  it('skips NaN/Infinity quantities', () => {
+    expect(buildOrderItems([{ id: 'a', qty: NaN }, { id: 'b', qty: Infinity }], products)).toEqual([])
   })
 })

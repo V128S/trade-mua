@@ -10,6 +10,10 @@ export function applyDiscount(amount: number, pct: number): number {
   return Math.round(amount * (1 - pct / 100) * 100) / 100
 }
 
+// Upper bound on a single line's quantity — guards against absurd or malformed
+// client input creating a nonsensical order.
+export const MAX_LINE_QTY = 999
+
 export function buildOrderItems(
   lines: { id: string; qty: number }[],
   products: { id: string; name: string; priceUSDT: number }[],
@@ -17,7 +21,8 @@ export function buildOrderItems(
   const byId = new Map(products.map(p => [p.id, p]))
   return lines.flatMap(line => {
     const p = byId.get(line.id)
-    if (!p || line.qty <= 0) return []
-    return [{ product_id: p.id, name: p.name, price_usdt: p.priceUSDT, qty: line.qty }]
+    if (!p || !Number.isFinite(line.qty) || line.qty <= 0) return []
+    const qty = Math.min(Math.floor(line.qty), MAX_LINE_QTY)
+    return [{ product_id: p.id, name: p.name, price_usdt: p.priceUSDT, qty }]
   })
 }

@@ -45,14 +45,26 @@ async function runSync(): Promise<{ synced: number; timestamp: string } | { erro
 
   if (upsertError) return { error: upsertError.message }
 
-  // IDs are URL-safe slugs (a-z, 0-9, -) — safe for unquoted PostgREST filter
-  const currentIds = rows.map(r => r.id)
-  const { error: deleteError } = await supabase
+  // Remove rows no longer in the Sheet. Compute the stale set and delete it with
+  // an array filter: supabase-js `.in()` quotes/escapes each value, so a
+  // SKU-derived id containing reserved chars (",", "(", ")") can't corrupt the
+  // filter the way a string-interpolated `not.in.(…)` could.
+  const currentIds = new Set(rows.map(r => r.id))
+  const { data: existing, error: fetchError } = await supabase
     .from('products')
-    .delete()
-    .not('id', 'in', `(${currentIds.join(',')})`)
+    .select('id')
 
-  if (deleteError) return { error: `Sync ok but cleanup failed: ${deleteError.message}` }
+  if (fetchError) return { error: `Sync ok but cleanup failed: ${fetchError.message}` }
+
+  const staleIds = (existing ?? []).map(r => r.id).filter(id => !currentIds.has(id))
+  if (staleIds.length > 0) {
+    const { error: deleteError } = await supabase
+      .from('products')
+      .delete()
+      .in('id', staleIds)
+
+    if (deleteError) return { error: `Sync ok but cleanup failed: ${deleteError.message}` }
+  }
 
   return { synced: rows.length, timestamp: now }
 }
