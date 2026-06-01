@@ -59,7 +59,7 @@ export default function ProductsCatalog({
 
       <div className="flex gap-8 items-start">
         {/* Desktop sidebar */}
-        <aside className="hidden lg:block glass !rounded-2xl p-5 w-[280px] shrink-0 sticky top-28 h-max">
+        <aside className="hidden lg:block glass !rounded-2xl px-5 pb-5 pt-3.5 w-[280px] shrink-0 sticky top-28 h-max">
           <ProductsFilters
             filters={filters}
             setters={setters}

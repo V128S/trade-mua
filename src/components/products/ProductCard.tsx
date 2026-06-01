@@ -54,16 +54,19 @@ export function ProductCard({
               {t("badgeNew")}
             </span>
           )}
-          {/* Only the positive in-stock state gets a badge on the image — pre-order
-              is shown as a calm delivery line in the body instead of an alarming chip,
-              so the catalog reads as "available, ships soon" rather than "nothing here". */}
-          {product.inStock && (
-            <span className="chip px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider inline-flex items-center gap-1 !bg-green-400/10 !border-green-400/30 !text-green-400">
-              <span className="material-symbols-outlined text-[12px]">check_circle</span>
+        </div>
+        {/* Only the positive in-stock state gets a badge on the image — pre-order
+            is shown as a calm delivery line in the body instead of an alarming chip,
+            so the catalog reads as "available, ships soon" rather than "nothing here".
+            Collapsed to a single check by default; the label slides out on card hover. */}
+        {product.inStock && (
+          <span className="chip absolute top-3 right-3 z-20 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider inline-flex items-center overflow-hidden whitespace-nowrap !bg-green-400/10 !border-green-400/30 !text-green-400">
+            <span className="material-symbols-outlined text-[12px]">check_circle</span>
+            <span className="max-w-0 opacity-0 group-hover:max-w-[90px] group-hover:opacity-100 group-hover:ml-1 overflow-hidden transition-all duration-300">
               {t("inStock")}
             </span>
-          )}
-        </div>
+          </span>
+        )}
       </div>
 
       <div className={`${compact ? "p-4" : "p-5"} flex flex-col gap-2 border-t border-card-border flex-1`}>
