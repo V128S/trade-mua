@@ -73,14 +73,14 @@
   /* ─── Typography ─── */
 
   /* Font families — reference CSS vars injected by next/font */
-  --font-display-lg:       var(--font-syne), sans-serif;
-  --font-headline-lg:      var(--font-syne), sans-serif;
-  --font-headline-lg-mobile: var(--font-syne), sans-serif;
-  --font-headline-md:      var(--font-syne), sans-serif;
-  --font-body-lg:          var(--font-hanken), sans-serif;
-  --font-body-md:          var(--font-hanken), sans-serif;
-  --font-label-caps:       var(--font-hanken), sans-serif;
-  --font-technical-data:   var(--font-hanken), sans-serif;
+  --font-display-lg:       var(--font-display), sans-serif;
+  --font-headline-lg:      var(--font-display), sans-serif;
+  --font-headline-lg-mobile: var(--font-display), sans-serif;
+  --font-headline-md:      var(--font-display), sans-serif;
+  --font-body-lg:          var(--font-body), sans-serif;
+  --font-body-md:          var(--font-body), sans-serif;
+  --font-label-caps:       var(--font-body), sans-serif;
+  --font-technical-data:   var(--font-body), sans-serif;
 
   /* Font sizes + line-height + letter-spacing */
   /* Fluid: stays 72px on desktop, scales down on narrow screens so long
@@ -139,8 +139,8 @@
   --radius-full: 9999px;
 
   /* ─── Light mode extra fonts ─── */
-  --font-label-md: var(--font-jetbrains), monospace;
-  --font-label-sm: var(--font-jetbrains), monospace;
+  --font-label-md: var(--font-mono), monospace;
+  --font-label-sm: var(--font-mono), monospace;
 }
 
 /* ─── Light Mode Token Overrides ─── */
