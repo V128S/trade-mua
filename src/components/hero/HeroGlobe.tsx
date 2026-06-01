@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import RotatingEarth from "@/components/ui/wireframe-dotted-globe";
+import Image from "next/image";
 
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
@@ -11,11 +11,10 @@ function subscribe(cb: () => void) {
   return () => mq.removeEventListener("change", cb);
 }
 
-// Static wireframe globe for the home hero. Desktop-only via
-// useSyncExternalStore(matchMedia) so d3 + geometry never load on phones.
-// Rendered WITHOUT auto-rotation (no rAF loop) and with sparser dots, then
-// deferred to idle inside RotatingEarth — keeps it off the performance trace.
-// Drag to rotate / scroll to zoom still work on demand.
+// Hero globe — now the lightest possible form: a single static image (the same
+// gold dotted globe, pre-rendered) instead of a runtime d3/canvas globe. Zero
+// JS work, no d3, no dot generation. Desktop-only via matchMedia so the image
+// isn't even fetched on phones (the hero column is hidden there anyway).
 export default function HeroGlobe() {
   const isDesktop = useSyncExternalStore(
     subscribe,
@@ -31,7 +30,14 @@ export default function HeroGlobe() {
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_55%_at_50%_45%,rgba(236,194,70,0.16),transparent_65%)] blur-2xl"
       />
-      <RotatingEarth width={420} height={420} autoRotate={false} dotSpacing={26} className="relative z-10" />
+      <Image
+        src="/hero-globe.png"
+        alt=""
+        width={420}
+        height={420}
+        sizes="420px"
+        className="relative z-10 w-auto h-auto max-h-full object-contain"
+      />
     </div>
   );
 }
