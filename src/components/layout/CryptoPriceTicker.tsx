@@ -76,7 +76,7 @@ export default async function CryptoPriceTicker() {
   };
 
   return (
-    <div className="w-full h-9 flex items-center select-none overflow-hidden border-b border-[rgba(236,194,70,0.12)] bg-gradient-to-b from-[rgba(18,18,15,0.92)] to-[rgba(11,11,8,0.92)] backdrop-blur-md">
+    <div className="ticker-glass w-full h-9 flex items-center select-none overflow-hidden">
       {/* Desktop — static, evenly spaced */}
       <div className="hidden md:flex max-w-container-max mx-auto w-full px-margin-desktop items-center justify-between gap-3">
         {items.map((coin) => renderItem(coin, coin.symbol))}

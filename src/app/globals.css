@@ -632,3 +632,34 @@ canvas#net { position: fixed; inset: 0; z-index: -1; pointer-events: none; opaci
 @media (scripting: none) {
   .reveal, .stagger > * { opacity: 1 !important; transform: none !important; }
 }
+
+/* ── Post-port fixes (cascade/light-mode) ── */
+
+/* .glass sets position:relative, which (being defined later) would override the
+   absolute back-face of the 3D service flip. Restore it with higher specificity. */
+.service-flip-back.glass { position: absolute; inset: 0; }
+
+/* Glass crypto-ticker bar — theme-aware (replaces hardcoded dark arbitrary values) */
+.ticker-glass {
+  background: linear-gradient(180deg, rgba(18,18,15,0.92), rgba(11,11,8,0.92));
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(236,194,70,0.12);
+}
+.light .ticker-glass {
+  background: rgba(249,249,249,0.85);
+  border-bottom: 1px solid rgba(117,91,0,0.12);
+}
+
+/* gold-text in light mode: the dark gradient's near-white highlight (#fbf1c9)
+   is invisible on #f9f9f9 — use a higher-contrast bronze ramp. */
+.light .gold-text {
+  background: linear-gradient(120deg, #5c4708 0%, #755b00 35%, #c9a227 50%, #755b00 65%, #5c4708 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* glass hover border/shadow in light mode → bronze instead of bright gold */
+.light .glass-hover:hover {
+  border-color: rgba(117,91,0,0.4);
+  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.8), 0 30px 70px -30px rgba(117,91,0,0.18), 0 0 36px -10px rgba(117,91,0,0.18);
+}
