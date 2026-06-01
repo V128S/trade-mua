@@ -58,8 +58,11 @@ export default function ProductsCatalog({
       </div>
 
       <div className="flex gap-8 items-start">
-        {/* Desktop sidebar */}
-        <aside className="hidden lg:block glass !rounded-2xl px-5 pb-5 pt-3.5 w-[280px] shrink-0 sticky top-28 h-max">
+        {/* Desktop sidebar — static so its top lines up with the search/sort
+            row. (A `sticky top-28` here mis-rendered +112px down at rest in
+            Chromium and had no stick range anyway, so the panel just scrolled
+            off — a static panel aligns cleanly and behaves predictably.) */}
+        <aside className="hidden lg:block glass !rounded-2xl px-5 pb-5 pt-3.5 w-[280px] shrink-0">
           <ProductsFilters
             filters={filters}
             setters={setters}
