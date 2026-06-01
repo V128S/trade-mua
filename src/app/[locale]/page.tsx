@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { getShuffledTopProductsFromDB } from "@/lib/products";
-import HeroRobot from "@/components/hero/HeroRobot";
+import HeroGlobe from "@/components/hero/HeroGlobe";
 import BrandTicker from "@/components/ui/BrandTicker";
 import TrustBar from "@/components/ui/TrustBar";
 import HowItWorks from "@/components/ui/HowItWorks";
@@ -156,9 +156,9 @@ export default async function Home({
               </div>
             </div>
 
-            {/* Right — interactive 3D robot (desktop only) */}
+            {/* Right — rotating wireframe globe (desktop only) */}
             <div className="hidden lg:block">
-              <HeroRobot />
+              <HeroGlobe />
             </div>
 
           </div>
