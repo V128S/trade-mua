@@ -16,7 +16,7 @@ const ITEMS = [...BRANDS, ...BRANDS];
 
 export default function BrandTicker() {
   return (
-    <div className="w-full border-y border-card-border overflow-hidden bg-card/60 py-5 select-none">
+    <div className="glass w-full overflow-hidden py-5 select-none !rounded-2xl">
       <div className="animate-brand-scroll flex w-max">
         {ITEMS.map((brand, i) => (
           <div

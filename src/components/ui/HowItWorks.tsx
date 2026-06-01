@@ -19,7 +19,7 @@ export default async function HowItWorks() {
       {steps.map((s, i) => (
         <div
           key={s.title}
-          className="bg-card border-card rounded-lg p-6 flex flex-col gap-3 hover-primary-border transition-colors duration-300"
+          className="glass glass-hover p-6 flex flex-col gap-3"
         >
           <div className="flex items-center justify-between">
             <span className="material-symbols-outlined text-primary text-[28px]">{s.icon}</span>
