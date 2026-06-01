@@ -25,17 +25,16 @@ export default function GlassBackground() {
     document.querySelectorAll(".reveal, .stagger").forEach((el) => io.observe(el));
 
     // ── Glass mouse-glow ──
+    // The glow is only visible on :hover, so update just the card under the
+    // cursor instead of measuring every .glass on the page — the old loop ran
+    // getBoundingClientRect() on every card per mousemove (a forced-reflow storm
+    // on the catalog grid, the main source of Chromium scroll/move jank).
     const onMove = (e: MouseEvent) => {
-      document.querySelectorAll<HTMLElement>(".glass").forEach((c) => {
-        const r = c.getBoundingClientRect();
-        if (
-          e.clientX > r.left - 60 && e.clientX < r.right + 60 &&
-          e.clientY > r.top - 60 && e.clientY < r.bottom + 60
-        ) {
-          c.style.setProperty("--mx", e.clientX - r.left + "px");
-          c.style.setProperty("--my", e.clientY - r.top + "px");
-        }
-      });
+      const c = (e.target as Element | null)?.closest<HTMLElement>(".glass");
+      if (!c) return;
+      const r = c.getBoundingClientRect();
+      c.style.setProperty("--mx", e.clientX - r.left + "px");
+      c.style.setProperty("--my", e.clientY - r.top + "px");
     };
     document.addEventListener("mousemove", onMove);
 
@@ -51,7 +50,7 @@ export default function GlassBackground() {
       const onLeave = () => { mouse.x = mouse.y = null; };
       const init = () => {
         parts = [];
-        const n = Math.min(70, Math.floor((innerWidth * innerHeight) / 22000));
+        const n = Math.min(45, Math.floor((innerWidth * innerHeight) / 30000));
         for (let i = 0; i < n; i++)
           parts.push({
             x: Math.random() * cv.width, y: Math.random() * cv.height,
@@ -60,7 +59,26 @@ export default function GlassBackground() {
           });
       };
       const size = () => { cv.width = innerWidth; cv.height = innerHeight; init(); };
-      const loop = () => {
+
+      // Pause the canvas while the user is actively scrolling so its rAF work
+      // never competes with scroll compositing (the Chromium scroll-jank fix),
+      // and cap to ~30fps — ambient nodes don't need 60fps, which roughly halves
+      // the idle CPU/GPU draw (what spins up the fan).
+      let scrolling = false;
+      let scrollTimer = 0;
+      const onScroll = () => {
+        scrolling = true;
+        clearTimeout(scrollTimer);
+        scrollTimer = window.setTimeout(() => { scrolling = false; }, 140);
+      };
+      addEventListener("scroll", onScroll, { passive: true });
+
+      const FRAME_MS = 1000 / 30;
+      let lastT = 0;
+      const loop = (t = 0) => {
+        raf = requestAnimationFrame(loop);
+        if (scrolling || document.hidden || t - lastT < FRAME_MS) return;
+        lastT = t;
         cx.clearRect(0, 0, cv.width, cv.height);
         parts.forEach((p) => {
           if (mouse.x !== null && mouse.y !== null) {
@@ -80,7 +98,6 @@ export default function GlassBackground() {
               cx.strokeStyle = `rgba(236,194,70,${((130 - d) / 130) * 0.1})`; cx.lineWidth = 0.5; cx.stroke();
             }
           }
-        raf = requestAnimationFrame(loop);
       };
       addEventListener("resize", size);
       addEventListener("mousemove", onNetMove);
@@ -90,6 +107,8 @@ export default function GlassBackground() {
         removeEventListener("resize", size);
         removeEventListener("mousemove", onNetMove);
         removeEventListener("mouseleave", onLeave);
+        removeEventListener("scroll", onScroll);
+        clearTimeout(scrollTimer);
       };
     }
 
