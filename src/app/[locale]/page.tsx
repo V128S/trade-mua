@@ -182,7 +182,7 @@ export default async function Home({
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         {/* Heading */}
         <div className="head-rule mb-10">
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
             {t("topModelsHeading")}
           </h2>
           <div className="line" />
@@ -211,7 +211,7 @@ export default async function Home({
       {/* ── Services ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         <div className="head-rule mb-10">
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
             {t("servicesHeading")}
           </h2>
           <div className="line" />
@@ -251,7 +251,7 @@ export default async function Home({
       {/* ── Про нас ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         <div className="head-rule mb-10">
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
             {t("aboutHeading")}
           </h2>
           <div className="line" />
@@ -280,7 +280,7 @@ export default async function Home({
       {/* ── How it works ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         <div className="head-rule mb-10">
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
             {tHiw("heading")}
           </h2>
           <div className="line" />
@@ -301,7 +301,7 @@ export default async function Home({
           />
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-3 max-w-xl cursor-default">
-              <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">
+              <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest">
                 {t("calcHeading")}
               </h2>
               <p className="font-body-md text-body-md text-on-surface-variant">
@@ -346,7 +346,7 @@ export default async function Home({
       {/* ── Testimonials ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         <div className="head-rule mb-10">
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
             {t("testimonialsHeading")}
           </h2>
           <div className="line" />

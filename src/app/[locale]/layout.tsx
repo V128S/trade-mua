@@ -133,9 +133,10 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={clientMessages}>
           <NavigationProgress />
           <GlassBackground />
+          {/* Ticker pinned at the very top, navbar fixed directly below it (top-9) */}
+          <CryptoPriceTicker />
           <Navbar />
-          <main className="pt-20">
-            <CryptoPriceTicker />
+          <main className="pt-[108px]">
             {children}
           </main>
           <Footer />

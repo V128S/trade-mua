@@ -56,7 +56,7 @@ export function ProductCard({
               is shown as a calm delivery line in the body instead of an alarming chip,
               so the catalog reads as "available, ships soon" rather than "nothing here". */}
           {product.inStock && (
-            <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider bg-green-100 text-green-700 dark:bg-[#16301a] dark:text-green-400 inline-flex items-center gap-1">
+            <span className="chip px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider inline-flex items-center gap-1 !bg-green-400/10 !border-green-400/30 !text-green-400">
               <span className="material-symbols-outlined text-[12px]">check_circle</span>
               {t("inStock")}
             </span>

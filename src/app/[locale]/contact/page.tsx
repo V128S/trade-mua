@@ -58,18 +58,18 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
       {/* About — story + stats */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px bg-outline-variant flex-1" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("aboutHeading")}</h2>
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-10">
+          <div className="line" />
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{t("aboutHeading")}</h2>
+          <div className="line" />
         </div>
         <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mx-auto text-center mb-12">
           {ta("heroBody")}
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {STATS.map((s) => (
-            <div key={s.label} className="bg-card border-card rounded-lg p-6 text-center">
-              <p className="font-display-lg text-[40px] leading-none text-primary mb-2">{s.value}</p>
+            <div key={s.label} className="glass p-6 text-center">
+              <p className="font-display-lg text-[40px] leading-none gold-text mb-2">{s.value}</p>
               <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">{s.label}</p>
             </div>
           ))}
@@ -78,14 +78,14 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
       {/* Values */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px bg-outline-variant flex-1" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{ta("valuesHeading")}</h2>
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-10">
+          <div className="line" />
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{ta("valuesHeading")}</h2>
+          <div className="line" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
           {VALUES.map((v) => (
-            <div key={v.title} className="bg-card border-card rounded-lg p-8 flex gap-5">
+            <div key={v.title} className="glass glass-hover p-8 flex gap-5">
               <span className="material-symbols-outlined text-primary text-[28px] shrink-0 mt-1">{v.icon}</span>
               <div>
                 <h3 className="font-headline-md text-headline-md text-on-surface text-base uppercase tracking-widest mb-2">{v.title}</h3>
@@ -98,17 +98,17 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
       {/* Contacts grid */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="h-px bg-outline-variant flex-1" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("heroLabel")}</h2>
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-8">
+          <div className="line" />
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{t("heroLabel")}</h2>
+          <div className="line" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
 
           {/* Phone */}
           <a
             href="tel:+380974225060"
-            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+            className="glass glass-hover p-8 flex flex-col gap-5 group"
           >
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-primary text-[28px]">phone</span>
@@ -129,7 +129,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             href="https://t.me/BOSSDnepra"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+            className="glass glass-hover p-8 flex flex-col gap-5 group"
           >
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-primary text-[28px]">send</span>
@@ -150,7 +150,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             href="https://t.me/TRADEM_UA"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+            className="glass glass-hover p-8 flex flex-col gap-5 group"
           >
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-primary text-[28px]">campaign</span>
@@ -171,7 +171,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             href="https://t.me/BOSSDnepra"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 group"
+            className="glass glass-hover p-8 flex flex-col gap-5 group"
           >
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-primary text-[28px]">schedule</span>
@@ -191,17 +191,17 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
       {/* Offices */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="h-px bg-outline-variant flex-1" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("officesHeading")}</h2>
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-8">
+          <div className="line" />
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{t("officesHeading")}</h2>
+          <div className="line" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
           {[
             { city: t("office1City"), desc: t("office1Desc"), address: t("office1Address"), mapQuery: "Butyshiv Ln 19, Kyiv, 01010", hasMap: false },
             { city: t("office2City"), desc: t("office2Desc"), address: t("office2Address"), mapQuery: "Kosmichna St 19, Dnipro, 49000", hasMap: true },
           ].map((o) => (
-            <div key={o.city} className="bg-card border-card rounded-lg overflow-hidden flex flex-col">
+            <div key={o.city} className="glass overflow-hidden flex flex-col self-start">
               <div className="p-6 flex gap-4">
                 <span className="material-symbols-outlined text-primary text-[28px] shrink-0">location_on</span>
                 <div>

@@ -53,14 +53,14 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
       <div className="space-y-6">
 
         {/* Coin price info */}
-        <div className="bg-card border-card rounded-lg px-5 py-4 flex items-center justify-between">
+        <div className="glass px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-primary text-[20px]">currency_bitcoin</span>
             <div>
               <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
                 {t("coinPriceLabel", { coinSymbol })}
               </p>
-              <p className="font-headline-md text-headline-md text-primary">
+              <p className="font-headline-md text-headline-md gold-text">
                 {coinPrice > 0
                   ? `$${coinPrice.toLocaleString("en-US", {
                       minimumFractionDigits: coinPrice > 30 ? 0 : 2,
@@ -83,7 +83,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             value={hashrate}
             onChange={(e) => setHashrate(e.target.value)}
             placeholder={t("hashratePlaceholder")}
-            className="w-full bg-card border border-card-border rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
+            className="field font-mono"
           />
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
             {t("hashrateHint")}
@@ -147,7 +147,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             value={price || ""}
             onChange={(e) => setPrice(Math.max(0, Number(e.target.value)))}
             placeholder={t("equipmentPricePlaceholder")}
-            className="w-full bg-card border border-card-border rounded px-4 py-3 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/60 transition-colors"
+            className="field font-mono"
           />
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
             {t("equipmentPriceHint")}
@@ -170,14 +170,14 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
 
       {/* Results */}
       <div className="space-y-4">
-        <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-6">
+        <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest mb-6">
           {t("resultsHeading")}
         </h2>
 
         {result ? (
           <>
             {periods.map(({ key, data }) => (
-              <div key={key} className="bg-card border-card rounded-lg p-5">
+              <div key={key} className="glass p-5">
                 <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-3">
                   {t(key)}
                 </p>
@@ -201,7 +201,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             ))}
 
             {/* ROI */}
-            <div className="bg-card border-card rounded-lg p-5 flex items-center justify-between">
+            <div className="glass p-5 flex items-center justify-between">
               <div>
                 <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-1">
                   {t("roiHeading")}
@@ -217,7 +217,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
                   </p>
                 ) : isFinite(result.roi) ? (
                   <>
-                    <p className="font-headline-md text-headline-md text-primary">{t("roiDays", { days: result.roi })}</p>
+                    <p className="font-headline-md text-headline-md gold-text">{t("roiDays", { days: result.roi })}</p>
                     <p className="font-label-caps text-[10px] text-on-surface-variant">{t("roiMonths", { months: Math.ceil(result.roi / 30) })}</p>
                   </>
                 ) : (
@@ -231,7 +231,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             </p>
           </>
         ) : (
-          <div className="bg-card border-card rounded-lg p-12 flex flex-col items-center gap-4 text-on-surface-variant">
+          <div className="glass p-12 flex flex-col items-center gap-4 text-on-surface-variant">
             <span className="material-symbols-outlined text-[48px]">calculate</span>
             <p className="font-body-md text-body-md text-center">
               {t("emptyState")}
