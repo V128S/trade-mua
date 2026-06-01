@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale, getTranslations } from "next-intl/server";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 import { Unbounded, Manrope, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import Navbar from "@/components/layout/Navbar";
@@ -17,29 +17,10 @@ import "../globals.css";
 
 const SITE_URL = "https://trade-mua.vercel.app";
 
-// Material Symbols — subset to ONLY the icons actually used on the site (56),
-// so the font payload shrinks from the full variable set (~MBs) to a few KB.
-// `icon_names` must be alphabetically sorted for the Google Fonts API.
-// NOTE: any new <span class="material-symbols-outlined">NAME</span> — including
-// dynamic ones from `icon:` props AND bare string arrays (e.g. VALUE_ICONS) —
-// MUST be added here, or it renders as raw ligature text in production.
-const MATERIAL_SYMBOLS_ICONS = [
-  "account_circle", "admin_panel_settings", "arrow_forward", "bolt", "build",
-  "calculate", "call", "campaign", "chat", "check", "check_circle",
-  "chevron_right", "close", "contact_support", "currency_bitcoin", "dark_mode",
-  "delete", "description", "expand_more", "forum", "grid_view", "group",
-  "inventory_2", "keyboard_arrow_up", "light_mode", "local_offer",
-  "local_shipping", "location_on", "lock", "login", "logout", "manage_accounts",
-  "mark_email_read", "memory", "menu", "payments", "person", "phone",
-  "receipt_long", "schedule", "search", "search_off", "send", "settings",
-  "shield", "shopping_cart", "space_dashboard", "speed", "star",
-  "support_agent", "sync", "translate", "trending_up", "tune", "verified",
-  "warehouse",
-].join(",");
-
-const MATERIAL_SYMBOLS_HREF =
-  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" +
-  `&icon_names=${MATERIAL_SYMBOLS_ICONS}&display=swap`;
+// Material Symbols Outlined is self-hosted (subset of the 56 icons used) via an
+// @font-face + .material-symbols-outlined class in globals.css — no Google
+// Fonts request chain. When adding a new icon, re-subset the woff2 at
+// public/fonts/material-symbols.woff2 (Google css2 ?icon_names=… → download).
 
 const display = Unbounded({ subsets: ["latin", "cyrillic"], weight: ["600", "700", "800"], variable: "--font-display", display: "swap" });
 const body = Manrope({ subsets: ["latin", "cyrillic"], weight: ["400", "500", "600", "700", "800"], variable: "--font-body", display: "swap" });
@@ -111,22 +92,6 @@ export default async function LocaleLayout({
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t);}}catch(e){}})();`,
           }}
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Material Symbols icon font — loaded NON-render-blocking. The stylesheet is
-            injected at runtime instead of a plain <link rel="stylesheet">, so it never
-            gates first paint (was the #1 PageSpeed issue: ~20.8s render-block on mobile).
-            Subsetted via icon_names + display=swap, so the brief pre-load window is tiny. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(
-              MATERIAL_SYMBOLS_HREF
-            )};document.head.appendChild(l);})();`,
-          }}
-        />
-        <noscript>
-          <link rel="stylesheet" href={MATERIAL_SYMBOLS_HREF} />
-        </noscript>
       </head>
       <body className="bg-[#0b0b08] text-on-surface selection:bg-primary selection:text-on-primary">
         <JsonLd data={[orgLd, websiteLd]} />
@@ -143,8 +108,20 @@ export default async function LocaleLayout({
           <ScrollToTop />
           <FloatingContact />
         </NextIntlClientProvider>
+        {/* GA deferred to idle (lazyOnload) so the ~155 KB GTM payload stays off
+            the load/TBT critical path. */}
+        {process.env.NODE_ENV === "production" && (
+          <>
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=G-PFXVHGW9JT"
+              strategy="lazyOnload"
+            />
+            <Script id="ga-init" strategy="lazyOnload">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PFXVHGW9JT');`}
+            </Script>
+          </>
+        )}
       </body>
-      {process.env.NODE_ENV === "production" && <GoogleAnalytics gaId="G-PFXVHGW9JT" />}
     </html>
   );
 }
