@@ -25,6 +25,13 @@ export default async function Home({
   setRequestLocale(locale);
   const t = await getTranslations("home");
   const tHiw = await getTranslations("howItWorks");
+  const tAbout = await getTranslations("about");
+  const ABOUT_VALUES = [
+    { icon: "verified", title: tAbout("value1Title"), desc: tAbout("value1Desc") },
+    { icon: "speed", title: tAbout("value2Title"), desc: tAbout("value2Desc") },
+    { icon: "support_agent", title: tAbout("value3Title"), desc: tAbout("value3Desc") },
+    { icon: "lock", title: tAbout("value4Title"), desc: tAbout("value4Desc") },
+  ];
 
   const TESTIMONIALS = [
     {
@@ -238,6 +245,35 @@ export default async function Home({
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── Про нас ── */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap reveal">
+        <div className="head-rule mb-10">
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+            {t("aboutHeading")}
+          </h2>
+          <div className="line" />
+        </div>
+        <div className="glass p-8 md:p-12 relative overflow-hidden">
+          <div className="grid-tex" />
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
+            <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+              {tAbout("heroBody")}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
+              {ABOUT_VALUES.map((v) => (
+                <div key={v.title} className="flex gap-4">
+                  <span className="material-symbols-outlined text-primary text-[24px] shrink-0 mt-0.5">{v.icon}</span>
+                  <div>
+                    <h3 className="font-technical-data text-technical-data text-on-surface leading-tight">{v.title}</h3>
+                    <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mt-1.5 leading-snug">{v.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
