@@ -8,9 +8,9 @@
 /* ─── Design Tokens ─── */
 @theme {
   /* Surfaces & Backgrounds */
-  --color-background:                #141410;
-  --color-surface:                   #141410;
-  --color-surface-dim:               #141410;
+  --color-background:                #0b0b08;
+  --color-surface:                   #121210;
+  --color-surface-dim:               #0b0b08;
   --color-surface-bright:            #3a3934;
   --color-surface-container-lowest:  #0e0e0a;
   --color-surface-container-low:     #1c1c17;
@@ -21,8 +21,8 @@
   --color-surface-tint:              #ecc246;
 
   /* Text */
-  --color-on-surface:         #e5e2db;
-  --color-on-surface-variant: #d1c5af;
+  --color-on-surface:         #e9e5dc;
+  --color-on-surface-variant: #b3aa92;
   --color-on-background:      #e5e2db;
   --color-inverse-surface:    #e5e2db;
   --color-inverse-on-surface: #31302c;
@@ -204,7 +204,7 @@
 
 /* ─── Base ─── */
 body {
-  background-color: #111110;
+  background-color: #0b0b08;
   color: #e5e2db;
   -webkit-font-smoothing: antialiased;
 }
@@ -309,8 +309,8 @@ button:not(:disabled),
 /* ─── Hero carousel ─── */
 
 /* Fade overlays — must match body background */
-.hero-fade-top    { background: linear-gradient(to bottom, #111110 0%, transparent 100%); }
-.hero-fade-bottom { background: linear-gradient(to top,   #111110 0%, transparent 100%); }
+.hero-fade-top    { background: linear-gradient(to bottom, #0b0b08 0%, transparent 100%); }
+.hero-fade-bottom { background: linear-gradient(to top,   #0b0b08 0%, transparent 100%); }
 .light .hero-fade-top    { background: linear-gradient(to bottom, #f9f9f9 0%, transparent 100%); }
 .light .hero-fade-bottom { background: linear-gradient(to top,   #f9f9f9 0%, transparent 100%); }
 

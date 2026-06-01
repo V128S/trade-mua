@@ -128,7 +128,7 @@ export default async function LocaleLayout({
           <link rel="stylesheet" href={MATERIAL_SYMBOLS_HREF} />
         </noscript>
       </head>
-      <body className="bg-[#111110] text-on-surface selection:bg-primary selection:text-on-primary">
+      <body className="bg-[#0b0b08] text-on-surface selection:bg-primary selection:text-on-primary">
         <JsonLd data={[orgLd, websiteLd]} />
         <NextIntlClientProvider messages={clientMessages}>
           <NavigationProgress />
