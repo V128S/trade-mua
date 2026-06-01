@@ -168,15 +168,15 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ── Brand Ticker — smaller gap after hero ── */}
-      <div className="mt-16">
-        <BrandTicker />
-      </div>
-
-      {/* ── Trust strip ── */}
+      {/* ── Trust strip — smaller gap after hero ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-16">
         <TrustBar />
       </section>
+
+      {/* ── Brand Ticker ── */}
+      <div className="mt-16">
+        <BrandTicker />
+      </div>
 
       {/* ── Top Products ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
