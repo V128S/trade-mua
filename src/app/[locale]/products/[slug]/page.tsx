@@ -153,8 +153,8 @@ export default async function ProductPage({ params }: Props) {
           {(() => {
             const imgSrc = getProductImage(product.name);
             return (
-              <div className="relative bg-white border-card rounded-lg overflow-hidden aspect-square flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/20" />
+              <div className="relative glass overflow-hidden aspect-square flex items-center justify-center">
+                <div className="grid-tex" />
                 {imgSrc ? (
                   <Image
                     src={imgSrc}
@@ -171,9 +171,14 @@ export default async function ProductPage({ params }: Props) {
                   {product.isNew && (
                     <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">{t("badgeNew")}</span>
                   )}
-                  <span className={`chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider ${product.inStock ? "bg-green-100 text-green-700 dark:bg-[#1a2b1a] dark:text-green-400" : ""}`}>
-                    {product.inStock ? t("inStock") : t("onOrder")}
-                  </span>
+                  {product.inStock ? (
+                    <span className="chip px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider inline-flex items-center gap-1 !bg-green-400/10 !border-green-400/30 !text-green-400">
+                      <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                      {t("inStock")}
+                    </span>
+                  ) : (
+                    <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">{t("onOrder")}</span>
+                  )}
                 </div>
               </div>
             );
@@ -204,7 +209,7 @@ export default async function ProductPage({ params }: Props) {
               <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">
                 {product.inStock ? t("priceLabelInStock") : t("priceLabelOnOrder")}
               </p>
-              <p className="font-display-lg text-[52px] leading-none text-primary">
+              <p className="font-display-lg text-[52px] leading-none gold-text">
                 ${product.priceUSDT.toLocaleString()}
               </p>
               <p className="font-label-caps text-[10px] text-on-surface-variant mt-1">{t("priceCurrency")}</p>
@@ -242,21 +247,21 @@ export default async function ProductPage({ params }: Props) {
 
       {/* ── Tech specs ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-16">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="h-px bg-outline-variant flex-1" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap text-base">
+        <div className="head-rule mb-6">
+          <div className="line" />
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap text-base">
             {t("specsSectionTitle")}
           </h2>
-          <div className="h-px bg-outline-variant flex-1" />
+          <div className="line" />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {specs.map((s) => (
-            <div key={s.label} className="bg-card border-card rounded-lg p-5 flex flex-col gap-2 hover-primary-border transition-colors duration-300">
+            <div key={s.label} className="glass glass-hover p-5 flex flex-col gap-2">
               <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
                 {s.label}
               </span>
-              <span className="font-technical-data text-technical-data text-primary text-base">
+              <span className="font-technical-data text-technical-data gold-text text-base">
                 {s.value}
               </span>
             </div>
@@ -267,12 +272,12 @@ export default async function ProductPage({ params }: Props) {
       {/* ── Similar models ── */}
       {similar.length > 0 && (
         <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-px bg-outline-variant flex-1" />
-            <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap text-base">
+          <div className="head-rule mb-8">
+            <div className="line" />
+            <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap text-base">
               {t("similarModelsHeading")}
             </h2>
-            <div className="h-px bg-outline-variant flex-1" />
+            <div className="line" />
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
@@ -282,22 +287,23 @@ export default async function ProductPage({ params }: Props) {
               <Link
                 key={p.id}
                 href={`/products/${p.id}`}
-                className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col"
+                className="glass glass-hover group overflow-hidden flex flex-col"
               >
-                <div className="relative h-36 bg-white flex items-center justify-center">
+                <div className="relative h-36 plate flex items-center justify-center overflow-hidden border-b border-white/5">
+                  <div className="grid-tex" />
                   {simImg ? (
                     <Image src={simImg} alt={p.name} fill sizes="(max-width: 640px) 50vw, 200px" className="relative z-10 object-contain p-3 group-hover:scale-105 transition-transform duration-500" />
                   ) : (
-                    <span className="material-symbols-outlined text-gray-300 group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
+                    <span className="material-symbols-outlined text-outline-variant group-hover:text-primary/40 transition-colors text-[48px] relative z-10">memory</span>
                   )}
-                  <span className={`absolute top-2 left-2 chip px-2 py-0.5 text-[9px] font-technical-data uppercase ${p.inStock ? "bg-green-100 text-green-700 dark:bg-[#1a2b1a] dark:text-green-400" : ""}`}>
+                  <span className={`absolute top-2 left-2 z-20 chip px-2 py-0.5 text-[9px] font-technical-data uppercase ${p.inStock ? "!bg-green-400/10 !border-green-400/30 !text-green-400" : ""}`}>
                     {p.inStock ? t("similarInStock") : t("similarOnOrder")}
                   </span>
                 </div>
-                <div className="p-4 border-t border-card-border flex flex-col gap-1 flex-1">
+                <div className="p-4 border-t border-white/5 flex flex-col gap-1 flex-1">
                   <span className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest">{p.algorithm}</span>
                   <h3 className="font-technical-data text-technical-data text-on-surface text-sm leading-snug">{p.name}</h3>
-                  <p className="font-headline-md text-headline-md text-primary mt-auto pt-2 text-base">
+                  <p className="font-headline-md text-headline-md gold-text mt-auto pt-2 text-base">
                     ${p.priceUSDT.toLocaleString()}
                   </p>
                 </div>

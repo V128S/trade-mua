@@ -46,10 +46,10 @@ export default function ProductDetail({ product, configs, revenuePerTH }: Props)
                 <Link
                   key={c.id}
                   href={`/products/${c.id}`}
-                  className={`p-3 rounded border transition-colors duration-200 flex flex-col gap-0.5 ${
+                  className={`p-3 rounded-lg border transition-colors duration-200 flex flex-col gap-0.5 ${
                     isCurrent
                       ? "border-primary bg-primary/10"
-                      : "border-card-border hover:border-primary/50 bg-card"
+                      : "border-white/10 hover:border-primary/50 bg-white/[0.02]"
                   }`}
                 >
                   <span className={`font-technical-data text-technical-data text-sm ${isCurrent ? "text-primary" : "text-on-surface"}`}>
@@ -69,7 +69,7 @@ export default function ProductDetail({ product, configs, revenuePerTH }: Props)
       )}
 
       {/* ── Mini profitability calculator ── */}
-      <div className="mt-8 bg-card border-card rounded-lg p-6 space-y-4">
+      <div className="mt-8 glass p-6 space-y-4">
         <div className="flex items-center gap-2 mb-1">
           <span className="material-symbols-outlined text-primary text-[18px]">calculate</span>
           <p className="font-label-caps text-label-caps text-on-surface uppercase tracking-widest text-[11px]">

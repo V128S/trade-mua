@@ -49,17 +49,17 @@ export default function ProductsCatalog({
   return (
     <>
       {/* Page header */}
-      <div className="flex items-center gap-4 mb-10">
-        <div className="h-px bg-outline-variant flex-1" />
-        <h1 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+      <div className="head-rule mb-10">
+        <div className="line" />
+        <h1 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
           {t("catalogHeading")}
         </h1>
-        <div className="h-px bg-outline-variant flex-1" />
+        <div className="line" />
       </div>
 
       <div className="flex gap-8 items-start">
         {/* Desktop sidebar */}
-        <aside className="catalog-scroll hidden lg:block w-64 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-3">
+        <aside className="hidden lg:block glass !rounded-2xl p-5 w-[280px] shrink-0 sticky top-28 h-max">
           <ProductsFilters
             filters={filters}
             setters={setters}
@@ -74,8 +74,8 @@ export default function ProductsCatalog({
         <div className="flex-1 min-w-0">
           {/* Top bar: search + filters button (mobile) + sort */}
           <div className="flex gap-3 mb-6 flex-wrap">
-            <div className="relative flex-1 min-w-0">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
+            <div className="glass !rounded-xl flex items-center gap-2.5 px-4 flex-1 min-w-0">
+              <span className="material-symbols-outlined text-on-surface-variant text-[18px]">
                 search
               </span>
               <input
@@ -83,7 +83,7 @@ export default function ProductsCatalog({
                 placeholder={t("searchPlaceholder")}
                 value={filters.search}
                 onChange={e => setters.setSearch(e.target.value)}
-                className="w-full bg-card border border-card-border rounded pl-9 pr-4 py-2.5 font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary/60 transition-colors"
+                className="bg-transparent border-none outline-none py-3 w-full font-technical-data text-technical-data text-on-surface placeholder-on-surface-variant/50"
               />
             </div>
 
@@ -105,7 +105,7 @@ export default function ProductsCatalog({
             <select
               value={filters.sortBy}
               onChange={e => setters.setSortBy(e.target.value as SortOption)}
-              className="catalog-sort bg-card border border-card-border rounded px-3 py-2.5 font-technical-data text-technical-data text-on-surface-variant focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
+              className="catalog-sort rounded-xl px-4 py-3 font-technical-data text-technical-data text-on-surface-variant bg-[rgba(255,255,255,0.02)] border border-[rgba(236,194,70,0.16)] backdrop-blur-md focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
             >
               {(Object.entries(SORT_LABELS) as [SortOption, string][]).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
@@ -121,12 +121,13 @@ export default function ProductsCatalog({
           {/* Grid */}
           {filtered.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
                 {visibleProducts.map(p => (
                   <ProductCard
                     key={p.id}
                     product={p}
                     revenuePerTH={revenueByAlgo[p.algorithm] ?? 0}
+                    compact
                   />
                 ))}
               </div>
