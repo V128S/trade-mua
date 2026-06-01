@@ -214,8 +214,8 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 shrink-0">
           <Image src="/logo.png" alt="Trade M" width={44} height={44} className="rounded-full" priority />
-          <span className="font-headline-md text-headline-md font-bold text-primary tracking-tighter hidden sm:block">
-            Trade M
+          <span className="font-headline-md text-headline-md font-bold tracking-tighter">
+            <span className="text-on-surface">Trade </span><span className="text-primary">M</span>
           </span>
         </Link>
 

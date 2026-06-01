@@ -25,8 +25,9 @@ export default function BrandTicker() {
             key={i}
             className="flex items-center gap-0 shrink-0"
           >
-            {/* Brand item */}
-            <div className="w-[52vw] md:w-[380px] px-5 md:px-8 flex flex-col items-center justify-center gap-0.5">
+            {/* Brand item — content-sized on mobile so long names never overflow
+                into the separator; fixed width from md up for even spacing. */}
+            <div className="w-auto md:w-[380px] px-6 md:px-8 flex flex-col items-center justify-center gap-0.5">
               <span className="font-headline-md text-headline-md uppercase tracking-widest whitespace-nowrap">
                 <span className="text-on-surface">{brand.split[0]}</span>
                 <span className="text-primary">{brand.split[1]}</span>

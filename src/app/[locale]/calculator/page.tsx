@@ -41,7 +41,7 @@ export default async function CalculatorPage({ params, searchParams }: Props) {
 
       <div className="head-rule mb-8">
         <div className="line" />
-        <h1 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
+        <h1 className="font-headline-md text-headline-md gold-text uppercase tracking-widest text-center min-w-0">
           {t("pageHeading")}
         </h1>
         <div className="line" />

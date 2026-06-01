@@ -72,8 +72,8 @@ export default function ProductsCatalog({
 
         {/* Main content */}
         <div className="flex-1 min-w-0">
-          {/* Top bar: search + filters button (mobile) + sort */}
-          <div className="flex gap-3 mb-6 flex-wrap">
+          {/* Top bar: search (full-width on mobile, above) + filters button (mobile) + sort */}
+          <div className="flex flex-col lg:flex-row gap-3 mb-6">
             <div className="glass !rounded-xl flex items-center gap-2.5 px-4 flex-1 min-w-0">
               <span className="material-symbols-outlined text-on-surface-variant text-[18px]">
                 search
@@ -87,30 +87,33 @@ export default function ProductsCatalog({
               />
             </div>
 
-            {/* Mobile filter button */}
-            <button
-              type="button"
-              onClick={() => setDrawerOpen(true)}
-              className={`lg:hidden px-4 py-2.5 rounded border font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors whitespace-nowrap ${
-                activeCount > 0
-                  ? "border-primary text-primary bg-primary/10"
-                  : "border-card-border text-on-surface-variant hover:border-primary/50"
-              }`}
-            >
-              <span className="material-symbols-outlined text-[14px] mr-1 align-middle">tune</span>
-              {t("filtersButton")}{activeCount > 0 ? ` (${activeCount})` : ""}
-            </button>
+            {/* Filters + sort — second row on mobile, inline on desktop */}
+            <div className="flex gap-3">
+              {/* Mobile filter button */}
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(true)}
+                className={`lg:hidden px-4 py-2.5 rounded border font-label-caps text-label-caps uppercase tracking-widest text-xs transition-colors whitespace-nowrap ${
+                  activeCount > 0
+                    ? "border-primary text-primary bg-primary/10"
+                    : "border-card-border text-on-surface-variant hover:border-primary/50"
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px] mr-1 align-middle">tune</span>
+                {t("filtersButton")}{activeCount > 0 ? ` (${activeCount})` : ""}
+              </button>
 
-            {/* Sort */}
-            <select
-              value={filters.sortBy}
-              onChange={e => setters.setSortBy(e.target.value as SortOption)}
-              className="catalog-sort rounded-xl px-4 py-3 font-technical-data text-technical-data text-on-surface-variant bg-[rgba(255,255,255,0.02)] border border-[rgba(236,194,70,0.16)] backdrop-blur-md focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
-            >
-              {(Object.entries(SORT_LABELS) as [SortOption, string][]).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
+              {/* Sort */}
+              <select
+                value={filters.sortBy}
+                onChange={e => setters.setSortBy(e.target.value as SortOption)}
+                className="catalog-sort flex-1 lg:flex-initial rounded-xl px-4 py-3 font-technical-data text-technical-data text-on-surface-variant bg-[rgba(255,255,255,0.02)] border border-[rgba(236,194,70,0.16)] backdrop-blur-md focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
+              >
+                {(Object.entries(SORT_LABELS) as [SortOption, string][]).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Count */}
