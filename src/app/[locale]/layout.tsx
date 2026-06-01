@@ -9,7 +9,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CryptoPriceTicker from "@/components/layout/CryptoPriceTicker";
 import NavigationProgress from "@/components/ui/NavigationProgress";
-import BackgroundSparkles from "@/components/ui/background-sparkles";
+import GlassBackground from "@/components/ui/GlassBackground";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import FloatingContact from "@/components/ui/FloatingContact";
 import JsonLd from "@/components/seo/JsonLd";
@@ -132,7 +132,7 @@ export default async function LocaleLayout({
         <JsonLd data={[orgLd, websiteLd]} />
         <NextIntlClientProvider messages={clientMessages}>
           <NavigationProgress />
-          <BackgroundSparkles />
+          <GlassBackground />
           <Navbar />
           <main className="pt-20">
             <CryptoPriceTicker />
