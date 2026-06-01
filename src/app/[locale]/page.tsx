@@ -114,7 +114,7 @@ export default async function Home({
               {/* Headline */}
               <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none">
                 {t("heroTitle1")}{" "}
-                <span className="text-primary">ASIC</span>
+                <span className="gold-text">ASIC</span>
                 <br />
                 {t("heroTitle2")}
               </h1>
@@ -143,7 +143,7 @@ export default async function Home({
                   { value: t("statOfficesValue"), label: t("statOfficesLabel") },
                 ].map((s) => (
                   <div key={s.label}>
-                    <div className="font-headline-md text-headline-md text-primary">{s.value}</div>
+                    <div className="font-headline-md text-headline-md gold-text">{s.value}</div>
                     <div className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
                       {s.label}
                     </div>
