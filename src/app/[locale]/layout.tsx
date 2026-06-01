@@ -92,6 +92,15 @@ export default async function LocaleLayout({
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t);}}catch(e){}})();`,
           }}
         />
+        {/* Preload the self-hosted icon font so glyphs are ready before first
+            paint — kills the icon-font layout shift (CLS). */}
+        <link
+          rel="preload"
+          href="/fonts/material-symbols.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="bg-[#0b0b08] text-on-surface selection:bg-primary selection:text-on-primary">
         <JsonLd data={[orgLd, websiteLd]} />
