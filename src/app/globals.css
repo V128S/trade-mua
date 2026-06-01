@@ -686,3 +686,31 @@ canvas#net { position: fixed; inset: 0; z-index: -1; pointer-events: none; opaci
 .light .field { background: rgba(117,91,0,0.03); border-color: rgba(117,91,0,0.18); color: #1a1c1c; }
 .light .field::placeholder { color: #8a8472; }
 .light .field:focus { border-color: #755b00; background: rgba(117,91,0,0.05); }
+
+/* ── Material Symbols Outlined — self-hosted (subset of the 56 icons used). ──
+   Replaces the runtime-injected Google Fonts stylesheet: removes the 3rd-party
+   googleapis→gstatic request chain and the 1-day CDN cache (now same-origin,
+   long-cached). Keep this @font-face/class in sync with the icon set. */
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url("/fonts/material-symbols.woff2") format("woff2");
+}
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}

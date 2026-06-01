@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["next-intl"],
   },
+  // Add smaller candidates (160/192) so small product thumbnails don't jump
+  // straight to the 256w source — trims over-sized image delivery.
+  images: {
+    imageSizes: [16, 32, 48, 64, 96, 128, 160, 192, 256, 384],
+  },
   async redirects() {
     // /about was merged into /contact (story + stats + values now live there).
     // Keep the old URLs alive with permanent redirects for both locales.
