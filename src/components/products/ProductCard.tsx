@@ -29,10 +29,10 @@ export function ProductCard({
   return (
     <Link
       href={`/products/${product.id}`}
-      className="group bg-card border-card rounded-lg overflow-hidden hover-primary-border transition-colors duration-300 flex flex-col"
+      className="glass glass-hover group overflow-hidden flex flex-col"
     >
-      <div className="relative h-44 bg-white flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30" />
+      <div className="relative h-44 plate flex items-center justify-center overflow-hidden border-b border-white/5">
+        <div className="grid-tex" />
         {imgSrc ? (
           <Image
             src={imgSrc}
@@ -111,7 +111,7 @@ export function ProductCard({
             </div>
           )}
           <div className="flex items-center justify-between gap-2">
-            <span className="font-headline-md text-headline-md text-primary">
+            <span className="font-headline-md text-headline-md gold-text">
               ${product.priceUSDT.toLocaleString()}
             </span>
             {/* CTA fills gold on card hover (group-hover) to pull the eye toward the click. */}

@@ -174,12 +174,11 @@ export default async function Home({
       {/* ── Top Products ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         {/* Heading */}
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-10">
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
             {t("topModelsHeading")}
           </h2>
-          <div className="h-px bg-outline-variant flex-1" />
+          <div className="line" />
         </div>
 
         {products.length > 0 ? (
@@ -204,12 +203,11 @@ export default async function Home({
 
       {/* ── Services ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-10">
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
             {t("servicesHeading")}
           </h2>
-          <div className="h-px bg-outline-variant flex-1" />
+          <div className="line" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
@@ -218,14 +216,14 @@ export default async function Home({
               <div className="service-flip-inner h-full">
 
                 {/* ── Front ── */}
-                <div className="service-flip-face bg-card border border-card-border rounded-lg px-8 pt-8 pb-10 h-full flex flex-col items-center text-center gap-4 cursor-default">
+                <div className="service-flip-face glass px-8 pt-8 pb-10 h-full flex flex-col items-center text-center gap-4 cursor-default">
                   <span className="material-symbols-outlined text-primary text-[32px]">{s.icon}</span>
                   <h3 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">{s.title}</h3>
                   <p className="font-body-md text-body-md text-on-surface-variant">{s.desc}</p>
                 </div>
 
                 {/* ── Back ── */}
-                <div className="service-flip-face service-flip-back bg-card border border-primary/30 rounded-lg p-8 flex flex-col items-center justify-center gap-6 text-center">
+                <div className="service-flip-face service-flip-back glass p-8 flex flex-col items-center justify-center gap-6 text-center" style={{ borderColor: "rgba(236,194,70,0.3)" }}>
                   <span className="material-symbols-outlined text-primary text-[40px]">{s.icon}</span>
                   <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{s.back}</p>
                   <Link
@@ -245,19 +243,18 @@ export default async function Home({
 
       {/* ── How it works ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-10">
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
             {tHiw("heading")}
           </h2>
-          <div className="h-px bg-outline-variant flex-1" />
+          <div className="line" />
         </div>
         <HowItWorks />
       </section>
 
       {/* ── Calculator CTA ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
-        <div className="bg-card border-card rounded-lg p-8 md:p-12 relative overflow-hidden">
+        <div className="glass p-8 md:p-12 relative overflow-hidden">
           {/* Dot grid bg */}
           <div
             className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -285,7 +282,7 @@ export default async function Home({
 
       {/* ── Achievements / social proof counters ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
-        <div className="bg-card border-card rounded-lg p-8 md:p-12 relative overflow-hidden">
+        <div className="glass p-8 md:p-12 relative overflow-hidden">
           <div
             className="absolute inset-0 opacity-[0.03] pointer-events-none"
             style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "24px 24px" }}
@@ -298,7 +295,7 @@ export default async function Home({
               { value: t("statWarrantyValue"), label: t("statWarrantyLabel") },
             ].map((s) => (
               <div key={s.label} className="text-center cursor-default">
-                <div className="font-display-lg text-[40px] md:text-[52px] leading-none text-primary">
+                <div className="font-display-lg text-[40px] md:text-[52px] leading-none gold-text">
                   {s.value}
                 </div>
                 <div className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mt-2">
@@ -312,17 +309,16 @@ export default async function Home({
 
       {/* ── Testimonials ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-10">
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
             {t("testimonialsHeading")}
           </h2>
-          <div className="h-px bg-outline-variant flex-1" />
+          <div className="line" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
           {TESTIMONIALS.map((testimonial) => (
-            <div key={testimonial.name} className="group bg-card border border-card-border rounded-lg p-6 flex flex-col gap-4 cursor-default">
+            <div key={testimonial.name} className="glass glass-hover group p-6 flex flex-col gap-4 cursor-default">
               {/* Stars + verified badge — checkmark pinned right; the label stays
                   collapsed and slides out smoothly on card hover. */}
               <div className="flex items-center justify-between gap-2">

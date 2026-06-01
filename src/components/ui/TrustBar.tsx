@@ -15,15 +15,11 @@ export default async function TrustBar({ compact = false }: { compact?: boolean 
   ];
 
   return (
-    <div
-      className={`grid grid-cols-2 lg:grid-cols-4 gap-px bg-card-border border-card rounded-lg overflow-hidden ${
-        compact ? "" : ""
-      }`}
-    >
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter">
       {items.map((item) => (
         <div
           key={item.title}
-          className={`bg-card flex flex-col items-center text-center ${compact ? "gap-2.5 p-4" : "gap-3 p-5 sm:p-6"}`}
+          className={`glass glass-hover flex flex-col items-center text-center ${compact ? "gap-2.5 p-4" : "gap-3 p-5 sm:p-6"}`}
         >
           <span className="flex items-center justify-center w-11 h-11 rounded-full bg-primary/10 border border-primary/20 shrink-0">
             <span className="material-symbols-outlined text-primary text-[22px]">
