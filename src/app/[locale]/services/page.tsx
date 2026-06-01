@@ -108,7 +108,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
             </span>
           </div>
           <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none mb-6">
-            {t("heroTitle1")} <span className="text-primary">{t("heroTitle2")}</span>
+            {t("heroTitle1")} <span className="gold-text">{t("heroTitle2")}</span>
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
             {t("heroBody")}
@@ -120,9 +120,11 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
           {SERVICES.map((s) => (
-            <div key={s.title} className="bg-card border-card rounded-lg p-8 flex flex-col gap-5 hover-primary-border transition-colors duration-300 cursor-default">
+            <div key={s.title} className="glass glass-hover p-8 flex flex-col gap-5 cursor-default">
               <div className="flex items-start gap-4">
-                <span className="material-symbols-outlined text-primary text-[36px] shrink-0">{s.icon}</span>
+                <span className="grid place-items-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 shrink-0">
+                  <span className="material-symbols-outlined text-primary text-[28px]">{s.icon}</span>
+                </span>
                 <div>
                   <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-1">
                     {s.title}
@@ -144,9 +146,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                 ))}
               </ul>
 
-              <div className="border-t border-card-border pt-4 flex justify-between items-center">
+              <div className="border-t border-white/8 pt-4 flex justify-between items-center">
                 <div>
-                  <p className="font-label-caps text-label-caps text-primary uppercase tracking-widest">{s.price}</p>
+                  <p className="font-label-caps text-label-caps gold-text uppercase tracking-widest">{s.price}</p>
                   <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider">{s.time}</p>
                 </div>
                 <Link href="/contact" className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs flex items-center gap-1">
@@ -161,29 +163,31 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
 
       {/* FAQ */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px bg-outline-variant flex-1" />
+        <div className="head-rule mb-10">
+          <div className="line" />
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
             {t("faqHeading")}
           </h2>
-          <div className="h-px bg-outline-variant flex-1" />
+          <div className="line" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {FAQ.map((item) => (
-            <div key={item.q} className="bg-card border-card rounded-lg p-6">
-              <h3 className="font-headline-md text-headline-md text-on-surface text-base mb-2">{item.q}</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant text-sm">{item.a}</p>
-            </div>
+            <details key={item.q} className="faq glass p-5 group">
+              <summary className="flex items-center justify-between gap-4 cursor-pointer">
+                <h3 className="font-headline-md text-headline-md text-on-surface text-base leading-snug">{item.q}</h3>
+                <span className="material-symbols-outlined chev text-primary text-[20px] shrink-0">expand_more</span>
+              </summary>
+              <p className="font-body-md text-body-md text-on-surface-variant text-sm mt-3">{item.a}</p>
+            </details>
           ))}
         </div>
       </section>
 
       {/* CTA */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-        <div className="bg-card border-card rounded-lg p-8 md:p-12 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-            style={{ backgroundImage: "radial-gradient(#ecc246 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+        <div className="glass p-8 md:p-12 text-center relative overflow-hidden">
+          <div className="grid-tex" />
           <div className="relative z-10 space-y-4">
             <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">
               {t("ctaHeading")}
