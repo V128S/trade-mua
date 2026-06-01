@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
-import { getShuffledTopProductsFromDB } from "@/lib/products";
-import HeroGlobe from "@/components/hero/HeroGlobe";
+import { getShuffledTopProductsFromDB, getRandomProductsFromDB } from "@/lib/products";
+import HeroCarousel from "@/components/hero/HeroCarousel";
 import BrandTicker from "@/components/ui/BrandTicker";
 import TrustBar from "@/components/ui/TrustBar";
 import HowItWorks from "@/components/ui/HowItWorks";
@@ -81,7 +81,10 @@ export default async function Home({
     },
   ];
 
-  const products = await getShuffledTopProductsFromDB(8);
+  const [products, carouselProducts] = await Promise.all([
+    getShuffledTopProductsFromDB(8),
+    getRandomProductsFromDB(10),
+  ]);
 
   return (
     <div className="pb-section-gap">
@@ -103,7 +106,7 @@ export default async function Home({
         </div>
 
         <div className="max-w-container-max mx-auto w-full relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 xl:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 xl:gap-16 items-center">
 
             {/* Left — text */}
             <div className="max-w-2xl space-y-8">
@@ -156,9 +159,9 @@ export default async function Home({
               </div>
             </div>
 
-            {/* Right — rotating wireframe globe (desktop only) */}
+            {/* Right — infinite scroll carousel (desktop only) */}
             <div className="hidden lg:block">
-              <HeroGlobe />
+              <HeroCarousel products={carouselProducts} />
             </div>
 
           </div>
