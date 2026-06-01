@@ -249,7 +249,7 @@ export default async function Home({
       </section>
 
       {/* ── Про нас ── */}
-      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap reveal">
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         <div className="head-rule mb-10">
           <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
             {t("aboutHeading")}
