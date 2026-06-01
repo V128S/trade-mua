@@ -198,8 +198,8 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
           {[
-            { city: t("office1City"), desc: t("office1Desc"), address: t("office1Address"), mapQuery: "Butyshiv Ln 19, Kyiv, 01010" },
-            { city: t("office2City"), desc: t("office2Desc"), address: t("office2Address"), mapQuery: "Kosmichna St 19, Dnipro, 49000" },
+            { city: t("office1City"), desc: t("office1Desc"), address: t("office1Address"), mapQuery: "Butyshiv Ln 19, Kyiv, 01010", hasMap: false },
+            { city: t("office2City"), desc: t("office2Desc"), address: t("office2Address"), mapQuery: "Kosmichna St 19, Dnipro, 49000", hasMap: true },
           ].map((o) => (
             <div key={o.city} className="bg-card border-card rounded-lg overflow-hidden flex flex-col">
               <div className="p-6 flex gap-4">
@@ -219,14 +219,16 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
                   </a>
                 </div>
               </div>
-              <iframe
-                src={`https://www.google.com/maps?q=${encodeURIComponent(o.mapQuery)}&hl=uk&output=embed`}
-                title={`${o.city} — ${o.address}`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-56 border-0 grayscale-[0.3] contrast-[1.1] mt-auto"
-                allowFullScreen
-              />
+              {o.hasMap && (
+                <iframe
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(o.mapQuery)}&hl=uk&output=embed`}
+                  title={`${o.city} — ${o.address}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-56 border-0 grayscale-[0.3] contrast-[1.1] mt-auto"
+                  allowFullScreen
+                />
+              )}
             </div>
           ))}
         </div>
