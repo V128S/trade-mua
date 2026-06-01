@@ -488,7 +488,6 @@ select.catalog-sort option {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }
 .light .grain { opacity: 0.18; }
-canvas#net { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.55; }
 
 /* Gold text sheen */
 .gold-text {
@@ -516,8 +515,11 @@ canvas#net { position: fixed; inset: 0; z-index: -1; pointer-events: none; opaci
 /* Glass card system */
 .glass {
   position: relative;
-  background: linear-gradient(160deg, rgba(40, 38, 30, 0.48), rgba(18, 18, 15, 0.36));
-  backdrop-filter: blur(14px) saturate(140%);
+  /* No backdrop-filter in dark mode: over the near-black page the blur is
+     invisible but Chromium re-rasterizes every card per scroll frame (the main
+     scroll-jank cost). A more opaque gradient keeps the frosted-panel look.
+     Light mode re-enables real blur below, where glassmorphism is the identity. */
+  background: linear-gradient(160deg, rgba(38, 36, 29, 0.92), rgba(20, 20, 16, 0.88));
   border: 1px solid rgba(236, 194, 70, 0.12);
   border-radius: 16px;
   box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 24px 60px -32px rgba(0, 0, 0, 0.75);
@@ -537,6 +539,7 @@ canvas#net { position: fixed; inset: 0; z-index: -1; pointer-events: none; opaci
 }
 .light .glass {
   background: linear-gradient(160deg, rgba(255,255,255,0.55), rgba(255,255,255,0.30));
+  backdrop-filter: blur(16px) saturate(140%);
   border: 1px solid rgba(117, 91, 0, 0.12);
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.8), 0 24px 60px -32px rgba(117,91,0,0.10);
 }
