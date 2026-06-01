@@ -7,19 +7,23 @@ interface RotatingEarthProps {
   width?: number;
   height?: number;
   className?: string;
-  /** Auto-rotate the globe (disabled for prefers-reduced-motion). */
+  /** Auto-rotate the globe. When false the globe is fully static (no rAF loop). */
   autoRotate?: boolean;
+  /** Higher = fewer halftone dots = cheaper one-time generation. */
+  dotSpacing?: number;
 }
 
-// Wireframe dotted globe rendered on <canvas> with d3-geo.
-// Gold-tinted to match the Trade M dark/gold theme; d3 is imported dynamically
-// so it stays out of the initial JS bundle. Land geometry is self-hosted at
-// /geo/ne_110m_land.json. Drag to rotate, scroll to zoom.
+// Wireframe dotted globe on <canvas> with d3-geo. Gold-tinted to the Trade M
+// theme. PERFORMANCE: d3 is imported dynamically and the whole init (import +
+// dot generation + first paint) is deferred to requestIdleCallback so it stays
+// out of the load/TBT window. When `autoRotate` is false there is NO rAF render
+// loop at all — the globe paints once. Drag still re-renders on demand.
 export default function RotatingEarth({
   width = 800,
   height = 600,
   className = "",
   autoRotate: autoRotateProp = true,
+  dotSpacing = 16,
 }: RotatingEarthProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,12 +37,10 @@ export default function RotatingEarth({
     let cleanup = () => {};
     let cancelled = false;
 
-    (async () => {
-      const [{ geoOrthographic, geoPath, geoGraticule, geoBounds }, { timer }] = await Promise.all([
-        import("d3-geo"),
-        import("d3-timer"),
-      ]);
+    const init = async () => {
+      const d3geo = await import("d3-geo");
       if (cancelled) return;
+      const { geoOrthographic, geoPath, geoGraticule, geoBounds } = d3geo;
 
       const containerWidth = Math.min(width, window.innerWidth - 40);
       const containerHeight = Math.min(height, window.innerHeight - 100);
@@ -55,7 +57,6 @@ export default function RotatingEarth({
         .scale(radius)
         .translate([containerWidth / 2, containerHeight / 2])
         .clipAngle(90);
-
       const path = geoPath(projection, context);
 
       const pointInPolygon = (point: [number, number], polygon: number[][]): boolean => {
@@ -64,29 +65,22 @@ export default function RotatingEarth({
         for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
           const [xi, yi] = polygon[i];
           const [xj, yj] = polygon[j];
-          if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
-            inside = !inside;
-          }
+          if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
         }
         return inside;
       };
-
       const pointInFeature = (point: [number, number], feature: Feature): boolean => {
         const geometry = feature.geometry;
         if (geometry.type === "Polygon") {
-          const coordinates = geometry.coordinates;
-          if (!pointInPolygon(point, coordinates[0])) return false;
-          for (let i = 1; i < coordinates.length; i++) {
-            if (pointInPolygon(point, coordinates[i])) return false;
-          }
+          const c = geometry.coordinates;
+          if (!pointInPolygon(point, c[0])) return false;
+          for (let i = 1; i < c.length; i++) if (pointInPolygon(point, c[i])) return false;
           return true;
         } else if (geometry.type === "MultiPolygon") {
           for (const polygon of geometry.coordinates) {
             if (pointInPolygon(point, polygon[0])) {
               let inHole = false;
-              for (let i = 1; i < polygon.length; i++) {
-                if (pointInPolygon(point, polygon[i])) { inHole = true; break; }
-              }
+              for (let i = 1; i < polygon.length; i++) if (pointInPolygon(point, polygon[i])) { inHole = true; break; }
               if (!inHole) return true;
             }
           }
@@ -94,11 +88,10 @@ export default function RotatingEarth({
         }
         return false;
       };
-
-      const generateDotsInPolygon = (feature: Feature, dotSpacing = 16) => {
+      const generateDotsInPolygon = (feature: Feature, spacing: number) => {
         const dots: [number, number][] = [];
         const [[minLng, minLat], [maxLng, maxLat]] = geoBounds(feature);
-        const stepSize = dotSpacing * 0.08;
+        const stepSize = spacing * 0.08;
         for (let lng = minLng; lng <= maxLng; lng += stepSize) {
           for (let lat = minLat; lat <= maxLat; lat += stepSize) {
             const point: [number, number] = [lng, lat];
@@ -108,8 +101,7 @@ export default function RotatingEarth({
         return dots;
       };
 
-      interface DotData { lng: number; lat: number; }
-      const allDots: DotData[] = [];
+      const allDots: { lng: number; lat: number }[] = [];
       let landFeatures: FeatureCollection | undefined;
 
       const render = () => {
@@ -117,7 +109,6 @@ export default function RotatingEarth({
         const currentScale = projection.scale();
         const scaleFactor = currentScale / radius;
 
-        // Globe body (subtle dark fill) + gold rim
         context.beginPath();
         context.arc(containerWidth / 2, containerHeight / 2, currentScale, 0, 2 * Math.PI);
         context.fillStyle = "rgba(11, 11, 8, 0.55)";
@@ -127,7 +118,6 @@ export default function RotatingEarth({
         context.stroke();
 
         if (landFeatures) {
-          // Graticule
           const graticule = geoGraticule();
           context.beginPath();
           path(graticule());
@@ -137,83 +127,72 @@ export default function RotatingEarth({
           context.stroke();
           context.globalAlpha = 1;
 
-          // Land outlines
           context.beginPath();
           landFeatures.features.forEach((feature) => path(feature));
           context.strokeStyle = "rgba(236, 194, 70, 0.6)";
           context.lineWidth = 1 * scaleFactor;
           context.stroke();
 
-          // Halftone dots
           context.fillStyle = "rgba(245, 225, 171, 0.72)";
           allDots.forEach((dot) => {
-            const projected = projection([dot.lng, dot.lat]);
-            if (
-              projected &&
-              projected[0] >= 0 && projected[0] <= containerWidth &&
-              projected[1] >= 0 && projected[1] <= containerHeight
-            ) {
+            const p = projection([dot.lng, dot.lat]);
+            if (p && p[0] >= 0 && p[0] <= containerWidth && p[1] >= 0 && p[1] <= containerHeight) {
               context.beginPath();
-              context.arc(projected[0], projected[1], 1.2 * scaleFactor, 0, 2 * Math.PI);
+              context.arc(p[0], p[1], 1.2 * scaleFactor, 0, 2 * Math.PI);
               context.fill();
             }
           });
         }
       };
 
-      // Interaction state
       const rotation: [number, number] = [0, 0];
-      let autoRotate = autoRotateProp;
-      const rotationSpeed = 0.3;
 
-      const rotationTimer = timer(() => {
-        if (autoRotate) {
-          rotation[0] += rotationSpeed;
-          projection.rotate(rotation);
-          render();
-        }
-      });
-
+      // Drag-to-rotate (on-demand re-render only — no continuous loop)
       const handleMouseDown = (event: MouseEvent) => {
-        autoRotate = false;
-        const startX = event.clientX;
-        const startY = event.clientY;
-        const startRotation: [number, number] = [rotation[0], rotation[1]];
-
-        const handleMouseMove = (moveEvent: MouseEvent) => {
-          const sensitivity = 0.5;
-          rotation[0] = startRotation[0] + (moveEvent.clientX - startX) * sensitivity;
-          rotation[1] = Math.max(-90, Math.min(90, startRotation[1] - (moveEvent.clientY - startY) * sensitivity));
+        const startX = event.clientX, startY = event.clientY;
+        const start: [number, number] = [rotation[0], rotation[1]];
+        const move = (e: MouseEvent) => {
+          rotation[0] = start[0] + (e.clientX - startX) * 0.5;
+          rotation[1] = Math.max(-90, Math.min(90, start[1] - (e.clientY - startY) * 0.5));
           projection.rotate(rotation);
           render();
         };
-        const handleMouseUp = () => {
-          document.removeEventListener("mousemove", handleMouseMove);
-          document.removeEventListener("mouseup", handleMouseUp);
-          if (autoRotateProp) setTimeout(() => { autoRotate = true; }, 10);
+        const up = () => {
+          document.removeEventListener("mousemove", move);
+          document.removeEventListener("mouseup", up);
         };
-        document.addEventListener("mousemove", handleMouseMove);
-        document.addEventListener("mouseup", handleMouseUp);
+        document.addEventListener("mousemove", move);
+        document.addEventListener("mouseup", up);
       };
-
       const handleWheel = (event: WheelEvent) => {
         event.preventDefault();
         const f = event.deltaY > 0 ? 0.9 : 1.1;
         projection.scale(Math.max(radius * 0.5, Math.min(radius * 3, projection.scale() * f)));
         render();
       };
-
       canvas.addEventListener("mousedown", handleMouseDown);
       canvas.addEventListener("wheel", handleWheel, { passive: false });
 
-      // Load land geometry (self-hosted)
+      // Optional auto-rotation (only when explicitly enabled)
+      let stopTimer = () => {};
+      if (autoRotateProp) {
+        const { timer } = await import("d3-timer");
+        if (cancelled) return;
+        const t = timer(() => {
+          rotation[0] += 0.3;
+          projection.rotate(rotation);
+          render();
+        });
+        stopTimer = () => t.stop();
+      }
+
       try {
         const response = await fetch("/geo/ne_110m_land.json");
         if (!response.ok) throw new Error("geo fetch failed");
         landFeatures = (await response.json()) as FeatureCollection;
         if (cancelled) return;
         landFeatures.features.forEach((feature) => {
-          generateDotsInPolygon(feature, 16).forEach(([lng, lat]) => allDots.push({ lng, lat }));
+          generateDotsInPolygon(feature, dotSpacing).forEach(([lng, lat]) => allDots.push({ lng, lat }));
         });
         render();
       } catch {
@@ -221,17 +200,29 @@ export default function RotatingEarth({
       }
 
       cleanup = () => {
-        rotationTimer.stop();
+        stopTimer();
         canvas.removeEventListener("mousedown", handleMouseDown);
         canvas.removeEventListener("wheel", handleWheel);
       };
-    })();
+    };
+
+    // Defer the heavy init off the load/TBT critical path.
+    const ric = window.requestIdleCallback;
+    let idleId = 0;
+    let timeoutId = 0;
+    if (typeof ric === "function") {
+      idleId = ric(() => { void init(); }, { timeout: 2000 });
+    } else {
+      timeoutId = window.setTimeout(() => { void init(); }, 300);
+    }
 
     return () => {
       cancelled = true;
+      if (idleId && typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idleId);
+      if (timeoutId) window.clearTimeout(timeoutId);
       cleanup();
     };
-  }, [width, height, autoRotateProp]);
+  }, [width, height, autoRotateProp, dotSpacing]);
 
   if (error) {
     return (
@@ -243,11 +234,7 @@ export default function RotatingEarth({
 
   return (
     <div className={`relative ${className}`}>
-      <canvas
-        ref={canvasRef}
-        className="w-full h-auto"
-        style={{ maxWidth: "100%", height: "auto" }}
-      />
+      <canvas ref={canvasRef} className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }} />
     </div>
   );
 }
