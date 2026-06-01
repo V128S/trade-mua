@@ -60,7 +60,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="head-rule mb-10">
           <div className="line" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("aboutHeading")}</h2>
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{t("aboutHeading")}</h2>
           <div className="line" />
         </div>
         <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mx-auto text-center mb-12">
@@ -80,7 +80,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="head-rule mb-10">
           <div className="line" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{ta("valuesHeading")}</h2>
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{ta("valuesHeading")}</h2>
           <div className="line" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
@@ -100,7 +100,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="head-rule mb-8">
           <div className="line" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("heroLabel")}</h2>
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{t("heroLabel")}</h2>
           <div className="line" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
@@ -193,7 +193,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="head-rule mb-8">
           <div className="line" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">{t("officesHeading")}</h2>
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">{t("officesHeading")}</h2>
           <div className="line" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">

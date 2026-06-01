@@ -165,7 +165,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
         <div className="head-rule mb-10">
           <div className="line" />
-          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
             {t("faqHeading")}
           </h2>
           <div className="line" />
@@ -189,7 +189,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
         <div className="glass p-8 md:p-12 text-center relative overflow-hidden">
           <div className="grid-tex" />
           <div className="relative z-10 space-y-4">
-            <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">
+            <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest">
               {t("ctaHeading")}
             </h2>
             <p className="font-body-md text-body-md text-on-surface-variant max-w-lg mx-auto">

@@ -39,12 +39,12 @@ export default async function CalculatorPage({ params, searchParams }: Props) {
   return (
     <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-16 pb-section-gap">
 
-      <div className="flex items-center gap-4 mb-8">
-        <div className="h-px bg-outline-variant flex-1" />
-        <h1 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest whitespace-nowrap">
+      <div className="head-rule mb-8">
+        <div className="line" />
+        <h1 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
           {t("pageHeading")}
         </h1>
-        <div className="h-px bg-outline-variant flex-1" />
+        <div className="line" />
       </div>
 
       {/* Algorithm selector */}

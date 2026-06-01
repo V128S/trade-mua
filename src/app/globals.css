@@ -669,3 +669,20 @@ canvas#net { position: fixed; inset: 0; z-index: -1; pointer-events: none; opaci
 .faq summary::-webkit-details-marker { display: none; }
 .faq .chev { transition: transform .3s ease; }
 .faq[open] .chev { transform: rotate(180deg); }
+
+/* Form field (calculator inputs etc.) */
+.field {
+  width: 100%;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(236,194,70,0.16);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  color: #e9e5dc;
+  font-size: 14px;
+  transition: border-color .25s, background .25s;
+}
+.field::placeholder { color: #6f6857; }
+.field:focus { outline: none; border-color: #ecc246; background: rgba(236,194,70,0.04); }
+.light .field { background: rgba(117,91,0,0.03); border-color: rgba(117,91,0,0.18); color: #1a1c1c; }
+.light .field::placeholder { color: #8a8472; }
+.light .field:focus { border-color: #755b00; background: rgba(117,91,0,0.05); }
