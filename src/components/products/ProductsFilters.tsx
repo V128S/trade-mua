@@ -68,7 +68,7 @@ function FilterSection({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-card-border py-3">
+    <div className="border-b border-white/8 py-3">
       <button
         type="button"
         aria-expanded={open}
@@ -152,7 +152,7 @@ function DualRangeSlider({
 }
 
 export function ProductsFilters({
-  filters, setters, facets, globalRanges, activeCount, resetAll, hideHeader = false,
+  filters, setters, facets, globalRanges, resetAll, hideHeader = false,
 }: ProductsFiltersProps) {
   const t = useTranslations("products");
 
@@ -160,24 +160,23 @@ export function ProductsFilters({
     <div>
       {/* Header — hidden inside mobile drawer which has its own header */}
       {!hideHeader && (
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-card-border">
-        <span className="font-label-caps text-label-caps text-on-surface uppercase tracking-widest text-[11px]">
+      <div className="flex items-center justify-between mb-1 pb-3 border-b border-white/8">
+        <span className="font-label-caps text-label-caps text-on-surface uppercase tracking-widest text-[11px] flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary text-[16px]">tune</span>
           {t("filtersPanelTitle")}
         </span>
-        {activeCount > 0 && (
-          <button
-            type="button"
-            onClick={resetAll}
-            className="btn-ghost px-2 py-1 rounded font-label-caps text-[10px] uppercase tracking-widest"
-          >
-            {t("filtersResetAll")}
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={resetAll}
+          className="btn-ghost px-2.5 py-1 rounded-lg font-label-caps text-[10px] uppercase tracking-widest"
+        >
+          {t("filtersResetAll")}
+        </button>
       </div>
       )}
 
       {/* In stock */}
-      <div className="border-b border-card-border py-3 mb-0">
+      <div className="border-b border-white/8 py-3 mb-0">
         <CustomCheckbox
           checked={filters.stockOnly}
           onChange={() => setters.setStockOnly(!filters.stockOnly)}

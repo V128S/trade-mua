@@ -14,9 +14,11 @@ const DEFAULT_RATE = 0.07;
 export function ProductCard({
   product,
   revenuePerTH = 0,
+  compact = false,
 }: {
   product: Product;
   revenuePerTH?: number;
+  compact?: boolean;
 }) {
   const t = useTranslations("products");
   const imgSrc = getProductImage(product.name);
@@ -31,7 +33,7 @@ export function ProductCard({
       href={`/products/${product.id}`}
       className="glass glass-hover group overflow-hidden flex flex-col"
     >
-      <div className="relative h-44 plate flex items-center justify-center overflow-hidden border-b border-white/5">
+      <div className={`relative ${compact ? "h-40" : "h-44"} plate flex items-center justify-center overflow-hidden border-b border-white/5`}>
         <div className="grid-tex" />
         {imgSrc ? (
           <Image
@@ -64,7 +66,7 @@ export function ProductCard({
         </div>
       </div>
 
-      <div className="p-5 flex flex-col gap-2 border-t border-card-border flex-1">
+      <div className={`${compact ? "p-4" : "p-5"} flex flex-col gap-2 border-t border-card-border flex-1`}>
         <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
           {product.algorithm}
         </span>
