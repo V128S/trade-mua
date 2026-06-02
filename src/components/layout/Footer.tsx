@@ -20,7 +20,7 @@ export default async function Footer() {
         <div className="flex items-center gap-3">
           <Image src="/logo.png" alt="Trade M" width={40} height={40} className="rounded-full" />
           <span className="font-headline-md text-headline-md font-bold text-primary tracking-tighter">
-            Trade M
+            TradeM
           </span>
         </div>
 
