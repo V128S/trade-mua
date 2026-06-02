@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
+import PasswordInput from '@/components/auth/PasswordInput'
 
 export default function ResetPasswordForm() {
   const t = useTranslations('auth')
@@ -60,8 +61,7 @@ export default function ResetPasswordForm() {
           <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]">
             {t('newPasswordLabel')}
           </label>
-          <input
-            type="password"
+          <PasswordInput
             value={password}
             onChange={e => setPassword(e.target.value)}
             required

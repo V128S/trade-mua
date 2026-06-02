@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
+import PasswordInput from '@/components/auth/PasswordInput'
 
 const labelClass =
   'font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]'
@@ -221,8 +222,7 @@ export default function RegisterForm() {
       {/* Password (required) + strength */}
       <div>
         <label className={labelClass}>{t('passwordLabel')} <span className="text-primary">*</span></label>
-        <input
-          type="password"
+        <PasswordInput
           value={password}
           onChange={e => setPassword(e.target.value)}
           onBlur={() => markTouched('password')}
