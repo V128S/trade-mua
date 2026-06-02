@@ -120,7 +120,11 @@ function parseCsv(text: string): string[][] {
 
 export async function getProducts(): Promise<Product[]> {
   try {
-    const res = await fetch(SHEETS_CSV_URL, { next: { revalidate: 3600 } });
+    // Always read the live Sheet — this runs only inside the sync routes
+    // (webhook/cron), which must see edits immediately. Caching here (the Next
+    // Data Cache) would make a price change invisible until the TTL expired,
+    // even though the sync "ran" and bumped synced_at.
+    const res = await fetch(SHEETS_CSV_URL, { cache: 'no-store' });
     if (!res.ok) return [];
     const rows = parseCsv(await res.text());
 
