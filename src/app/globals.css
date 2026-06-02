@@ -681,6 +681,17 @@ select.catalog-sort option {
 .faq .chev { transition: transform .3s ease; }
 .faq[open] .chev { transform: rotate(180deg); }
 
+/* Smooth expand/collapse — progressive enhancement. Browsers that support
+   ::details-content + interpolate-size animate the height; older ones simply
+   open instantly (no regression). */
+.faq { interpolate-size: allow-keywords; }
+.faq::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size .35s ease, content-visibility .35s allow-discrete;
+}
+.faq[open]::details-content { block-size: auto; }
+
 /* Form field (calculator inputs etc.) */
 .field {
   width: 100%;

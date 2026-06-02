@@ -125,11 +125,11 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                 <span className="grid place-items-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 shrink-0">
                   <span className="material-symbols-outlined text-primary text-[28px]">{s.icon}</span>
                 </span>
-                <div>
-                  <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-1">
+                <div className="min-w-0">
+                  <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-1 break-words hyphens-auto">
                     {s.title}
                   </h2>
-                  <p className="font-label-caps text-[10px] text-primary uppercase tracking-widest">{s.short}</p>
+                  <p className="font-label-caps text-[10px] text-primary uppercase tracking-widest break-words">{s.short}</p>
                 </div>
               </div>
 
@@ -141,17 +141,17 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                 {s.items.map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <span className="material-symbols-outlined text-primary text-[14px] mt-0.5 shrink-0">check_circle</span>
-                    <span className="font-body-md text-body-md text-on-surface-variant text-sm">{item}</span>
+                    <span className="font-body-md text-body-md text-on-surface-variant text-sm min-w-0 break-words">{item}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="border-t border-white/8 pt-4 flex justify-between items-center">
-                <div>
-                  <p className="font-label-caps text-label-caps gold-text uppercase tracking-widest">{s.price}</p>
-                  <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider">{s.time}</p>
+              <div className="border-t border-white/8 pt-4 flex flex-wrap justify-between items-center gap-3">
+                <div className="min-w-0">
+                  <p className="font-label-caps text-label-caps gold-text uppercase tracking-widest break-words">{s.price}</p>
+                  <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider break-words">{s.time}</p>
                 </div>
-                <Link href="/contact" className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs flex items-center gap-1">
+                <Link href="/contact" className="btn-ghost px-4 py-2 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs flex items-center gap-1 shrink-0">
                   {t("orderButton")}
                   <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </Link>
@@ -171,11 +171,11 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           <div className="line" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           {FAQ.map((item) => (
             <details key={item.q} className="faq glass p-5 group">
               <summary className="flex items-center justify-between gap-4 cursor-pointer">
-                <h3 className="font-headline-md text-headline-md text-on-surface text-base leading-snug">{item.q}</h3>
+                <h3 className="font-headline-md text-headline-md text-on-surface text-base leading-snug min-w-0 break-words">{item.q}</h3>
                 <span className="material-symbols-outlined chev text-primary text-[20px] shrink-0">expand_more</span>
               </summary>
               <p className="font-body-md text-body-md text-on-surface-variant text-sm mt-3">{item.a}</p>
