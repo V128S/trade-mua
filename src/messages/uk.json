@@ -38,7 +38,9 @@
     "login": "Увійти",
     "cartAria": "Кошик",
     "menuAria": "Меню",
-    "accountMenuAria": "Меню акаунту"
+    "accountMenuAria": "Меню акаунту",
+    "adminPanel": "Адмін-панель",
+    "managerPanel": "Панель менеджера"
   },
   "footer": {
     "products": "Продукти",

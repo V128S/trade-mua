@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import type { UserRole } from "@/lib/types/database.types";
 import SlideNav from "@/components/ui/nav-header";
 import { useCart } from "@/lib/cart/useCart";
 import LocaleSwitcher from "@/components/layout/LocaleSwitcher";
@@ -21,10 +22,40 @@ function getTheme(): "dark" | "light" {
   return document.documentElement.classList.contains("light") ? "light" : "dark";
 }
 
+// Tracks the signed-in user together with their profile role, so the navbar can
+// surface the admin/manager panel link only to staff. `user === undefined` means
+// auth is still loading.
+function useAuthRole() {
+  const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [role, setRole] = useState<UserRole | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let active = true;
+
+    const load = async (u: User | null) => {
+      if (!active) return;
+      setUser(u);
+      if (!u) { setRole(null); return; }
+      const { data } = await supabase.from("profiles").select("role").eq("id", u.id).single();
+      if (active) setRole((data?.role as UserRole | undefined) ?? null);
+    };
+
+    supabase.auth.getUser().then(({ data }) => load(data.user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      load(session?.user ?? null);
+    });
+    return () => { active = false; subscription.unsubscribe(); };
+  }, []);
+
+  const isStaff = role === "admin" || role === "manager";
+  return { user, role, isStaff };
+}
+
 // ── Desktop dropdown button ──────────────────────────────────────────────────
 function UserMenuButton() {
   const [open, setOpen]   = useState(false);
-  const [user, setUser]   = useState<User | null | undefined>(undefined);
+  const { user, role, isStaff } = useAuthRole();
   const ref               = useRef<HTMLDivElement>(null);
   const theme             = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
   const t                 = useTranslations("nav");
@@ -38,15 +69,6 @@ function UserMenuButton() {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
 
   const toggleTheme = useCallback(() => {
     const html = document.documentElement;
@@ -144,6 +166,20 @@ function UserMenuButton() {
           <div className="p-1.5">
             {user ? (
               <>
+                {isStaff && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 px-2.5 py-2.5 rounded bg-primary/5 hover:bg-primary/10 transition-colors group"
+                  >
+                    <span className="material-symbols-outlined text-[15px] text-primary">
+                      {role === "admin" ? "admin_panel_settings" : "support_agent"}
+                    </span>
+                    <span className="font-label-caps text-[9px] text-primary uppercase tracking-widest">
+                      {role === "admin" ? t("adminPanel") : t("managerPanel")}
+                    </span>
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   onClick={() => setOpen(false)}
@@ -189,6 +225,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as const);
   const { count, hydrated } = useCart();
+  const { role, isStaff } = useAuthRole();
   const t = useTranslations("nav");
 
   const NAV_LINKS: { href: NavHref; label: string }[] = [
@@ -299,6 +336,19 @@ export default function Navbar() {
               </div>
               <LocaleSwitcher />
             </div>
+
+            {isStaff && (
+              <Link
+                href="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 py-3 font-label-caps text-label-caps uppercase tracking-widest text-primary transition-colors duration-200"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  {role === "admin" ? "admin_panel_settings" : "support_agent"}
+                </span>
+                {role === "admin" ? t("adminPanel") : t("managerPanel")}
+              </Link>
+            )}
 
             <Link
               href="/login"
