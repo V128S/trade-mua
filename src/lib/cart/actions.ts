@@ -30,11 +30,16 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
 
   const { data: rows, error: prodErr } = await supabase
     .from('products')
-    .select('id, name, price_usdt, image_url')
+    .select('id, name, price_usdt, image_url, image_url_admin')
     .in('id', ids)
   if (prodErr) return { error: 'Не вдалося завантажити товари' }
 
-  const products = (rows ?? []).map(r => ({ id: r.id, name: r.name, priceUSDT: Number(r.price_usdt), imageUrl: r.image_url }))
+  const products = (rows ?? []).map(r => ({
+    id: r.id,
+    name: r.name,
+    priceUSDT: Number(r.price_usdt),
+    imageUrl: r.image_url_admin ?? r.image_url,
+  }))
   const orderItems = buildOrderItems(input.items, products)
   if (orderItems.length === 0) return { error: 'Товари недоступні' }
 

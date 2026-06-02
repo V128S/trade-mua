@@ -16,7 +16,9 @@ function mapRow(row: ProductRow): Product {
     priceUSDT: Number(row.price_usdt),
     inStock: row.in_stock,
     isNew: row.is_new,
-    imageUrl: row.image_url ?? null,
+    // Effective photo override: admin upload wins over the Sheet URL. Anything
+    // null here falls through to the name→file mapping in getProductImage.
+    imageUrl: row.image_url_admin ?? row.image_url ?? null,
   }
 }
 

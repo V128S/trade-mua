@@ -112,6 +112,7 @@ export interface Database {
           in_stock: boolean
           is_new: boolean
           image_url: string | null
+          image_url_admin: string | null
           synced_at: string
         }
         Insert: {
@@ -125,6 +126,7 @@ export interface Database {
           in_stock: boolean
           is_new: boolean
           image_url?: string | null
+          image_url_admin?: string | null
           synced_at?: string
         }
         Update: {
@@ -137,6 +139,7 @@ export interface Database {
           in_stock?: boolean
           is_new?: boolean
           image_url?: string | null
+          image_url_admin?: string | null
           synced_at?: string
         }
         Relationships: []

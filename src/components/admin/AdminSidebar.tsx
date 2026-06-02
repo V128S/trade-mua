@@ -8,6 +8,7 @@ const NAV = [
   { href: '/admin/orders',   label: 'Замовлення',   icon: 'receipt_long' },
   { href: '/admin/promos',   label: 'Промокоди',    icon: 'local_offer' },
   { href: '/admin/products', label: 'Синк товарів', icon: 'sync' },
+  { href: '/admin/photos',   label: 'Фото товарів',  icon: 'image' },
 ]
 
 export default function AdminSidebar() {
