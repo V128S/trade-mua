@@ -6,7 +6,7 @@ const COINS = [
   { id: "dogecoin",     symbol: "DOGE" },
   { id: "bitcoin-cash", symbol: "BCH"  },
   { id: "dash",         symbol: "DASH" },
-  { id: "alephium",     symbol: "ALPH" },
+  { id: "zcash",        symbol: "ZEC"  },
   { id: "ergo",         symbol: "ERG"  },
 ];
 
