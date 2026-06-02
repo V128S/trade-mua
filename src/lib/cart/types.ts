@@ -5,4 +5,5 @@ export interface CartItem {
   powerW: number
   priceUSDT: number
   qty: number
+  imageUrl?: string | null
 }

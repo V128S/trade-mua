@@ -9,6 +9,7 @@ export interface OrderItem {
   name: string
   price_usdt: number
   qty: number
+  image_url?: string | null
 }
 
 export interface Database {

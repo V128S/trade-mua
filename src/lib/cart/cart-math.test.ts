@@ -30,7 +30,13 @@ describe('buildOrderItems', () => {
   ]
   it('maps cart lines to authoritative order items', () => {
     expect(buildOrderItems([{ id: 'a', qty: 2 }], products)).toEqual([
-      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: 2 },
+      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: 2, image_url: null },
+    ])
+  })
+  it('carries the product image_url into the order item', () => {
+    const withImg = [{ id: 'a', name: 'Antminer A', priceUSDT: 100, imageUrl: 'https://cdn/x.webp' }]
+    expect(buildOrderItems([{ id: 'a', qty: 1 }], withImg)).toEqual([
+      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: 1, image_url: 'https://cdn/x.webp' },
     ])
   })
   it('skips unknown products and non-positive quantities', () => {
@@ -38,10 +44,10 @@ describe('buildOrderItems', () => {
   })
   it('caps quantity at MAX_LINE_QTY and floors non-integers', () => {
     expect(buildOrderItems([{ id: 'a', qty: 100000 }], products)).toEqual([
-      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: MAX_LINE_QTY },
+      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: MAX_LINE_QTY, image_url: null },
     ])
     expect(buildOrderItems([{ id: 'a', qty: 2.9 }], products)).toEqual([
-      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: 2 },
+      { product_id: 'a', name: 'Antminer A', price_usdt: 100, qty: 2, image_url: null },
     ])
   })
   it('skips NaN/Infinity quantities', () => {

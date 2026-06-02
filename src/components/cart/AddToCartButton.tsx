@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { useCart } from '@/lib/cart/useCart'
 import type { Product } from '@/lib/sheets'
 
-type Props = { product: Pick<Product, 'id' | 'name' | 'hashrate' | 'powerW' | 'priceUSDT' | 'inStock'> }
+type Props = { product: Pick<Product, 'id' | 'name' | 'hashrate' | 'powerW' | 'priceUSDT' | 'inStock' | 'imageUrl'> }
 
 export default function AddToCartButton({ product }: Props) {
   const t = useTranslations('cart')
@@ -18,6 +18,7 @@ export default function AddToCartButton({ product }: Props) {
       hashrate: product.hashrate,
       powerW: product.powerW,
       priceUSDT: product.priceUSDT,
+      imageUrl: product.imageUrl,
     })
     setAdded(true)
     window.setTimeout(() => setAdded(false), 1500)

@@ -95,7 +95,7 @@ export default function OrderList({ orders }: { orders: Order[] }) {
             {/* Items with thumbnails */}
             <div className="border-t border-card-border pt-4 space-y-3">
               {items.map((item, i) => {
-                const img = getProductImage(item.name)
+                const img = getProductImage(item.name, item.image_url)
                 return (
                   <div key={i} className="flex items-center gap-3">
                     <div className="relative w-11 h-11 rounded bg-surface border border-card-border shrink-0 overflow-hidden flex items-center justify-center">

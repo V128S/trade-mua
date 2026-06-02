@@ -54,7 +54,7 @@ export default function CartView() {
       {/* Items */}
       <div className="space-y-4">
         {items.map(i => {
-          const img = getProductImage(i.name)
+          const img = getProductImage(i.name, i.imageUrl)
           return (
             <div key={i.id} className="bg-card border-card rounded-lg p-4 flex gap-4 items-center">
               <div className="relative w-20 h-20 bg-white rounded shrink-0 flex items-center justify-center overflow-hidden">
