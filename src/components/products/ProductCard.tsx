@@ -21,7 +21,7 @@ export function ProductCard({
   compact?: boolean;
 }) {
   const t = useTranslations("products");
-  const imgSrc = getProductImage(product.name);
+  const imgSrc = getProductImage(product.name, product.imageUrl);
 
   // Estimated daily profit at the default electricity rate
   const th = parseHashrateTH(product.hashrate);

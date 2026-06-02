@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/supabase/admin'
+import { requireStaff } from '@/lib/supabase/admin'
 import type { Database } from '@/lib/types/database.types'
 
 type PromoUpdate = Database['public']['Tables']['promo_codes']['Update']
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const supabase = await requireAdmin()
+  const supabase = await requireStaff()
   if (!supabase) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const body = await request.json()
@@ -27,7 +27,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const supabase = await requireAdmin()
+  const supabase = await requireStaff()
   if (!supabase) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const { error } = await supabase.from('promo_codes').delete().eq('id', id)

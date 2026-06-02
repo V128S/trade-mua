@@ -2,7 +2,7 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 
 export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
-export type UserRole = 'customer' | 'admin'
+export type UserRole = 'customer' | 'admin' | 'manager'
 
 export interface OrderItem {
   product_id: string
@@ -110,6 +110,7 @@ export interface Database {
           price_usdt: number
           in_stock: boolean
           is_new: boolean
+          image_url: string | null
           synced_at: string
         }
         Insert: {
@@ -122,6 +123,7 @@ export interface Database {
           price_usdt: number
           in_stock: boolean
           is_new: boolean
+          image_url?: string | null
           synced_at?: string
         }
         Update: {
@@ -133,6 +135,7 @@ export interface Database {
           price_usdt?: number
           in_stock?: boolean
           is_new?: boolean
+          image_url?: string | null
           synced_at?: string
         }
         Relationships: []

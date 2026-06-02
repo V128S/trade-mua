@@ -36,6 +36,7 @@ async function runSync(): Promise<{ synced: number; timestamp: string } | { erro
     price_usdt: p.priceUSDT,
     in_stock: p.inStock,
     is_new: p.isNew,
+    image_url: p.imageUrl,
     synced_at: now,
   }))
 

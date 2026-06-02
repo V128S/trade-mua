@@ -8,6 +8,7 @@ export interface Product {
   priceUSDT: number;
   inStock: boolean;
   isNew: boolean;
+  imageUrl: string | null;  // optional photo URL from the Sheet (overrides name→file mapping)
 }
 
 const SHEETS_CSV_URL =
@@ -54,7 +55,7 @@ function autoSlug(firm: string, model: string, hashrate: string): string {
   return `${brand}-${slug(model)}-${hr}`;
 }
 
-// Columns: [0]algo [1]firm [2]model [3]hashrate [4]power [5]instock [6]order [7]notes [8]sku
+// Columns: [0]algo [1]firm [2]model [3]hashrate [4]power [5]instock [6]order [7]notes [8]sku [9]image_url
 function parseRow(cols: string[]): Product | null {
   const algo     = cols[0]?.trim() ?? "";
   const firm     = cols[1]?.trim() ?? "";
@@ -64,6 +65,7 @@ function parseRow(cols: string[]): Product | null {
   const inStockRaw = cols[5]?.trim() ?? "";
   const orderRaw   = cols[6]?.trim() ?? "";
   const sku        = cols[8]?.trim() ?? "";
+  const imageRaw   = cols[9]?.trim() ?? "";
 
   if (!KNOWN_ALGOS.has(algo.toLowerCase())) return null;
   if (!firm || !model || !hashrate || !powerRaw) return null;
@@ -86,6 +88,9 @@ function parseRow(cols: string[]): Product | null {
     priceUSDT,
     inStock:   stockPrice > 0,
     isNew:     /новинка/i.test(model),
+    // Only accept absolute http(s) URLs; anything else (stray text, relative
+    // path) is treated as "no override" so the name→file mapping kicks in.
+    imageUrl:  /^https?:\/\//i.test(imageRaw) ? imageRaw : null,
   };
 }
 

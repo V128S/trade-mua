@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/supabase/admin'
+import { requireStaff } from '@/lib/supabase/admin'
 
 export async function POST(request: NextRequest) {
-  const supabase = await requireAdmin()
+  const supabase = await requireStaff()
   if (!supabase) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const body = await request.json()

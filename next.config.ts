@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
   // straight to the 256w source — trims over-sized image delivery.
   images: {
     imageSizes: [16, 32, 48, 64, 96, 128, 160, 192, 256, 384],
+    // Product photos can be pasted as external URLs in the Google Sheet
+    // (image_url column). Allow any https host so the manager isn't blocked by
+    // CDN choice; the content is admin-controlled via the sheet sync.
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
   async redirects() {
     // /about was merged into /contact (story + stats + values now live there).

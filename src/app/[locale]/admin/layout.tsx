@@ -13,15 +13,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'admin') redirect('/')
+  const role = profile?.role
+  if (role !== 'admin' && role !== 'manager') redirect('/')
+  const isAdmin = role === 'admin'
 
   return (
     <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-10 pb-section-gap">
       <div className="flex items-center gap-3 mb-8">
-        <span className="material-symbols-outlined text-primary text-[28px]">admin_panel_settings</span>
+        <span className="material-symbols-outlined text-primary text-[28px]">
+          {isAdmin ? 'admin_panel_settings' : 'support_agent'}
+        </span>
         <h1 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">
-          Адмін-панель
+          {isAdmin ? 'Адмін-панель' : 'Панель менеджера'}
         </h1>
+        <span className="chip px-2 py-0.5 font-technical-data text-[10px] uppercase tracking-wider">
+          {isAdmin ? 'Admin' : 'Manager'}
+        </span>
       </div>
       <div className="flex gap-8 items-start">
         <AdminSidebar />

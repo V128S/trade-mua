@@ -1,5 +1,24 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Product } from '@/lib/sheets'
+import type { Database } from '@/lib/types/database.types'
+
+type ProductRow = Database['public']['Tables']['products']['Row']
+
+// Single source of truth for DB row → Product mapping (used by every reader below).
+function mapRow(row: ProductRow): Product {
+  return {
+    id: row.id,
+    algorithm: row.algorithm,
+    brand: row.brand,
+    name: row.name,
+    hashrate: row.hashrate,
+    powerW: row.power_w,
+    priceUSDT: Number(row.price_usdt),
+    inStock: row.in_stock,
+    isNew: row.is_new,
+    imageUrl: row.image_url ?? null,
+  }
+}
 
 export async function getProductsFromDB(): Promise<Product[]> {
   const supabase = await createClient()
@@ -10,17 +29,7 @@ export async function getProductsFromDB(): Promise<Product[]> {
 
   if (error || !data) return []
 
-  return data.map(row => ({
-    id: row.id,
-    algorithm: row.algorithm,
-    brand: row.brand,
-    name: row.name,
-    hashrate: row.hashrate,
-    powerW: row.power_w,
-    priceUSDT: Number(row.price_usdt),
-    inStock: row.in_stock,
-    isNew: row.is_new,
-  }))
+  return data.map(mapRow)
 }
 
 export async function getTopProductsFromDB(limit = 8): Promise<Product[]> {
@@ -33,17 +42,7 @@ export async function getTopProductsFromDB(limit = 8): Promise<Product[]> {
 
   if (error || !data) return []
 
-  return data.map(row => ({
-    id: row.id,
-    algorithm: row.algorithm,
-    brand: row.brand,
-    name: row.name,
-    hashrate: row.hashrate,
-    powerW: row.power_w,
-    priceUSDT: Number(row.price_usdt),
-    inStock: row.in_stock,
-    isNew: row.is_new,
-  }))
+  return data.map(mapRow)
 }
 
 // Top products by price, then shuffled so display order varies each revalidation.
@@ -72,17 +71,7 @@ export async function getRandomProductsFromDB(count: number): Promise<Product[]>
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
   }
 
-  return shuffled.slice(0, count).map(row => ({
-    id: row.id,
-    algorithm: row.algorithm,
-    brand: row.brand,
-    name: row.name,
-    hashrate: row.hashrate,
-    powerW: row.power_w,
-    priceUSDT: Number(row.price_usdt),
-    inStock: row.in_stock,
-    isNew: row.is_new,
-  }))
+  return shuffled.slice(0, count).map(mapRow)
 }
 
 export async function getLastSyncTime(): Promise<string | null> {

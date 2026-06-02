@@ -5,7 +5,7 @@ export default async function AdminOrdersPage() {
   const supabase = await createClient()
   const { data: orders } = await supabase
     .from('orders')
-    .select('*, profile:profiles(full_name)')
+    .select('*, profile:profiles(full_name, phone)')
     .order('created_at', { ascending: false })
 
   return (

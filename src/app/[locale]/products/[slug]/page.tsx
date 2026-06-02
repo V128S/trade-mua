@@ -95,7 +95,7 @@ export default async function ProductPage({ params }: Props) {
   // ── Structured data (built from live catalog data) ──
   const localePrefix = locale === "ru" ? "/ru" : "";
   const productUrl = `${SITE_URL}${localePrefix}/products/${product.id}`;
-  const productImg = getProductImage(product.name);
+  const productImg = getProductImage(product.name, product.imageUrl);
   const productLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -151,7 +151,7 @@ export default async function ProductPage({ params }: Props) {
 
           {/* Left — product image */}
           {(() => {
-            const imgSrc = getProductImage(product.name);
+            const imgSrc = getProductImage(product.name, product.imageUrl);
             return (
               <div className="relative glass overflow-hidden aspect-square flex items-center justify-center">
                 <div className="grid-tex" />
@@ -282,7 +282,7 @@ export default async function ProductPage({ params }: Props) {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
             {similar.map((p) => {
-              const simImg = getProductImage(p.name);
+              const simImg = getProductImage(p.name, p.imageUrl);
               return (
               <Link
                 key={p.id}

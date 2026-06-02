@@ -21,7 +21,7 @@ export default function HeroCarousel({ products }: { products: Product[] }) {
       {/* Scrolling track */}
       <div className="animate-hero-scroll flex flex-col gap-2">
         {items.map((product, i) => {
-          const imgSrc = getProductImage(product.name);
+          const imgSrc = getProductImage(product.name, product.imageUrl);
           return (
             <Link
               key={`${product.id}-${i}`}

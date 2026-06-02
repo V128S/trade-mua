@@ -1,6 +1,12 @@
 const P = "/products/new";
 
-export function getProductImage(name: string): string | null {
+// Resolves a product photo. Priority:
+//   1. `imageUrl` — explicit URL synced from the Google Sheet (manager self-service)
+//   2. name→bundled-file mapping below (hardcoded, shipped in /public)
+//   3. null → caller shows a placeholder icon
+export function getProductImage(name: string, imageUrl?: string | null): string | null {
+  if (imageUrl && /^https?:\/\//i.test(imageUrl)) return imageUrl;
+
   const n = name.toLowerCase();
 
   // ── AntMiner / Bitmain S19 ──────────────────────────────────────────────

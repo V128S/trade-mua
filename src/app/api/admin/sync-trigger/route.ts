@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/supabase/admin'
+import { requireStaff } from '@/lib/supabase/admin'
 import { getProducts } from '@/lib/sheets'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/types/database.types'
 
 export async function POST() {
-  const supabase = await requireAdmin()
+  const supabase = await requireStaff()
   if (!supabase) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const products = await getProducts()
@@ -21,7 +21,7 @@ export async function POST() {
   const rows = products.map(p => ({
     id: p.id, algorithm: p.algorithm, brand: p.brand, name: p.name,
     hashrate: p.hashrate, power_w: p.powerW, price_usdt: p.priceUSDT,
-    in_stock: p.inStock, is_new: p.isNew, synced_at: now,
+    in_stock: p.inStock, is_new: p.isNew, image_url: p.imageUrl, synced_at: now,
   }))
 
   const { error: upsertError } = await service.from('products').upsert(rows, { onConflict: 'id' })

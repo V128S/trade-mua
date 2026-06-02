@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/supabase/admin'
+import { requireStaff } from '@/lib/supabase/admin'
 import type { OrderStatus } from '@/lib/types/database.types'
 
 const VALID_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const supabase = await requireAdmin()
+  const supabase = await requireStaff()
   if (!supabase) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { id } = await params
