@@ -378,7 +378,7 @@
     "labelLastName": "Прізвище",
     "labelCity": "Місто",
     "labelBranch": "Відділення Нової Пошти",
-    "placeholderCity": "Місто",
+    "placeholderCity": "напр. Дніпро",
     "placeholderBranch": "№ відділення",
     "labelPhone": "Телефон",
     "labelComment": "Коментар (необов'язково)",

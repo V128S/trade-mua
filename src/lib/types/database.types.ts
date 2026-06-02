@@ -79,6 +79,11 @@ export interface Database {
         }
         Update: {
           status?: OrderStatus
+          recipient_first_name?: string | null
+          recipient_last_name?: string | null
+          recipient_phone?: string | null
+          city?: string | null
+          nova_poshta_branch?: string | null
           nova_poshta_address?: string | null
           notes?: string | null
         }

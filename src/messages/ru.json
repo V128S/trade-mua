@@ -378,7 +378,7 @@
     "labelLastName": "Фамилия",
     "labelCity": "Город",
     "labelBranch": "Отделение Новой Почты",
-    "placeholderCity": "Город",
+    "placeholderCity": "напр. Днепр",
     "placeholderBranch": "№ отделения",
     "labelPhone": "Телефон",
     "labelComment": "Комментарий (необязательно)",

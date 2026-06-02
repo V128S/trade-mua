@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
@@ -12,7 +12,7 @@ export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaul
   const t = useTranslations('checkout')
   const { items, promo, subtotal, hydrated, clear } = useCart()
   const router = useRouter()
-  const prefill = splitFullName(defaultFullName)
+  const prefill = useMemo(() => splitFullName(defaultFullName), [defaultFullName])
   const [firstName, setFirstName] = useState(prefill.first)
   const [lastName, setLastName] = useState(prefill.last)
   const [phone, setPhone] = useState(defaultPhone)
@@ -60,31 +60,31 @@ export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaul
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelCls}>{t('labelFirstName')}</label>
-            <input value={firstName} onChange={e => setFirstName(e.target.value)} required placeholder={t('labelFirstName')} className={field} />
+            <label htmlFor="co-first-name" className={labelCls}>{t('labelFirstName')}</label>
+            <input id="co-first-name" autoComplete="given-name" value={firstName} onChange={e => setFirstName(e.target.value)} required placeholder={t('labelFirstName')} className={field} />
           </div>
           <div>
-            <label className={labelCls}>{t('labelLastName')}</label>
-            <input value={lastName} onChange={e => setLastName(e.target.value)} required placeholder={t('labelLastName')} className={field} />
+            <label htmlFor="co-last-name" className={labelCls}>{t('labelLastName')}</label>
+            <input id="co-last-name" autoComplete="family-name" value={lastName} onChange={e => setLastName(e.target.value)} required placeholder={t('labelLastName')} className={field} />
           </div>
         </div>
         <div>
-          <label className={labelCls}>{t('labelPhone')}</label>
-          <input value={phone} onChange={e => setPhone(e.target.value)} required placeholder="+380..." className={field} />
+          <label htmlFor="co-phone" className={labelCls}>{t('labelPhone')}</label>
+          <input id="co-phone" type="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} required placeholder="+380..." className={field} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelCls}>{t('labelCity')}</label>
-            <input value={city} onChange={e => setCity(e.target.value)} required placeholder={t('placeholderCity')} className={field} />
+            <label htmlFor="co-city" className={labelCls}>{t('labelCity')}</label>
+            <input id="co-city" autoComplete="address-level2" value={city} onChange={e => setCity(e.target.value)} required placeholder={t('placeholderCity')} className={field} />
           </div>
           <div>
-            <label className={labelCls}>{t('labelBranch')}</label>
-            <input value={branch} onChange={e => setBranch(e.target.value)} required placeholder={t('placeholderBranch')} className={field} />
+            <label htmlFor="co-branch" className={labelCls}>{t('labelBranch')}</label>
+            <input id="co-branch" autoComplete="off" value={branch} onChange={e => setBranch(e.target.value)} required placeholder={t('placeholderBranch')} className={field} />
           </div>
         </div>
         <div>
-          <label className={labelCls}>{t('labelComment')}</label>
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={field} />
+          <label htmlFor="co-notes" className={labelCls}>{t('labelComment')}</label>
+          <textarea id="co-notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={field} />
         </div>
         {error && <p className="font-body-md text-body-md text-red-400 text-sm">{error}</p>}
         <button type="submit" disabled={loading} className="btn-primary w-full py-3 rounded font-label-caps text-label-caps uppercase tracking-widest disabled:opacity-50">

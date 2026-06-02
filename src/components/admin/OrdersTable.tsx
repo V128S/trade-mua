@@ -40,10 +40,11 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
     return orders.filter(o => {
       if (filter !== 'all' && o.status !== filter) return false
       if (!q) return true
-      const name = [o.recipient_first_name, o.recipient_last_name, o.profile?.full_name]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
+      const name = (
+        [o.recipient_first_name, o.recipient_last_name].filter(Boolean).join(' ') ||
+        o.profile?.full_name ||
+        ''
+      ).toLowerCase()
       return o.id.toLowerCase().includes(q) || name.includes(q)
     })
   }, [orders, filter, query])
