@@ -627,6 +627,15 @@ select.catalog-sort option {
 .head-rule { display: flex; align-items: center; gap: 1rem; }
 .head-rule .line { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, rgba(236,194,70,0.30), transparent); }
 
+/* Standalone gold separator hairline (same ramp as the heading rule) */
+.gold-rule { height: 1px; width: 100%; background: linear-gradient(90deg, transparent, rgba(236,194,70,0.30), transparent); }
+
+/* Opt-out of the internal gold glow on hover (keeps border lift, drops the
+   radial cursor-glow + gold halo). Applied to the trust cards on the home page. */
+.no-glow::before { display: none; }
+.no-glow.glass-hover:hover { box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.08), 0 30px 70px -30px rgba(0,0,0,0.85); }
+.light .no-glow.glass-hover:hover { box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.8), 0 30px 70px -30px rgba(117,91,0,0.18); }
+
 /* Product image plate */
 .plate { background: radial-gradient(120% 120% at 50% 0%, rgba(255,255,255,0.06), rgba(255,255,255,0.015)); }
 

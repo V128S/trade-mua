@@ -82,7 +82,7 @@ export default async function Home({
   ];
 
   const [products, carouselProducts] = await Promise.all([
-    getShuffledTopProductsFromDB(8),
+    getShuffledTopProductsFromDB(4),
     getRandomProductsFromDB(10),
   ]);
 
@@ -168,15 +168,19 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ── Trust strip — smaller gap after hero ── */}
+      {/* ── Trust strip + Brand Ticker — both fenced by gold rules with equal
+            vertical spacing above/below each block ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-16">
-        <TrustBar />
+        <div className="gold-rule" />
+        <div className="my-12">
+          <TrustBar noGlow />
+        </div>
+        <div className="gold-rule" />
+        <div className="my-12">
+          <BrandTicker />
+        </div>
+        <div className="gold-rule" />
       </section>
-
-      {/* ── Brand Ticker ── */}
-      <div className="mt-16">
-        <BrandTicker />
-      </div>
 
       {/* ── Top Products ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
@@ -200,7 +204,7 @@ export default async function Home({
           </p>
         )}
 
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-16">
           <Link href="/products" className="btn-ghost py-3 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">grid_view</span>
             {t("allCatalog")}
