@@ -25,7 +25,7 @@ export default function RegisterForm() {
     setError(null)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -38,6 +38,16 @@ export default function RegisterForm() {
       setError(error.message === 'User already registered'
         ? t('errorEmailExists')
         : t('errorRegisterGeneric'))
+      setLoading(false)
+      return
+    }
+
+    // With Supabase email-enumeration protection enabled, signing up with an
+    // already-registered address returns no error and sends no email — instead
+    // the returned user has an empty `identities` array. Detect that here so the
+    // user gets a clear message instead of waiting for an email that never comes.
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      setError(t('errorEmailExists'))
       setLoading(false)
       return
     }
