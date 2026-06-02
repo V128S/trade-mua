@@ -12,9 +12,14 @@ function getServiceSupabase() {
 
 function isAuthorized(request: NextRequest): boolean {
   const authHeader = request.headers.get('authorization')
-  const isValidBearer = authHeader === `Bearer ${process.env.SYNC_SECRET}`
+  // Apps Script webhook (POST) authenticates with SYNC_SECRET. Vercel Cron (GET)
+  // sends `Authorization: Bearer ${CRON_SECRET}` automatically when CRON_SECRET
+  // is set — the documented, reliable way to auth crons (the x-vercel-cron
+  // header alone proved unreliable). Header kept as a best-effort fallback.
+  const isValidBearer = !!process.env.SYNC_SECRET && authHeader === `Bearer ${process.env.SYNC_SECRET}`
+  const isValidCron = !!process.env.CRON_SECRET && authHeader === `Bearer ${process.env.CRON_SECRET}`
   const isVercelCron = request.headers.get('x-vercel-cron') === '1'
-  return isValidBearer || isVercelCron
+  return isValidBearer || isValidCron || isVercelCron
 }
 
 async function runSync(): Promise<{ synced: number; timestamp: string } | { error: string }> {
