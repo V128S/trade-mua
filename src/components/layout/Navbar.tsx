@@ -48,7 +48,7 @@ function useAuthRole() {
     return () => { active = false; subscription.unsubscribe(); };
   }, []);
 
-  const isStaff = role === "admin" || role === "manager";
+  const isStaff = role === "admin" || role === "director";
   return { user, role, isStaff };
 }
 
@@ -176,7 +176,7 @@ function UserMenuButton() {
                       {role === "admin" ? "admin_panel_settings" : "support_agent"}
                     </span>
                     <span className="font-label-caps text-[9px] text-primary uppercase tracking-widest">
-                      {role === "admin" ? t("adminPanel") : t("managerPanel")}
+                      {role === "admin" ? t("adminPanel") : t("directorPanel")}
                     </span>
                   </Link>
                 )}
@@ -346,7 +346,7 @@ export default function Navbar() {
                 <span className="material-symbols-outlined text-[18px]">
                   {role === "admin" ? "admin_panel_settings" : "support_agent"}
                 </span>
-                {role === "admin" ? t("adminPanel") : t("managerPanel")}
+                {role === "admin" ? t("adminPanel") : t("directorPanel")}
               </Link>
             )}
 

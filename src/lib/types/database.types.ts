@@ -2,7 +2,7 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 
 export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
-export type UserRole = 'customer' | 'admin' | 'manager'
+export type UserRole = 'customer' | 'admin' | 'director'
 
 export interface OrderItem {
   product_id: string

@@ -40,7 +40,7 @@
     "menuAria": "Меню",
     "accountMenuAria": "Меню акаунту",
     "adminPanel": "Адмін-панель",
-    "managerPanel": "Панель менеджера"
+    "directorPanel": "Панель директора"
   },
   "footer": {
     "products": "Продукти",
@@ -437,7 +437,9 @@
     "passwordWeak": "Слабкий",
     "passwordMedium": "Середній",
     "passwordStrong": "Надійний",
-    "errorRequired": "Обов'язкове поле"
+    "errorRequired": "Обов'язкове поле",
+    "showPassword": "Показати пароль",
+    "hidePassword": "Сховати пароль"
   },
   "asicHub": {
     "allCatalog": "Весь каталог",

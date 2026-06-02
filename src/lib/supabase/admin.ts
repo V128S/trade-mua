@@ -15,7 +15,7 @@ export async function requireAdmin(): Promise<SupabaseClient<Database> | null> {
   return supabase
 }
 
-// Like requireAdmin but also allows the 'manager' role. Use for staff actions
+// Like requireAdmin but also allows the 'director' role. Use for staff actions
 // (orders, promos, product sync). Role changes must stay on requireAdmin.
 export async function requireStaff(): Promise<SupabaseClient<Database> | null> {
   const supabase = await createClient()
@@ -26,6 +26,6 @@ export async function requireStaff(): Promise<SupabaseClient<Database> | null> {
     .select('role')
     .eq('id', user.id)
     .single()
-  if (data?.role !== 'admin' && data?.role !== 'manager') return null
+  if (data?.role !== 'admin' && data?.role !== 'director') return null
   return supabase
 }

@@ -12,7 +12,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
   const { data: profile } = await supabase.from('profiles').select('*').eq('id', id).maybeSingle()
   if (!profile) notFound()
 
-  // Only admins may reassign roles; managers see the role as read-only text.
+  // Only admins may reassign roles; directors see the role as read-only text.
   const { data: { user: viewer } } = await supabase.auth.getUser()
   const { data: viewerProfile } = viewer
     ? await supabase.from('profiles').select('role').eq('id', viewer.id).maybeSingle()

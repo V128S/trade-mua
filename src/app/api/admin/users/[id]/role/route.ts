@@ -3,9 +3,9 @@ import { requireAdmin } from '@/lib/supabase/admin'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import type { Database, UserRole } from '@/lib/types/database.types'
 
-const VALID_ROLES: UserRole[] = ['customer', 'manager', 'admin']
+const VALID_ROLES: UserRole[] = ['customer', 'director', 'admin']
 
-// Assign a role to a user. Admin-only (managers can do everything EXCEPT change
+// Assign a role to a user. Admin-only (directors can do everything EXCEPT change
 // roles). Profiles have no RLS write path for other users, so we use the service
 // role here — the requireAdmin() gate is the only authorization.
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

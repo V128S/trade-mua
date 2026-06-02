@@ -4,15 +4,15 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { UserRole } from '@/lib/types/database.types'
 
-const ROLES: UserRole[] = ['customer', 'manager', 'admin']
+const ROLES: UserRole[] = ['customer', 'director', 'admin']
 const ROLE_UA: Record<UserRole, string> = {
   customer: 'Клієнт',
-  manager: 'Менеджер',
+  director: 'Директор',
   admin: 'Адмін',
 }
 
 // Admin-only role assignment. Rendered on the user detail page when the viewer
-// is an admin; managers never see it (and the API rejects them anyway).
+// is an admin; directors never see it (and the API rejects them anyway).
 export default function RoleSelect({ userId, current }: { userId: string; current: UserRole }) {
   const router = useRouter()
   const [role, setRole] = useState<UserRole>(current)

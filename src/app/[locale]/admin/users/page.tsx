@@ -4,7 +4,7 @@ import UsersTable from '@/components/admin/UsersTable'
 export default async function AdminUsersPage() {
   const supabase = await createClient()
 
-  // Only admins may reassign roles; managers see roles as read-only text.
+  // Only admins may reassign roles; directors see roles as read-only text.
   const { data: { user: viewer } } = await supabase.auth.getUser()
   const { data: viewerProfile } = viewer
     ? await supabase.from('profiles').select('role').eq('id', viewer.id).maybeSingle()

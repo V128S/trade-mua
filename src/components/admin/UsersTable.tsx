@@ -6,7 +6,7 @@ type Profile = Database['public']['Tables']['profiles']['Row'] & { order_count?:
 
 const ROLE_UA: Record<UserRole, string> = {
   customer: 'Клієнт',
-  manager: 'Менеджер',
+  director: 'Директор',
   admin: 'Адмін',
 }
 
