@@ -2,7 +2,7 @@ import { routing } from "@/i18n/routing";
 
 const NON_DEFAULT = routing.locales.filter((l) => l !== routing.defaultLocale);
 
-/** Remove a leading non-default locale prefix (e.g. /ru/admin -> /admin). */
+/** Remove a leading non-default locale prefix (e.g. /en/admin -> /admin). */
 export function stripLocale(pathname: string): string {
   for (const loc of NON_DEFAULT) {
     if (pathname === `/${loc}`) return "/";

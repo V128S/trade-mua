@@ -3,7 +3,7 @@ import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
-const LABELS: Record<string, string> = { uk: "UA", ru: "RU" };
+const LABELS: Record<string, string> = { uk: "UA", en: "EN" };
 
 export default function LocaleSwitcher() {
   const locale = useLocale();

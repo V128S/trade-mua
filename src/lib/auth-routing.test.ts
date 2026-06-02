@@ -2,14 +2,14 @@ import { describe, it, expect } from "vitest";
 import { stripLocale, isProtectedPath } from "./auth-routing";
 
 describe("stripLocale", () => {
-  it("removes a leading /ru", () => {
-    expect(stripLocale("/ru/admin")).toBe("/admin");
+  it("removes a leading /en", () => {
+    expect(stripLocale("/en/admin")).toBe("/admin");
   });
   it("leaves non-prefixed paths unchanged", () => {
     expect(stripLocale("/admin")).toBe("/admin");
   });
-  it("maps bare /ru to /", () => {
-    expect(stripLocale("/ru")).toBe("/");
+  it("maps bare /en to /", () => {
+    expect(stripLocale("/en")).toBe("/");
   });
 });
 

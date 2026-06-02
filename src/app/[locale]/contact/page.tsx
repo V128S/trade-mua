@@ -8,7 +8,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t("contactTitle"),
     description: t("contactDescription"),
-    alternates: { languages: { uk: "/contact", ru: "/ru/contact", "x-default": "/contact" } },
+    alternates: { languages: { uk: "/contact", en: "/en/contact", "x-default": "/contact" } },
   };
 }
 

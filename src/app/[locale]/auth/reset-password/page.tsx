@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'auth' })
   return {
     title: t('resetTitle'),
-    alternates: { languages: { uk: '/auth/reset-password', ru: '/ru/auth/reset-password', 'x-default': '/auth/reset-password' } },
+    alternates: { languages: { uk: '/auth/reset-password', en: '/en/auth/reset-password', 'x-default': '/auth/reset-password' } },
   }
 }
 

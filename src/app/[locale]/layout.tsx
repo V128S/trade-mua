@@ -81,7 +81,7 @@ export default async function LocaleLayout({
     "@type": "WebSite",
     name: "Trade M",
     url: SITE_URL,
-    inLanguage: locale === "ru" ? "ru-RU" : "uk-UA",
+    inLanguage: locale === "en" ? "en-US" : "uk-UA",
   };
 
   return (

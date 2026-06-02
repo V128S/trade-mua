@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t("calculatorTitle"),
     description: t("calculatorDescription"),
-    alternates: { languages: { uk: "/calculator", ru: "/ru/calculator", "x-default": "/calculator" } },
+    alternates: { languages: { uk: "/calculator", en: "/en/calculator", "x-default": "/calculator" } },
   };
 }
 

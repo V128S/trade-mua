@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       languages: {
         uk: "/products",
-        ru: "/ru/products",
+        en: "/en/products",
         "x-default": "/products",
       },
     },
@@ -42,7 +42,7 @@ export default async function ProductsPage({ params }: Props) {
     Object.entries(revenueMap).map(([algo, data]) => [algo, data.revenuePerTH]),
   );
 
-  const localePrefix = locale === "ru" ? "/ru" : "";
+  const localePrefix = locale === "en" ? "/en" : "";
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

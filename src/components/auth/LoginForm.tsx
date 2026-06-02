@@ -34,7 +34,7 @@ export default function LoginForm() {
     const redirect = searchParams.get('redirect')
     // Only allow same-origin relative paths (reject protocol-relative "//host")
     const safe = redirect && redirect.startsWith('/') && !redirect.startsWith('//')
-    window.location.href = safe ? redirect : (locale === 'ru' ? '/ru/dashboard' : '/dashboard')
+    window.location.href = safe ? redirect : (locale === 'en' ? '/en/dashboard' : '/dashboard')
   }
 
   return (

@@ -37,8 +37,8 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser();
     if (!user) {
       const loginUrl = request.nextUrl.clone();
-      loginUrl.pathname = request.nextUrl.pathname.startsWith("/ru")
-        ? "/ru/login"
+      loginUrl.pathname = request.nextUrl.pathname.startsWith("/en")
+        ? "/en/login"
         : "/login";
       loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
       return NextResponse.redirect(loginUrl);
@@ -49,5 +49,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|(?:ru/)?auth/callback|_next|_vercel|.*\\..*).*)"],
+  matcher: ["/((?!api|(?:en/)?auth/callback|_next|_vercel|.*\\..*).*)"],
 };

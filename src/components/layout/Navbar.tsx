@@ -194,7 +194,7 @@ function UserMenuButton() {
                     const sb = createClient();
                     await sb.auth.signOut();
                     setOpen(false);
-                    window.location.href = locale === "ru" ? "/ru" : "/";
+                    window.location.href = locale === "en" ? "/en" : "/";
                   }}
                   className="w-full flex items-center gap-2 px-2.5 py-2.5 rounded hover:bg-surface-container-high transition-colors group"
                 >

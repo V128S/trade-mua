@@ -30,14 +30,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!HUBS[algorithm]) return {};
   const t = await getTranslations({ locale, namespace: "asicHub" });
   const path = `/asic/${algorithm}`;
-  const localePrefix = locale === "ru" ? "/ru" : "";
+  const localePrefix = locale === "en" ? "/en" : "";
   return {
     title: t(`${algorithm}Title`),
     description: t(`${algorithm}Description`),
     alternates: {
-      // self-referential canonical per locale (RU must not point at the UA URL)
+      // self-referential canonical per locale (EN must not point at the UA URL)
       canonical: `${localePrefix}${path}`,
-      languages: { uk: path, ru: `/ru${path}`, "x-default": path },
+      languages: { uk: path, en: `/en${path}`, "x-default": path },
     },
   };
 }
@@ -62,7 +62,7 @@ export default async function AsicHubPage({ params }: Props) {
   if (items.length === 0) notFound();
 
   const revenuePerTH = revenueMap[hub.dbAlgo]?.revenuePerTH ?? 0;
-  const localePrefix = locale === "ru" ? "/ru" : "";
+  const localePrefix = locale === "en" ? "/en" : "";
   const hubUrl = `${SITE_URL}${localePrefix}/asic/${algorithm}`;
 
   const breadcrumbLd = {
