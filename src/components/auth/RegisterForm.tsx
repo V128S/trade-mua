@@ -5,8 +5,6 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const inputClass =
-  'w-full bg-surface border border-card-border rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors'
 const labelClass =
   'font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]'
 
@@ -30,6 +28,8 @@ function passwordScore(pw: string) {
   return s
 }
 
+type FieldName = 'firstName' | 'lastName' | 'phone' | 'email' | 'password'
+
 export default function RegisterForm() {
   const t = useTranslations('auth')
   const [firstName, setFirstName] = useState('')
@@ -37,9 +37,35 @@ export default function RegisterForm() {
   const [phoneDigits, setPhoneDigits] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [touched, setTouched] = useState<Record<FieldName, boolean>>({
+    firstName: false, lastName: false, phone: false, email: false, password: false,
+  })
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  // Per-field validation. firstName / email / password are required; lastName is
+  // optional; phone is optional but must be complete when provided.
+  const errors: Record<FieldName, string> = {
+    firstName: !firstName.trim() ? t('errorRequired') : '',
+    lastName: '',
+    phone: phoneDigits.length > 0 && phoneDigits.length !== 9 ? t('errorInvalidPhone') : '',
+    email: !email ? t('errorRequired') : !EMAIL_RE.test(email) ? t('errorInvalidEmail') : '',
+    password: !password
+      ? t('errorRequired')
+      : password.length < 8
+        ? t('errorShortPassword')
+        : !HAS_LETTER.test(password) || !HAS_DIGIT.test(password)
+          ? t('errorWeakPassword')
+          : '',
+  }
+
+  const showErr = (f: FieldName) => touched[f] && !!errors[f]
+  const markTouched = (f: FieldName) => setTouched(prev => (prev[f] ? prev : { ...prev, [f]: true }))
+  const borderCls = (f: FieldName) =>
+    showErr(f) ? 'border-red-400/70 focus:border-red-400' : 'border-card-border focus:border-primary/60'
+  const inputCls = (f: FieldName) =>
+    `w-full bg-surface border rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none transition-colors ${borderCls(f)}`
 
   // Any non-empty password is at least "weak" so the meter always reads sensibly.
   const score = password ? Math.max(passwordScore(password), 1) : 0
@@ -53,28 +79,14 @@ export default function RegisterForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setTouched({ firstName: true, lastName: true, phone: true, email: true, password: true })
 
-    if (!EMAIL_RE.test(email)) {
-      setError(t('errorInvalidEmail'))
-      return
-    }
-    if (phoneDigits.length !== 9) {
-      setError(t('errorInvalidPhone'))
-      return
-    }
-    if (password.length < 8) {
-      setError(t('errorShortPassword'))
-      return
-    }
-    if (!HAS_LETTER.test(password) || !HAS_DIGIT.test(password)) {
-      setError(t('errorWeakPassword'))
-      return
-    }
+    if (Object.values(errors).some(Boolean)) return
 
     setLoading(true)
 
     const fullName = `${firstName.trim()} ${lastName.trim()}`.trim()
-    const phone = `+380${phoneDigits}`
+    const phone = phoneDigits.length === 9 ? `+380${phoneDigits}` : ''
 
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({
@@ -135,20 +147,27 @@ export default function RegisterForm() {
     )
   }
 
+  const fieldError = (name: FieldName) =>
+    showErr(name) ? (
+      <p className="mt-1 font-label-caps text-[10px] text-red-400 uppercase tracking-widest">{errors[name]}</p>
+    ) : null
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      {/* Name — first + last */}
+      {/* Name — first (required) + last (optional) */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className={labelClass}>{t('firstNameLabel')}</label>
+          <label className={labelClass}>{t('firstNameLabel')} <span className="text-primary">*</span></label>
           <input
             type="text"
             value={firstName}
             onChange={e => setFirstName(e.target.value)}
+            onBlur={() => markTouched('firstName')}
             required
             placeholder={t('firstNamePlaceholder')}
-            className={inputClass}
+            className={inputCls('firstName')}
           />
+          {fieldError('firstName')}
         </div>
         <div>
           <label className={labelClass}>{t('lastNameLabel')}</label>
@@ -156,17 +175,18 @@ export default function RegisterForm() {
             type="text"
             value={lastName}
             onChange={e => setLastName(e.target.value)}
-            required
             placeholder={t('lastNamePlaceholder')}
-            className={inputClass}
+            className={inputCls('lastName')}
           />
         </div>
       </div>
 
-      {/* Phone — fixed +380 prefix */}
+      {/* Phone — fixed +380 prefix (optional) */}
       <div>
         <label className={labelClass}>{t('phoneLabel')}</label>
-        <div className="flex items-stretch bg-surface border border-card-border rounded overflow-hidden focus-within:border-primary/60 transition-colors">
+        <div className={`flex items-stretch bg-surface border rounded overflow-hidden transition-colors ${
+          showErr('phone') ? 'border-red-400/70 focus-within:border-red-400' : 'border-card-border focus-within:border-primary/60'
+        }`}>
           <span className="flex items-center px-3 font-body-md text-body-md text-on-surface-variant border-r border-card-border select-none">
             +380
           </span>
@@ -175,36 +195,40 @@ export default function RegisterForm() {
             inputMode="numeric"
             value={formatPhone(phoneDigits)}
             onChange={e => setPhoneDigits(e.target.value.replace(/\D/g, '').slice(0, 9))}
-            required
+            onBlur={() => markTouched('phone')}
             placeholder="00 000 00 00"
             className="flex-1 min-w-0 bg-transparent px-3 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none"
           />
         </div>
+        {fieldError('phone')}
       </div>
 
-      {/* Email */}
+      {/* Email (required) */}
       <div>
-        <label className={labelClass}>{t('emailLabel')}</label>
+        <label className={labelClass}>{t('emailLabel')} <span className="text-primary">*</span></label>
         <input
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
+          onBlur={() => markTouched('email')}
           required
           placeholder={t('emailPlaceholder')}
-          className={inputClass}
+          className={inputCls('email')}
         />
+        {fieldError('email')}
       </div>
 
-      {/* Password + strength */}
+      {/* Password (required) + strength */}
       <div>
-        <label className={labelClass}>{t('passwordLabel')}</label>
+        <label className={labelClass}>{t('passwordLabel')} <span className="text-primary">*</span></label>
         <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          onBlur={() => markTouched('password')}
           required
           placeholder={t('passwordPlaceholder')}
-          className={inputClass}
+          className={inputCls('password')}
         />
         {password ? (
           <div className="mt-2">
@@ -216,10 +240,16 @@ export default function RegisterForm() {
                 />
               ))}
             </div>
-            <p className={`mt-1 font-label-caps text-[10px] uppercase tracking-widest ${strength.text}`}>
-              {strength.label}
-            </p>
+            {showErr('password') ? (
+              fieldError('password')
+            ) : (
+              <p className={`mt-1 font-label-caps text-[10px] uppercase tracking-widest ${strength.text}`}>
+                {strength.label}
+              </p>
+            )}
           </div>
+        ) : showErr('password') ? (
+          fieldError('password')
         ) : (
           <p className="mt-1.5 font-label-caps text-[10px] text-on-surface-variant/70 uppercase tracking-widest">
             {t('passwordHint')}

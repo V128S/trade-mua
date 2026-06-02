@@ -436,7 +436,8 @@
     "passwordHint": "Мінімум 8 символів, літери та цифри",
     "passwordWeak": "Слабкий",
     "passwordMedium": "Середній",
-    "passwordStrong": "Надійний"
+    "passwordStrong": "Надійний",
+    "errorRequired": "Обов'язкове поле"
   },
   "asicHub": {
     "allCatalog": "Весь каталог",
