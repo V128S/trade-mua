@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { getShuffledTopProductsFromDB, getRandomProductsFromDB } from "@/lib/products";
+import { getPublishedReviews } from "@/lib/reviews";
 import HeroCarousel from "@/components/hero/HeroCarousel";
 import BrandTicker from "@/components/ui/BrandTicker";
 import TrustBar from "@/components/ui/TrustBar";
@@ -33,33 +34,6 @@ export default async function Home({
     { icon: "lock", title: tAbout("value4Title"), desc: tAbout("value4Desc") },
   ];
 
-  const TESTIMONIALS = [
-    {
-      name: t("testimonial1Name"),
-      location: t("testimonial1Location"),
-      stars: 5,
-      text: t("testimonial1Text"),
-    },
-    {
-      name: t("testimonial2Name"),
-      location: t("testimonial2Location"),
-      stars: 5,
-      text: t("testimonial2Text"),
-    },
-    {
-      name: t("testimonial3Name"),
-      location: t("testimonial3Location"),
-      stars: 5,
-      text: t("testimonial3Text"),
-    },
-    {
-      name: t("testimonial4Name"),
-      location: t("testimonial4Location"),
-      stars: 4,
-      text: t("testimonial4Text"),
-    },
-  ];
-
   const SERVICES = [
     {
       icon: "build",
@@ -81,9 +55,10 @@ export default async function Home({
     },
   ];
 
-  const [products, carouselProducts] = await Promise.all([
+  const [products, carouselProducts, reviews] = await Promise.all([
     getShuffledTopProductsFromDB(4),
     getRandomProductsFromDB(10),
+    getPublishedReviews(8),
   ]);
 
   return (
@@ -347,7 +322,8 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
+      {/* ── Testimonials (real reviews from the Telegram group, curated in admin) ── */}
+      {reviews.length > 0 && (
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mt-section-gap">
         <div className="head-rule mb-10">
           <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap">
@@ -357,14 +333,14 @@ export default async function Home({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-          {TESTIMONIALS.map((testimonial) => (
-            <div key={testimonial.name} className="glass glass-hover group p-6 flex flex-col gap-4 cursor-default">
+          {reviews.map((review) => (
+            <div key={review.id} className="glass glass-hover group p-6 flex flex-col gap-4 cursor-default">
               {/* Stars + verified badge — checkmark pinned right; the label stays
                   collapsed and slides out smoothly on card hover. */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex gap-0.5 shrink-0">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className={`material-symbols-outlined text-[15px] ${i < testimonial.stars ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                    <span key={i} className={`material-symbols-outlined text-[15px] ${i < review.rating ? "text-primary" : "text-outline-variant/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
                       star
                     </span>
                   ))}
@@ -378,24 +354,40 @@ export default async function Home({
               </div>
               {/* Quote */}
               <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed flex-1">
-                &ldquo;{testimonial.text}&rdquo;
+                &ldquo;{review.review_text}&rdquo;
               </p>
+              {/* Manager reply */}
+              {review.manager_reply && (
+                <div className="border-l-2 border-primary/40 pl-3">
+                  <p className="font-label-caps text-[9px] text-primary uppercase tracking-widest">{t("managerReply")}</p>
+                  <p className="font-body-md text-body-md text-on-surface-variant text-sm mt-1 leading-relaxed">{review.manager_reply}</p>
+                </div>
+              )}
               {/* Author */}
               <div className="border-t border-card-border pt-4 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                  <span className="font-headline-md text-primary text-[13px]">{testimonial.name[0]}</span>
+                  <span className="font-headline-md text-primary text-[13px]">{review.author_name.charAt(0)}</span>
                 </div>
-                <div>
-                  <p className="font-technical-data text-sm text-on-surface leading-tight">{testimonial.name}</p>
+                <div className="min-w-0">
+                  <p className="font-technical-data text-sm text-on-surface leading-tight">{review.author_name}</p>
                   <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mt-0.5">
-                    {testimonial.location} · {t("testimonialSource")}
+                    {[review.author_location, new Date(review.review_date).toLocaleDateString(locale === "ru" ? "ru-RU" : "uk-UA", { day: "2-digit", month: "short", year: "numeric" })].filter(Boolean).join(" · ")}
                   </p>
                 </div>
               </div>
+              {/* Telegram proof link */}
+              {review.telegram_url && (
+                <a href={review.telegram_url} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 font-label-caps text-[9px] text-on-surface-variant hover:text-primary uppercase tracking-widest transition-colors">
+                  <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                  {t("viewInTelegram")}
+                </a>
+              )}
             </div>
           ))}
         </div>
       </section>
+      )}
 
     </div>
   );

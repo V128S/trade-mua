@@ -102,7 +102,9 @@
     "statWarrantyValue": "6 міс",
     "statWarrantyLabel": "Гарантія на техніку",
     "testimonialVerified": "Перевірено",
-    "testimonialSource": "Telegram"
+    "testimonialSource": "Telegram",
+    "managerReply": "Відповідь менеджера",
+    "viewInTelegram": "Дивитись у Telegram"
   },
   "products": {
     "badgeNew": "Новинка",

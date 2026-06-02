@@ -74,6 +74,44 @@ export interface Database {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          id: string
+          author_name: string
+          author_location: string | null
+          rating: number
+          review_text: string
+          manager_reply: string | null
+          review_date: string
+          telegram_url: string | null
+          is_published: boolean
+          sort_order: number
+          created_at: string
+        }
+        Insert: {
+          author_name: string
+          author_location?: string | null
+          rating?: number
+          review_text: string
+          manager_reply?: string | null
+          review_date?: string
+          telegram_url?: string | null
+          is_published?: boolean
+          sort_order?: number
+        }
+        Update: {
+          author_name?: string
+          author_location?: string | null
+          rating?: number
+          review_text?: string
+          manager_reply?: string | null
+          review_date?: string
+          telegram_url?: string | null
+          is_published?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
       promo_codes: {
         Row: {
           id: string

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 const NAV = [
   { href: '/admin/users',    label: 'Користувачі',  icon: 'group' },
   { href: '/admin/orders',   label: 'Замовлення',   icon: 'receipt_long' },
+  { href: '/admin/reviews',  label: 'Відгуки',      icon: 'reviews' },
   { href: '/admin/promos',   label: 'Промокоди',    icon: 'local_offer' },
   { href: '/admin/products', label: 'Синк товарів', icon: 'sync' },
   { href: '/admin/photos',   label: 'Фото товарів',  icon: 'image' },
