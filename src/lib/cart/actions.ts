@@ -1,6 +1,7 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
 import { buildOrderItems, applyDiscount } from '@/lib/cart/cart-math'
+import { composeShippingAddress } from '@/lib/cart/shipping'
 
 export async function previewPromo(code: string): Promise<{ discountPct: number } | { error: string }> {
   const trimmed = code.trim()
@@ -15,8 +16,11 @@ export async function previewPromo(code: string): Promise<{ discountPct: number 
 export interface PlaceOrderInput {
   items: { id: string; qty: number }[]
   promoCode?: string | null
-  novaPoshta: string
+  firstName: string
+  lastName: string
   phone: string
+  city: string
+  branch: string
   notes?: string
 }
 
@@ -24,6 +28,15 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Потрібен вхід' }
+
+  const firstName = input.firstName.trim()
+  const lastName = input.lastName.trim()
+  const phone = input.phone.trim()
+  const city = input.city.trim()
+  const branch = input.branch.trim()
+  if (!firstName || !lastName || !phone || !city || !branch) {
+    return { error: 'Заповніть усі обовʼязкові поля' }
+  }
 
   const ids = input.items.map(i => i.id)
   if (ids.length === 0) return { error: 'Кошик порожній' }
@@ -57,12 +70,8 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
 
   const total = applyDiscount(base, discountPct)
 
-  // The orders table has no phone column — fold the contact phone into notes
-  // so the operator sees it on the order (order-as-request flow).
-  const phone = input.phone.trim()
-  const notes = [phone ? `Телефон: ${phone}` : '', input.notes?.trim() ?? '']
-    .filter(Boolean)
-    .join('\n') || null
+  // Comment-only notes now — recipient/contact data lives in dedicated columns.
+  const notes = input.notes?.trim() || null
 
   const { data: order, error: insErr } = await supabase
     .from('orders')
@@ -73,7 +82,13 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
       status: 'pending',
       promo_code: promoCode,
       discount_pct: discountPct || null,
-      nova_poshta_address: input.novaPoshta,
+      recipient_first_name: firstName,
+      recipient_last_name: lastName,
+      recipient_phone: phone,
+      city,
+      nova_poshta_branch: branch,
+      // Keep the legacy single-line address for backward-compatible display.
+      nova_poshta_address: composeShippingAddress(city, branch),
       notes,
     })
     .select('id')
