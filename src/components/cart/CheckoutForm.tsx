@@ -6,13 +6,18 @@ import { Link } from '@/i18n/navigation'
 import { useCart } from '@/lib/cart/useCart'
 import { applyDiscount } from '@/lib/cart/cart-math'
 import { placeOrder } from '@/lib/cart/actions'
+import { splitFullName } from '@/lib/cart/shipping'
 
-export default function CheckoutForm({ defaultPhone }: { defaultPhone: string }) {
+export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaultPhone: string; defaultFullName: string }) {
   const t = useTranslations('checkout')
   const { items, promo, subtotal, hydrated, clear } = useCart()
   const router = useRouter()
-  const [novaPoshta, setNovaPoshta] = useState('')
+  const prefill = splitFullName(defaultFullName)
+  const [firstName, setFirstName] = useState(prefill.first)
+  const [lastName, setLastName] = useState(prefill.last)
   const [phone, setPhone] = useState(defaultPhone)
+  const [city, setCity] = useState('')
+  const [branch, setBranch] = useState('')
   const [notes, setNotes] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -35,8 +40,11 @@ export default function CheckoutForm({ defaultPhone }: { defaultPhone: string })
     const res = await placeOrder({
       items: items.map(i => ({ id: i.id, qty: i.qty })),
       promoCode: promo?.code ?? null,
-      novaPoshta,
+      firstName,
+      lastName,
       phone,
+      city,
+      branch,
       notes,
     })
     if ('error' in res) { setError(res.error); setLoading(false); return }
@@ -50,13 +58,29 @@ export default function CheckoutForm({ defaultPhone }: { defaultPhone: string })
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className={labelCls}>{t('labelNovaPoshta')}</label>
-          <input value={novaPoshta} onChange={e => setNovaPoshta(e.target.value)} required placeholder={t('placeholderNovaPoshta')} className={field} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>{t('labelFirstName')}</label>
+            <input value={firstName} onChange={e => setFirstName(e.target.value)} required placeholder={t('labelFirstName')} className={field} />
+          </div>
+          <div>
+            <label className={labelCls}>{t('labelLastName')}</label>
+            <input value={lastName} onChange={e => setLastName(e.target.value)} required placeholder={t('labelLastName')} className={field} />
+          </div>
         </div>
         <div>
           <label className={labelCls}>{t('labelPhone')}</label>
           <input value={phone} onChange={e => setPhone(e.target.value)} required placeholder="+380..." className={field} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>{t('labelCity')}</label>
+            <input value={city} onChange={e => setCity(e.target.value)} required placeholder={t('placeholderCity')} className={field} />
+          </div>
+          <div>
+            <label className={labelCls}>{t('labelBranch')}</label>
+            <input value={branch} onChange={e => setBranch(e.target.value)} required placeholder={t('placeholderBranch')} className={field} />
+          </div>
         </div>
         <div>
           <label className={labelCls}>{t('labelComment')}</label>
