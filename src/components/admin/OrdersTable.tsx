@@ -40,7 +40,10 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
     return orders.filter(o => {
       if (filter !== 'all' && o.status !== filter) return false
       if (!q) return true
-      const name = o.profile?.full_name?.toLowerCase() ?? ''
+      const name = [o.recipient_first_name, o.recipient_last_name, o.profile?.full_name]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
       return o.id.toLowerCase().includes(q) || name.includes(q)
     })
   }, [orders, filter, query])
@@ -116,6 +119,11 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
         <div className="space-y-4">
           {visible.map(order => {
             const items: OrderItem[] = Array.isArray(order.items) ? order.items : []
+            const recipientName =
+              [order.recipient_first_name, order.recipient_last_name].filter(Boolean).join(' ').trim() ||
+              order.profile?.full_name ||
+              'Анонім'
+            const recipientPhone = order.recipient_phone ?? order.profile?.phone ?? null
             return (
               <div key={order.id} className="bg-card border-card rounded-lg p-5 space-y-3">
                 {/* Header */}
@@ -128,14 +136,14 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
                       href={`/admin/users/${order.user_id}`}
                       className="font-body-md text-body-md text-on-surface mt-0.5 hover:text-primary transition-colors inline-block"
                     >
-                      {order.profile?.full_name ?? 'Анонім'}
+                      {recipientName}
                     </Link>
-                    {order.profile?.phone && (
+                    {recipientPhone && (
                       <a
-                        href={`tel:${order.profile.phone}`}
+                        href={`tel:${recipientPhone}`}
                         className="block font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors text-[11px] mt-0.5"
                       >
-                        {order.profile.phone}
+                        {recipientPhone}
                       </a>
                     )}
                   </div>
@@ -179,8 +187,19 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
                 {/* Footer: address + promo + total */}
                 <div className="flex flex-wrap justify-between items-end gap-3 border-t border-card-border pt-3">
                   <div>
-                    <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">Нова Пошта</p>
-                    <p className="font-body-md text-body-md text-on-surface mt-0.5 text-sm">{order.nova_poshta_address ?? '—'}</p>
+                    {order.city || order.nova_poshta_branch ? (
+                      <>
+                        <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">Місто</p>
+                        <p className="font-body-md text-body-md text-on-surface mt-0.5 text-sm">{order.city ?? '—'}</p>
+                        <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mt-2">Відділення НП</p>
+                        <p className="font-body-md text-body-md text-on-surface mt-0.5 text-sm">{order.nova_poshta_branch ?? '—'}</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">Нова Пошта</p>
+                        <p className="font-body-md text-body-md text-on-surface mt-0.5 text-sm">{order.nova_poshta_address ?? '—'}</p>
+                      </>
+                    )}
                   </div>
                   <div className="text-right">
                     {order.promo_code && (
