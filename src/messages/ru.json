@@ -416,7 +416,7 @@
     "forgotPassword": "Забыли пароль?",
     "hasResetLink": "Уже есть ссылка — ввести новый пароль",
     "errorInvalidCredentials": "Неверный email или пароль",
-    "errorShortPassword": "Пароль минимум 6 символов",
+    "errorShortPassword": "Пароль минимум 8 символов",
     "errorEmailExists": "Этот email уже зарегистрирован",
     "errorRegisterGeneric": "Ошибка регистрации. Попробуйте ещё раз.",
     "errorResetGeneric": "Ошибка. Проверьте email и попробуйте ещё раз.",
@@ -425,7 +425,18 @@
     "successCheckEmail": "Проверьте почту",
     "successCheckEmailDesc": "Мы отправили письмо с подтверждением на {email}. Перейдите по ссылке в письме для активации аккаунта.",
     "successResetSent": "Письмо со ссылкой отправлено. Проверьте почту.",
-    "backToLogin": "На страницу входа"
+    "backToLogin": "На страницу входа",
+    "firstNameLabel": "Имя",
+    "lastNameLabel": "Фамилия",
+    "firstNamePlaceholder": "Иван",
+    "lastNamePlaceholder": "Иванов",
+    "errorInvalidEmail": "Неверный формат email",
+    "errorInvalidPhone": "Введите корректный номер телефона",
+    "errorWeakPassword": "Пароль слишком простой — добавьте буквы и цифры",
+    "passwordHint": "Минимум 8 символов, буквы и цифры",
+    "passwordWeak": "Слабый",
+    "passwordMedium": "Средний",
+    "passwordStrong": "Надёжный"
   },
   "asicHub": {
     "allCatalog": "Весь каталог",

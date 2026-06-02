@@ -5,31 +5,88 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/client'
 
+const inputClass =
+  'w-full bg-surface border border-card-border rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors'
+const labelClass =
+  'font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const HAS_LETTER = /[a-zA-Zа-яА-ЯіїєґІЇЄҐ]/
+const HAS_DIGIT = /\d/
+
+// Format up to 9 national digits as "XX XXX XX XX" (Ukrainian +380 numbers).
+function formatPhone(digits: string) {
+  const d = digits.slice(0, 9)
+  return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(' ')
+}
+
+// Lightweight password strength: 0 (empty) … 3 (strong).
+function passwordScore(pw: string) {
+  if (!pw) return 0
+  let s = 0
+  if (pw.length >= 8) s++
+  if (HAS_LETTER.test(pw) && HAS_DIGIT.test(pw)) s++
+  if (pw.length >= 12 || /[^a-zA-Z0-9]/.test(pw)) s++
+  return s
+}
+
 export default function RegisterForm() {
   const t = useTranslations('auth')
-  const [fullName, setFullName] = useState('')
-  const [phone, setPhone] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [phoneDigits, setPhoneDigits] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  // Any non-empty password is at least "weak" so the meter always reads sensibly.
+  const score = password ? Math.max(passwordScore(password), 1) : 0
+  const strength = [
+    { label: '', bar: 'bg-outline-variant/30', text: '' },
+    { label: t('passwordWeak'), bar: 'bg-red-400', text: 'text-red-400' },
+    { label: t('passwordMedium'), bar: 'bg-amber-400', text: 'text-amber-400' },
+    { label: t('passwordStrong'), bar: 'bg-primary', text: 'text-primary' },
+  ][score]
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (password.length < 6) {
+    setError(null)
+
+    if (!EMAIL_RE.test(email)) {
+      setError(t('errorInvalidEmail'))
+      return
+    }
+    if (phoneDigits.length !== 9) {
+      setError(t('errorInvalidPhone'))
+      return
+    }
+    if (password.length < 8) {
       setError(t('errorShortPassword'))
       return
     }
+    if (!HAS_LETTER.test(password) || !HAS_DIGIT.test(password)) {
+      setError(t('errorWeakPassword'))
+      return
+    }
+
     setLoading(true)
-    setError(null)
+
+    const fullName = `${firstName.trim()} ${lastName.trim()}`.trim()
+    const phone = `+380${phoneDigits}`
 
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { full_name: fullName, phone },
+        data: {
+          full_name: fullName,
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          phone,
+        },
         emailRedirectTo: `${location.origin}/auth/callback`,
       },
     })
@@ -78,31 +135,100 @@ export default function RegisterForm() {
     )
   }
 
-  const fields = [
-    { key: 'fullName', label: t('fullNameLabel'), value: fullName, setter: setFullName, type: 'text', placeholder: t('fullNamePlaceholder') },
-    { key: 'phone', label: t('phoneLabel'), value: phone, setter: setPhone, type: 'tel', placeholder: t('phonePlaceholder') },
-    { key: 'email', label: t('emailLabel'), value: email, setter: setEmail, type: 'email', placeholder: t('emailPlaceholder') },
-    { key: 'password', label: t('passwordLabel'), value: password, setter: setPassword, type: 'password', placeholder: t('passwordPlaceholder') },
-  ]
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {fields.map(({ key, label, value, setter, type, placeholder }) => (
-        <div key={key}>
-          <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest block mb-1.5 text-[11px]">
-            {label}
-          </label>
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      {/* Name — first + last */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className={labelClass}>{t('firstNameLabel')}</label>
           <input
-            type={type}
-            value={value}
-            onChange={e => setter(e.target.value)}
+            type="text"
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
             required
-            placeholder={placeholder}
-            className="w-full bg-surface border border-card-border rounded px-4 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary/60 transition-colors"
+            placeholder={t('firstNamePlaceholder')}
+            className={inputClass}
           />
         </div>
-      ))}
+        <div>
+          <label className={labelClass}>{t('lastNameLabel')}</label>
+          <input
+            type="text"
+            value={lastName}
+            onChange={e => setLastName(e.target.value)}
+            required
+            placeholder={t('lastNamePlaceholder')}
+            className={inputClass}
+          />
+        </div>
+      </div>
+
+      {/* Phone — fixed +380 prefix */}
+      <div>
+        <label className={labelClass}>{t('phoneLabel')}</label>
+        <div className="flex items-stretch bg-surface border border-card-border rounded overflow-hidden focus-within:border-primary/60 transition-colors">
+          <span className="flex items-center px-3 font-body-md text-body-md text-on-surface-variant border-r border-card-border select-none">
+            +380
+          </span>
+          <input
+            type="tel"
+            inputMode="numeric"
+            value={formatPhone(phoneDigits)}
+            onChange={e => setPhoneDigits(e.target.value.replace(/\D/g, '').slice(0, 9))}
+            required
+            placeholder="00 000 00 00"
+            className="flex-1 min-w-0 bg-transparent px-3 py-2.5 font-body-md text-body-md text-on-surface focus:outline-none"
+          />
+        </div>
+      </div>
+
+      {/* Email */}
+      <div>
+        <label className={labelClass}>{t('emailLabel')}</label>
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          placeholder={t('emailPlaceholder')}
+          className={inputClass}
+        />
+      </div>
+
+      {/* Password + strength */}
+      <div>
+        <label className={labelClass}>{t('passwordLabel')}</label>
+        <input
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+          placeholder={t('passwordPlaceholder')}
+          className={inputClass}
+        />
+        {password ? (
+          <div className="mt-2">
+            <div className="flex gap-1">
+              {[1, 2, 3].map(i => (
+                <div
+                  key={i}
+                  className={`h-1 flex-1 rounded-full transition-colors ${score >= i ? strength.bar : 'bg-outline-variant/30'}`}
+                />
+              ))}
+            </div>
+            <p className={`mt-1 font-label-caps text-[10px] uppercase tracking-widest ${strength.text}`}>
+              {strength.label}
+            </p>
+          </div>
+        ) : (
+          <p className="mt-1.5 font-label-caps text-[10px] text-on-surface-variant/70 uppercase tracking-widest">
+            {t('passwordHint')}
+          </p>
+        )}
+      </div>
+
       {error && <p className="font-body-md text-body-md text-red-400 text-sm">{error}</p>}
+
       <button
         type="submit"
         disabled={loading}
