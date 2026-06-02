@@ -23,7 +23,7 @@ export default async function CheckoutPage({ params }: Props) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('phone')
+    .select('full_name, phone')
     .eq('id', user.id)
     .single()
 
@@ -46,7 +46,7 @@ export default async function CheckoutPage({ params }: Props) {
         <HowItWorks />
       </div>
 
-      <CheckoutForm defaultPhone={profile?.phone ?? ''} />
+      <CheckoutForm defaultPhone={profile?.phone ?? ''} defaultFullName={profile?.full_name ?? ''} />
     </div>
   )
 }
