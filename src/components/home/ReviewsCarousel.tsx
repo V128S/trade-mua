@@ -58,7 +58,7 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
     >
       <div
         ref={trackRef}
-        className="flex gap-gutter overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 px-1 -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex gap-gutter overflow-x-auto snap-x snap-mandatory scroll-smooth py-4 px-1 -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((review, idx) => {
           const isOpen = expanded.has(review.id);
