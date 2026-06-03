@@ -72,14 +72,14 @@ export default async function LocaleLayout({
   const orgLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Trade M",
+    name: "TradeM",
     url: SITE_URL,
     logo: `${SITE_URL}/icon.png`,
   };
   const websiteLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Trade M",
+    name: "TradeM",
     url: SITE_URL,
     inLanguage: { uk: "uk-UA", en: "en-US", ru: "ru-RU" }[locale] ?? "uk-UA",
   };

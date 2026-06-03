@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     getTranslations({ locale, namespace: "products" }),
   ]);
   const product = products.find((p) => p.id === slug);
-  if (!product) return { title: "Trade M" };
+  if (!product) return { title: "TradeM" };
   const path = `/products/${slug}`;
   return {
     title: t("metaSlugTitle", { name: product.name }),
@@ -128,7 +128,7 @@ export default async function ProductPage({ params }: Props) {
         : "https://schema.org/PreOrder",
       priceValidUntil: PRICE_VALID_UNTIL,
       url: productUrl,
-      seller: { "@type": "Organization", name: "Trade M" },
+      seller: { "@type": "Organization", name: "TradeM" },
     },
   };
   const breadcrumbLd = {

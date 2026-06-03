@@ -132,13 +132,13 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
       {/* Side arrows — visual affordance that the row is scrollable + manual
           control. Vertically centered, overlaid; inline SVG so they always render. */}
       <button type="button" onClick={() => scroll(-1)} aria-label={t("reviewsPrev")}
-        className="grid place-items-center absolute top-1/2 -translate-y-1/2 left-0 lg:-left-5 z-10 w-11 h-11 rounded-full glass border-card text-on-surface hover:text-primary hover:border-primary/40 transition-colors shadow-lg">
+        className="grid place-items-center absolute top-1/2 -translate-y-1/2 left-0 lg:-left-5 z-10 w-11 h-11 rounded-full bg-card border border-card-border text-on-surface hover:text-primary hover:border-primary transition-colors shadow-lg">
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
       <button type="button" onClick={() => scroll(1)} aria-label={t("reviewsNext")}
-        className="grid place-items-center absolute top-1/2 -translate-y-1/2 right-0 lg:-right-5 z-10 w-11 h-11 rounded-full glass border-card text-on-surface hover:text-primary hover:border-primary/40 transition-colors shadow-lg">
+        className="grid place-items-center absolute top-1/2 -translate-y-1/2 right-0 lg:-right-5 z-10 w-11 h-11 rounded-full bg-card border border-card-border text-on-surface hover:text-primary hover:border-primary transition-colors shadow-lg">
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M9 6l6 6 -6 6" />
         </svg>

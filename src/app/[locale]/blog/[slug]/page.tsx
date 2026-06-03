@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const path = `/blog/${slug}`;
   const localePrefix = locale === "uk" ? "" : `/${locale}`;
   return {
-    title: `${post.title} | Trade M`,
+    title: `${post.title} | TradeM`,
     description: post.description,
     alternates: {
       canonical: `${localePrefix}${path}`,
@@ -59,8 +59,8 @@ export default async function BlogPostPage({ params }: Props) {
     dateModified: post.date,
     inLanguage: { uk: "uk-UA", en: "en-US", ru: "ru-RU" }[locale] ?? "uk-UA",
     mainEntityOfPage: url,
-    author: { "@type": "Organization", name: "Trade M" },
-    publisher: { "@type": "Organization", name: "Trade M", logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.png` } },
+    author: { "@type": "Organization", name: "TradeM" },
+    publisher: { "@type": "Organization", name: "TradeM", logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.png` } },
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",

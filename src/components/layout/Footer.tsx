@@ -18,7 +18,7 @@ export default async function Footer() {
 
         {/* Brand */}
         <div className="flex items-center gap-3">
-          <Image src="/logo.png" alt="Trade M" width={40} height={40} className="rounded-full" />
+          <Image src="/logo.png" alt="TradeM" width={40} height={40} className="rounded-full" />
           <span className="font-headline-md text-headline-md font-bold tracking-tighter">
             <span className="text-on-surface">Trade</span><span className="text-primary">M</span>
           </span>
