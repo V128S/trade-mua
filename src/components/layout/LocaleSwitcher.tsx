@@ -1,8 +1,10 @@
 "use client";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 
+// Visible locales only. "ru" is intentionally omitted — it's a hidden SEO-only
+// locale (real /ru pages for Google) that we don't surface as a UI choice.
+const VISIBLE_LOCALES = ["uk", "en"] as const;
 const LABELS: Record<string, string> = { uk: "UA", en: "EN" };
 
 export default function LocaleSwitcher() {
@@ -12,7 +14,7 @@ export default function LocaleSwitcher() {
 
   return (
     <div className="flex items-center gap-1 font-label-caps text-label-caps uppercase tracking-widest text-xs">
-      {routing.locales.map((loc) => (
+      {VISIBLE_LOCALES.map((loc) => (
         <button
           key={loc}
           type="button"

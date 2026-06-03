@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       hashrate: product.hashrate,
       power: product.powerW,
     }),
-    alternates: { languages: { uk: path, en: `/en${path}`, "x-default": path } },
+    alternates: { languages: { uk: path, en: `/en${path}`, ru: `/ru${path}`, "x-default": path } },
   };
 }
 
@@ -93,7 +93,7 @@ export default async function ProductPage({ params }: Props) {
   const descKey = cooling === "Hydro" ? "descHydro" : cooling === "Immersion" ? "descImmersion" : "descAir";
 
   // ── Structured data (built from live catalog data) ──
-  const localePrefix = locale === "en" ? "/en" : "";
+  const localePrefix = locale === "uk" ? "" : `/${locale}`;
   const productUrl = `${SITE_URL}${localePrefix}/products/${product.id}`;
   const productImg = getProductImage(product.name, product.imageUrl);
   const productLd = {
