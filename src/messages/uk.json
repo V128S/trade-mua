@@ -1,7 +1,7 @@
 {
   "meta": {
-    "homeTitle": "Trade M | Кращий Партнер",
-    "homeDescription": "Вигідні ASIC-майнери: Antminer, Whatsminer. Продаж, сервіс та майнінг-готель в Україні.",
+    "homeTitle": "Купити ASIC-майнер: Antminer, Whatsminer | Trade M",
+    "homeDescription": "Купити ASIC-майнер Antminer, Whatsminer в Україні за фіксованою ціною. Продаж, сервіс, прошивка та майнінг-готель. Офіси в Києві та Дніпрі.",
     "servicesTitle": "Сервіси | Trade M",
     "servicesDescription": "Ремонт та діагностика ASIC-майнерів, прошивка, налаштування та майнінг-готель в Україні.",
     "aboutTitle": "Про компанію | Trade M",
@@ -174,6 +174,7 @@
     "calcFullLink": "Повний калькулятор",
     "metaTitle": "Каталог ASIC-майнерів | Trade M",
     "metaDescription": "Весь асортимент Antminer, Whatsminer та інших ASIC-майнерів з актуальними цінами. В наявності та під замовлення.",
+    "metaSlugTitle": "{name} — купити в Україні, ціна | Trade M",
     "metaSlugDescription": "{name} — {hashrate}, {power}W. Купити ASIC-майнер в Trade M."
   },
   "services": {

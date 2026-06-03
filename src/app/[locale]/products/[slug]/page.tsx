@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return { title: "Trade M" };
   const path = `/products/${slug}`;
   return {
-    title: `${product.name} | Trade M`,
+    title: t("metaSlugTitle", { name: product.name }),
     description: t("metaSlugDescription", {
       name: product.name,
       hashrate: product.hashrate,
