@@ -45,6 +45,16 @@ export async function generateMetadata({
     title: t("homeTitle"),
     description: t("homeDescription"),
     verification: { google: "GUtZWvOqzDL18Dibg_f1RtVsE8o2kaNPEZErzjycOsc" },
+    // Shared link previews (Telegram, etc.). Omit og title/description so each
+    // page's own <title>/<meta description> is used; provide the brand image,
+    // site name and locale site-wide.
+    openGraph: {
+      type: "website",
+      siteName: "TradeM",
+      url: SITE_URL,
+      locale: { uk: "uk_UA", en: "en_US", ru: "ru_RU" }[locale] ?? "uk_UA",
+      images: [{ url: "/icon.png", width: 640, height: 640, alt: "TradeM" }],
+    },
   };
 }
 
