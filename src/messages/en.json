@@ -28,6 +28,7 @@
     "products": "Products",
     "services": "Services",
     "calculator": "Calculator",
+    "blog": "Blog",
     "contact": "Contact",
     "account": "Account",
     "themeLight": "Light theme",
@@ -41,6 +42,18 @@
     "accountMenuAria": "Account menu",
     "adminPanel": "Admin panel",
     "directorPanel": "Director panel"
+  },
+  "blog": {
+    "metaTitle": "Mining & ASIC Blog | Trade M",
+    "metaDescription": "Mining guides and tips: how to choose an ASIC, calculate payback, and where to host hardware. The Trade M blog.",
+    "heroLabel": "Blog",
+    "heroTitle": "Mining & ASIC guides",
+    "heroBody": "Practical articles on choosing hardware, profitability and hosting — no fluff, from the Trade M team.",
+    "readMore": "Read",
+    "ctaHeading": "Ready to start?",
+    "ctaBody": "We'll match an ASIC to your tariff and budget.",
+    "ctaButton": "To the catalog",
+    "relatedHeading": "Read next"
   },
   "footer": {
     "products": "Products",
