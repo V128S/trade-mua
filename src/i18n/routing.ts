@@ -8,6 +8,11 @@ export const routing = defineRouting({
   locales: ["uk", "en", "ru"],
   defaultLocale: "uk",
   localePrefix: "as-needed",
+  // Always serve Ukrainian at the root path. Without this, next-intl picks the
+  // locale from the Accept-Language header, so crawlers/bots (e.g. Telegram's
+  // link-preview fetcher sending "en") get the English version at "/". Visitors
+  // switch language manually via the switcher.
+  localeDetection: false,
 });
 
 export type Locale = (typeof routing.locales)[number];
