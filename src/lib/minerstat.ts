@@ -12,7 +12,6 @@ export const ALGO_NAMES: Record<string, string> = {
   Eaglesong:  "Eaglesong",
   Equihash:   "Equihash",
   X11:        "X11",
-  Handshake:  "Handshake",
   RandomX:    "RandomX",
 };
 
@@ -61,7 +60,6 @@ const ALGO_CONFIGS: Record<string, AlgoConfig> = {
   Eaglesong:  { param: "esg",    refUnit: "1T", scaleToTH: 1,    coinNames: ["Nervos"]                     },
   Equihash:   { param: "eq",     refUnit: "1K", scaleToTH: 1e9,  coinNames: ["Zcash", "Pirate"]            },
   X11:        { param: "x11",    refUnit: "1G", scaleToTH: 1000, coinNames: ["Dash"]                       },
-  Handshake:  { param: "hk",     refUnit: "1T", scaleToTH: 1,    coinNames: ["Handshake"]                  },
   RandomX:    { param: "rmx",    refUnit: "1K", scaleToTH: 1e9,  coinNames: ["Monero"]                     },
 };
 
