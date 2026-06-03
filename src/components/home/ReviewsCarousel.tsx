@@ -85,17 +85,20 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
         ))}
       </div>
 
-      {/* Prev / Next */}
-      <div className="flex justify-end gap-2 mt-4">
-        <button type="button" onClick={() => scroll(-1)} aria-label={t("reviewsPrev")}
-          className="btn-ghost w-11 h-11 rounded grid place-items-center hover:text-primary transition-colors">
-          <span className="material-symbols-outlined text-[20px]">chevron_left</span>
-        </button>
-        <button type="button" onClick={() => scroll(1)} aria-label={t("reviewsNext")}
-          className="btn-ghost w-11 h-11 rounded grid place-items-center hover:text-primary transition-colors">
-          <span className="material-symbols-outlined text-[20px]">chevron_right</span>
-        </button>
-      </div>
+      {/* Side arrows — overlaid, vertically centered. Hidden on mobile (swipe).
+          Inline SVG so they render regardless of the icon-font subset. */}
+      <button type="button" onClick={() => scroll(-1)} aria-label={t("reviewsPrev")}
+        className="hidden sm:grid place-items-center absolute top-1/2 -translate-y-1/2 left-0 sm:-left-3 lg:-left-5 z-10 w-11 h-11 rounded-full glass border-card text-on-surface hover:text-primary hover:border-primary/40 transition-colors shadow-lg">
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      <button type="button" onClick={() => scroll(1)} aria-label={t("reviewsNext")}
+        className="hidden sm:grid place-items-center absolute top-1/2 -translate-y-1/2 right-0 sm:-right-3 lg:-right-5 z-10 w-11 h-11 rounded-full glass border-card text-on-surface hover:text-primary hover:border-primary/40 transition-colors shadow-lg">
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M9 6l6 6 -6 6" />
+        </svg>
+      </button>
     </div>
   );
 }
