@@ -2,12 +2,12 @@
 const COINS = [
   { id: "bitcoin",      symbol: "BTC"  },
   { id: "litecoin",     symbol: "LTC"  },
-  { id: "kaspa",        symbol: "KAS"  },
   { id: "dogecoin",     symbol: "DOGE" },
   { id: "bitcoin-cash", symbol: "BCH"  },
-  { id: "dash",         symbol: "DASH" },
   { id: "zcash",        symbol: "ZEC"  },
-  { id: "ergo",         symbol: "ERG"  },
+  { id: "monero",       symbol: "XMR"  },
+  { id: "dash",         symbol: "DASH" },
+  { id: "kaspa",        symbol: "KAS"  },
 ];
 
 function formatPrice(price: number): string {
