@@ -251,11 +251,11 @@
     "hashrateHint": "TH/s, GH/s, MH/s, kH/s або kSol/s",
     "powerLabel": "Споживання",
     "electricityLabel": "Тариф електроенергії",
-    "electricityHotelMark": "$0.07 (готель)",
+    "electricityHotelMark": "3,6 грн (готель)",
     "equipmentPriceLabel": "Вартість обладнання ($)",
     "equipmentPricePlaceholder": "наприклад: 5000",
     "equipmentPriceHint": "Вкажіть, щоб розрахувати окупність",
-    "hotelPromoTitle": "Майнінг-готель Trade M — $0.07/кВт·год",
+    "hotelPromoTitle": "Майнінг-готель Trade M — 3,6 грн/кВт·год",
     "hotelPromoDesc": "Промисловий тариф, 24/7 моніторинг, Київ / Дніпро",
     "resultsHeading": "Розрахунок",
     "periodDay": "На день",
@@ -272,7 +272,10 @@
     "roiLoss": "Збиток",
     "disclaimer": "* Розрахунок орієнтовний. Реальний прибуток залежить від складності мережі та курсу BTC.",
     "emptyState": "Введіть хешрейт для розрахунку",
-    "unitKwhRate": "{rate}/кВт·год"
+    "unitKwhRate": "{rate, number} грн/кВт·год",
+    "electricityMinMark": "1 грн",
+    "electricityMaxMark": "12 грн",
+    "fxNote": "Курс НБУ: {rate, number} грн/$"
   },
   "about": {
     "metaTitle": "Про компанію | Trade M",

@@ -251,11 +251,11 @@
     "hashrateHint": "TH/s, GH/s, MH/s, kH/s or kSol/s",
     "powerLabel": "Consumption",
     "electricityLabel": "Electricity rate",
-    "electricityHotelMark": "$0.07 (hotel)",
+    "electricityHotelMark": "₴3.6 (hotel)",
     "equipmentPriceLabel": "Equipment cost ($)",
     "equipmentPricePlaceholder": "e.g. 5000",
     "equipmentPriceHint": "Enter to calculate payback",
-    "hotelPromoTitle": "Trade M Mining Hotel — $0.07/kWh",
+    "hotelPromoTitle": "Trade M Mining Hotel — ₴3.6/kWh",
     "hotelPromoDesc": "Industrial rate, 24/7 monitoring, Kyiv / Dnipro",
     "resultsHeading": "Calculation",
     "periodDay": "Per day",
@@ -272,7 +272,10 @@
     "roiLoss": "Loss",
     "disclaimer": "* The calculation is approximate. Actual profit depends on network difficulty and the BTC rate.",
     "emptyState": "Enter a hashrate to calculate",
-    "unitKwhRate": "{rate}/kWh"
+    "unitKwhRate": "₴{rate, number}/kWh",
+    "electricityMinMark": "₴1",
+    "electricityMaxMark": "₴12",
+    "fxNote": "NBU rate: {rate, number} UAH/$"
   },
   "about": {
     "metaTitle": "About | Trade M",

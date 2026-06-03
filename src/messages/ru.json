@@ -251,11 +251,11 @@
     "hashrateHint": "TH/s, GH/s, MH/s, kH/s или kSol/s",
     "powerLabel": "Потребление",
     "electricityLabel": "Тариф электроэнергии",
-    "electricityHotelMark": "$0.07 (отель)",
+    "electricityHotelMark": "3,6 грн (отель)",
     "equipmentPriceLabel": "Стоимость оборудования ($)",
     "equipmentPricePlaceholder": "например: 5000",
     "equipmentPriceHint": "Укажите для расчёта окупаемости",
-    "hotelPromoTitle": "Майнинг-отель Trade M — $0.07/кВт·ч",
+    "hotelPromoTitle": "Майнинг-отель Trade M — 3,6 грн/кВт·ч",
     "hotelPromoDesc": "Промышленный тариф, мониторинг 24/7, Киев / Днепр",
     "resultsHeading": "Расчёт",
     "periodDay": "В день",
@@ -272,7 +272,10 @@
     "roiLoss": "Убыток",
     "disclaimer": "* Расчёт ориентировочный. Реальная прибыль зависит от сложности сети и курса BTC.",
     "emptyState": "Введите хешрейт для расчёта",
-    "unitKwhRate": "{rate}/кВт·ч"
+    "unitKwhRate": "{rate, number} грн/кВт·ч",
+    "electricityMinMark": "1 грн",
+    "electricityMaxMark": "12 грн",
+    "fxNote": "Курс НБУ: {rate, number} грн/$"
   },
   "about": {
     "metaTitle": "О компании | Trade M",
