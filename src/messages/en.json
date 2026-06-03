@@ -337,7 +337,7 @@
     "emptyState": "Enter a hashrate to calculate",
     "unitKwhRate": "₴{rate, number}/kWh",
     "electricityMinMark": "₴0",
-    "electricityMaxMark": "₴8.88",
+    "electricityMaxMark": "₴8.8",
     "fxNote": "NBU rate: {rate, number} UAH/$"
   },
   "about": {

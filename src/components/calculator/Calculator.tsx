@@ -126,7 +126,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
           <input
             type="range"
             min={0}
-            max={8.88}
+            max={8.8}
             step={0.1}
             value={electricityRate}
             onChange={(e) => setElectricityRate(Number(e.target.value))}

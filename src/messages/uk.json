@@ -337,7 +337,7 @@
     "emptyState": "Введіть хешрейт для розрахунку",
     "unitKwhRate": "{rate, number} грн/кВт·год",
     "electricityMinMark": "0 грн",
-    "electricityMaxMark": "8,88 грн",
+    "electricityMaxMark": "8,8 грн",
     "fxNote": "Курс НБУ: {rate, number} грн/$"
   },
   "about": {
