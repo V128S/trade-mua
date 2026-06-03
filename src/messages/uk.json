@@ -28,6 +28,7 @@
     "products": "Продукти",
     "services": "Сервіси",
     "calculator": "Калькулятор",
+    "blog": "Блог",
     "contact": "Контакти",
     "account": "Акаунт",
     "themeLight": "Світла тема",
@@ -41,6 +42,18 @@
     "accountMenuAria": "Меню акаунту",
     "adminPanel": "Адмін-панель",
     "directorPanel": "Панель директора"
+  },
+  "blog": {
+    "metaTitle": "Блог про майнінг та ASIC | Trade M",
+    "metaDescription": "Гайди та поради про майнінг: як обрати ASIC, рахувати окупність, де розмістити обладнання. Блог Trade M.",
+    "heroLabel": "Блог",
+    "heroTitle": "Гайди про майнінг та ASIC",
+    "heroBody": "Практичні матеріали про вибір обладнання, прибутковість і розміщення — без води, від практиків Trade M.",
+    "readMore": "Читати",
+    "ctaHeading": "Готові почати?",
+    "ctaBody": "Підберемо ASIC під ваш тариф і бюджет.",
+    "ctaButton": "До каталогу",
+    "relatedHeading": "Читайте також"
   },
   "footer": {
     "products": "Продукти",

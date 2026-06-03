@@ -11,7 +11,7 @@ import SlideNav from "@/components/ui/nav-header";
 import { useCart } from "@/lib/cart/useCart";
 import LocaleSwitcher from "@/components/layout/LocaleSwitcher";
 
-type NavHref = "/" | "/products" | "/services" | "/calculator" | "/contact";
+type NavHref = "/" | "/products" | "/services" | "/calculator" | "/blog" | "/contact";
 
 function subscribe(callback: () => void) {
   const observer = new MutationObserver(callback);
@@ -233,6 +233,7 @@ export default function Navbar() {
     { href: "/products",   label: t("products")   },
     { href: "/services",   label: t("services")   },
     { href: "/calculator", label: t("calculator") },
+    { href: "/blog",       label: t("blog")       },
     { href: "/contact",    label: t("contact")    },
   ];
 

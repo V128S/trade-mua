@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["next-intl"],
   },
+  // Blog articles are read from src/content/blog via fs at render time — make
+  // sure those markdown files are bundled into the Vercel functions.
+  outputFileTracingIncludes: {
+    "/[locale]/blog": ["./src/content/blog/**"],
+    "/[locale]/blog/[slug]": ["./src/content/blog/**"],
+  },
   // Add smaller candidates (160/192) so small product thumbnails don't jump
   // straight to the 256w source — trims over-sized image delivery.
   images: {
