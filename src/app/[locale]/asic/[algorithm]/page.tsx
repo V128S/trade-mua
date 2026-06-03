@@ -13,8 +13,10 @@ const SITE_URL = "https://trade-mua.vercel.app";
 
 // Indexable algorithm hubs. slug → DB `algorithm` value. Seeded with SHA-256
 // (the largest cluster); add more entries to spin up new hubs.
-const HUBS: Record<string, { dbAlgo: string }> = {
-  sha256: { dbAlgo: "SHA256" },
+// `faqCount` / `hasBody` opt a hub into the extended SEO sections (intro body +
+// FAQ + FAQPage schema). Hubs without them render the lean layout unchanged.
+const HUBS: Record<string, { dbAlgo: string; faqCount?: number; hasBody?: boolean }> = {
+  sha256: { dbAlgo: "SHA256", faqCount: 6, hasBody: true },
   scrypt: { dbAlgo: "Scrypt" },
   kaspa: { dbAlgo: "KHeavyHash" },
 };
@@ -84,9 +86,27 @@ export default async function AsicHubPage({ params }: Props) {
     })),
   };
 
+  // Extended SEO content (only for hubs configured with it — e.g. sha256)
+  const faqs = Array.from({ length: hub.faqCount ?? 0 }, (_, i) => ({
+    q: t(`${algorithm}Faq${i + 1}Q`),
+    a: t(`${algorithm}Faq${i + 1}A`),
+  }));
+  const faqLd = faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
+  const jsonLd = faqLd ? [breadcrumbLd, itemListLd, faqLd] : [breadcrumbLd, itemListLd];
+
   return (
     <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-16 pb-section-gap">
-      <JsonLd data={[breadcrumbLd, itemListLd]} />
+      <JsonLd data={jsonLd} />
 
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-8">
@@ -117,8 +137,42 @@ export default async function AsicHubPage({ params }: Props) {
         ))}
       </div>
 
+      {/* SEO body */}
+      {hub.hasBody && (
+        <section className="mt-16 max-w-3xl">
+          <h2 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest mb-4">
+            {t(`${algorithm}BodyHeading`)}
+          </h2>
+          <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+            {t(`${algorithm}Body`)}
+          </p>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {faqs.length > 0 && (
+        <section className="mt-16">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest mb-8">
+            {t("faqHeading")}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            {faqs.map((f) => (
+              <details key={f.q} className="glass p-5 group">
+                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
+                  <span className="font-technical-data text-technical-data text-on-surface text-sm">{f.q}</span>
+                  <span className="material-symbols-outlined text-primary text-[18px] transition-transform group-open:rotate-180">expand_more</span>
+                </summary>
+                <p className="font-body-md text-body-md text-on-surface-variant text-sm leading-relaxed mt-3">
+                  {f.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Internal links */}
-      <div className="flex flex-wrap justify-center gap-3 mt-12">
+      <div className="flex flex-wrap justify-center gap-3 mt-16">
         <Link href="/products" className="btn-ghost px-8 py-3 rounded font-label-caps text-label-caps uppercase tracking-widest text-xs flex items-center gap-2">
           <span className="material-symbols-outlined text-[16px]">grid_view</span>
           {t("allCatalog")}
