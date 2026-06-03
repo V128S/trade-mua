@@ -63,6 +63,8 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
         t("service3Item4"),
         t("service3Item5"),
         t("service3Item6"),
+        t("service3Item7"),
+        t("service3Item8"),
       ],
       price: t("service3Price"),
       time: t("service3Time"),
