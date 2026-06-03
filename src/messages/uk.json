@@ -119,7 +119,9 @@
     "testimonialVerified": "Перевірено",
     "testimonialSource": "Telegram",
     "managerReply": "Відповідь менеджера",
-    "viewInTelegram": "Дивитись у Telegram"
+    "viewInTelegram": "Дивитись у Telegram",
+    "reviewsPrev": "Попередні відгуки",
+    "reviewsNext": "Наступні відгуки"
   },
   "products": {
     "badgeNew": "Новинка",

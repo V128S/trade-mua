@@ -119,7 +119,9 @@
     "testimonialVerified": "Verified",
     "testimonialSource": "Telegram",
     "managerReply": "Manager's reply",
-    "viewInTelegram": "View on Telegram"
+    "viewInTelegram": "View on Telegram",
+    "reviewsPrev": "Previous reviews",
+    "reviewsNext": "Next reviews"
   },
   "products": {
     "badgeNew": "New",

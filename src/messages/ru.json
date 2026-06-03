@@ -119,7 +119,9 @@
     "testimonialVerified": "Проверено",
     "testimonialSource": "Telegram",
     "managerReply": "Ответ менеджера",
-    "viewInTelegram": "Смотреть в Telegram"
+    "viewInTelegram": "Смотреть в Telegram",
+    "reviewsPrev": "Предыдущие отзывы",
+    "reviewsNext": "Следующие отзывы"
   },
   "products": {
     "badgeNew": "Новинка",
