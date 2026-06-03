@@ -273,8 +273,8 @@
     "disclaimer": "* Розрахунок орієнтовний. Реальний прибуток залежить від складності мережі та курсу BTC.",
     "emptyState": "Введіть хешрейт для розрахунку",
     "unitKwhRate": "{rate, number} грн/кВт·год",
-    "electricityMinMark": "1 грн",
-    "electricityMaxMark": "12 грн",
+    "electricityMinMark": "0 грн",
+    "electricityMaxMark": "8,88 грн",
     "fxNote": "Курс НБУ: {rate, number} грн/$"
   },
   "about": {

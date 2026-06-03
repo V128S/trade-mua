@@ -273,8 +273,8 @@
     "disclaimer": "* The calculation is approximate. Actual profit depends on network difficulty and the BTC rate.",
     "emptyState": "Enter a hashrate to calculate",
     "unitKwhRate": "₴{rate, number}/kWh",
-    "electricityMinMark": "₴1",
-    "electricityMaxMark": "₴12",
+    "electricityMinMark": "₴0",
+    "electricityMaxMark": "₴8.88",
     "fxNote": "NBU rate: {rate, number} UAH/$"
   },
   "about": {
