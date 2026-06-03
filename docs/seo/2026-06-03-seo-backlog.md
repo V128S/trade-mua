@@ -35,10 +35,11 @@ is **keyword targeting in titles + content depth + off-page authority**, not plu
 
 - **SHA256 + AntMiner is the commercial core** — most models, highest ticket. The
   `/asic/sha256` hub = the "купити Antminer / Bitcoin ASIC" intent. Prioritize it.
-- ⚠️ **Brand/inventory mismatch:** copy heavily markets **Whatsminer**, but the
-  catalog has **zero Whatsminer rows** (brands are AntMiner, Avalon, FluMiner,
-  ElphaPex, Pinecone, VolcMiner). Targeting "whatsminer купити" with no stock risks
-  thin relevance. Decide: stock Whatsminer, or soften Whatsminer claims. (Later item.)
+- ✅ **Brand/inventory mismatch — resolved 2026-06-03:** Whatsminer is not sold, so
+  all **sales/supplier copy now leads with "Bitmain Antminer & Avalon"** (the brands
+  actually stocked). Whatsminer is intentionally kept ONLY in service contexts
+  (repair testimonial, firmware support, LuxOS FAQ) — true claims we still want to
+  rank for. Revisit if Whatsminer inventory is added.
 - Most stock is "під замовлення" (in_stock≈0). Fine, but transactional copy should
   say "під замовлення, фіксована ціна" rather than imply immediate dispatch.
 
@@ -103,8 +104,8 @@ is **keyword targeting in titles + content depth + off-page authority**, not plu
   Київ/Дніпро" + Maps. **Merchant Center** → free product listings. **Backlinks** from
   crypto forums/catalogs/partners — the missing ingredient for competitive terms.
 
-### 9. Resolve the Whatsminer copy-vs-stock mismatch
-- value 3, opp 2, effort 2 (business decision) — stock it or soften the claim.
+### 9. Resolve the Whatsminer copy-vs-stock mismatch — ✅ DONE 2026-06-03
+- sales copy now "Bitmain Antminer & Avalon"; Whatsminer kept only in service copy.
 
 ---
 

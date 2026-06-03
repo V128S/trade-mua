@@ -1,11 +1,11 @@
 {
   "meta": {
-    "homeTitle": "Купити ASIC-майнер: Antminer, Whatsminer | Trade M",
-    "homeDescription": "Купити ASIC-майнер Antminer, Whatsminer в Україні за фіксованою ціною. Продаж, сервіс, прошивка та майнінг-готель. Офіси в Києві та Дніпрі.",
+    "homeTitle": "Купити ASIC-майнер: Bitmain Antminer & Avalon | Trade M",
+    "homeDescription": "Купити ASIC-майнер Bitmain Antminer та Avalon в Україні за фіксованою ціною. Продаж, сервіс, прошивка та майнінг-готель. Офіси в Києві та Дніпрі.",
     "servicesTitle": "Сервіси | Trade M",
     "servicesDescription": "Ремонт та діагностика ASIC-майнерів, прошивка, налаштування та майнінг-готель в Україні.",
     "aboutTitle": "Про компанію | Trade M",
-    "aboutDescription": "Trade M — офіційний постачальник ASIC-майнерів в Україні. Antminer, Whatsminer, повний сервіс.",
+    "aboutDescription": "Trade M — офіційний постачальник ASIC-майнерів в Україні. Bitmain Antminer, Avalon, повний сервіс.",
     "contactTitle": "Контакти | Trade M",
     "contactDescription": "Зв'яжіться з Trade M — продаж ASIC-майнерів, сервіс та консультації. Київ, Дніпро.",
     "calculatorTitle": "Калькулятор прибутковості | Trade M",
@@ -56,7 +56,7 @@
     "aboutHeading": "Про нас",
     "heroTitle1": "Промислові та домашні",
     "heroTitle2": "Майнери",
-    "heroBody": "Antminer, Whatsminer, Avalon — ми офіційні постачальники. Доставка з Китаю 10–14 днів. Фіксована ціна під час замовлення.",
+    "heroBody": "Bitmain Antminer та Avalon — ми офіційні постачальники. Доставка з Китаю 10–14 днів. Фіксована ціна під час замовлення.",
     "heroCta1": "Каталог товарів",
     "heroCta2": "Консультація",
     "statDeliveryLabel": "Днів доставка",
@@ -173,7 +173,7 @@
     "calcLoading": "Дані завантажуються...",
     "calcFullLink": "Повний калькулятор",
     "metaTitle": "Каталог ASIC-майнерів | Trade M",
-    "metaDescription": "Весь асортимент Antminer, Whatsminer та інших ASIC-майнерів з актуальними цінами. В наявності та під замовлення.",
+    "metaDescription": "Весь асортимент Antminer, Avalon та інших ASIC-майнерів з актуальними цінами. В наявності та під замовлення.",
     "metaSlugTitle": "{name} — купити в Україні, ціна | Trade M",
     "metaSlugDescription": "{name} — {hashrate}, {power}W. Купити ASIC-майнер в Trade M."
   },
@@ -274,7 +274,7 @@
   },
   "about": {
     "metaTitle": "Про компанію | Trade M",
-    "metaDescription": "Trade M — офіційний постачальник ASIC-майнерів в Україні. Antminer, Whatsminer, повний сервіс.",
+    "metaDescription": "Trade M — офіційний постачальник ASIC-майнерів в Україні. Bitmain Antminer, Avalon, повний сервіс.",
     "heroLabel": "Кращий крипто Партнер",
     "heroTitle": "Trade",
     "heroTitleHighlight": "M",
@@ -465,7 +465,7 @@
   },
   "trust": {
     "officialTitle": "Офіційний постачальник",
-    "officialDesc": "Antminer · Whatsminer · Avalon",
+    "officialDesc": "Bitmain Antminer · Avalon",
     "warrantyTitle": "Гарантія 6 місяців",
     "warrantyDesc": "На все обладнання",
     "paymentTitle": "Зручна оплата",
