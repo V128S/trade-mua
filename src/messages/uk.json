@@ -121,7 +121,9 @@
     "managerReply": "Відповідь менеджера",
     "viewInTelegram": "Дивитись у Telegram",
     "reviewsMore": "Читати повністю",
-    "reviewsLess": "Згорнути"
+    "reviewsLess": "Згорнути",
+    "reviewsPrev": "Попередні відгуки",
+    "reviewsNext": "Наступні відгуки"
   },
   "products": {
     "badgeNew": "Новинка",

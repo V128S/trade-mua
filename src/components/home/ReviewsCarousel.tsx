@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Review } from "@/lib/reviews";
 
 const AUTO_MS = 4500;        // auto-advance interval
 const CLAMP_CHARS = 180;     // show "read more" past this length
 
-// Auto-scrolling, swipeable reviews track. Long reviews are clamped and expand
-// on click; auto-scroll pauses while hovering or when a card is expanded.
+// Auto-scrolling, seamlessly looping reviews track. The list is duplicated; once
+// scrolling passes the first copy we jump back by exactly one copy's width — the
+// content is identical there, so the loop is invisible. Long reviews clamp and
+// expand on click; auto-scroll pauses on hover or while a card is expanded.
 export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
   const t = useTranslations("home");
   const locale = useLocale();
@@ -17,24 +19,27 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
   const [hovered, setHovered] = useState(false);
 
   const paused = hovered || expanded.size > 0;
+  const items = [...reviews, ...reviews]; // duplicate for the seamless loop
+
+  // Scroll one card in a direction, with the invisible wrap at either edge so
+  // the loop is seamless (used by both auto-scroll and the side buttons).
+  const scroll = useCallback((dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-card]");
+    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.85;
+    const half = el.scrollWidth / 2;
+    if (dir > 0 && el.scrollLeft >= half) el.scrollLeft -= half;
+    if (dir < 0 && el.scrollLeft <= 0) el.scrollLeft += half;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
     if (paused) return;
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => {
-      const el = trackRef.current;
-      if (!el) return;
-      const card = el.querySelector<HTMLElement>("[data-card]");
-      const amount = card ? card.offsetWidth + 24 : el.clientWidth * 0.85;
-      // Loop back to the start once the end is reached.
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
-        el.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        el.scrollBy({ left: amount, behavior: "smooth" });
-      }
-    }, AUTO_MS);
+    const id = setInterval(() => scroll(1), AUTO_MS);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [paused, scroll]);
 
   const toggle = (id: string) =>
     setExpanded((prev) => {
@@ -55,14 +60,14 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
         ref={trackRef}
         className="flex gap-gutter overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 px-1 -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {reviews.map((review) => {
+        {items.map((review, idx) => {
           const isOpen = expanded.has(review.id);
           const isLong = review.review_text.length > CLAMP_CHARS;
           return (
             <div
-              key={review.id}
+              key={`${review.id}-${idx}`}
               data-card
-              className="snap-start shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] glass glass-hover group p-6 flex flex-col gap-4 cursor-default"
+              className="snap-start shrink-0 w-[88%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] glass glass-hover group p-7 flex flex-col gap-4 cursor-default"
             >
               {/* Stars + verified badge */}
               <div className="flex items-center justify-between gap-2">
@@ -123,6 +128,21 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
           );
         })}
       </div>
+
+      {/* Side arrows — visual affordance that the row is scrollable + manual
+          control. Vertically centered, overlaid; inline SVG so they always render. */}
+      <button type="button" onClick={() => scroll(-1)} aria-label={t("reviewsPrev")}
+        className="grid place-items-center absolute top-1/2 -translate-y-1/2 left-0 lg:-left-5 z-10 w-11 h-11 rounded-full glass border-card text-on-surface hover:text-primary hover:border-primary/40 transition-colors shadow-lg">
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      <button type="button" onClick={() => scroll(1)} aria-label={t("reviewsNext")}
+        className="grid place-items-center absolute top-1/2 -translate-y-1/2 right-0 lg:-right-5 z-10 w-11 h-11 rounded-full glass border-card text-on-surface hover:text-primary hover:border-primary/40 transition-colors shadow-lg">
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M9 6l6 6 -6 6" />
+        </svg>
+      </button>
     </div>
   );
 }

@@ -121,7 +121,9 @@
     "managerReply": "Manager's reply",
     "viewInTelegram": "View on Telegram",
     "reviewsMore": "Read more",
-    "reviewsLess": "Show less"
+    "reviewsLess": "Show less",
+    "reviewsPrev": "Previous reviews",
+    "reviewsNext": "Next reviews"
   },
   "products": {
     "badgeNew": "New",
