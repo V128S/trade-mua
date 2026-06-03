@@ -37,9 +37,12 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser();
     if (!user) {
       const loginUrl = request.nextUrl.clone();
-      loginUrl.pathname = request.nextUrl.pathname.startsWith("/en")
-        ? "/en/login"
-        : "/login";
+      // Preserve the current non-default locale prefix on the login redirect
+      // (e.g. /ru/dashboard -> /ru/login, /en/... -> /en/login, default -> /login).
+      const localePrefix = routing.locales
+        .filter((l) => l !== routing.defaultLocale)
+        .find((l) => request.nextUrl.pathname === `/${l}` || request.nextUrl.pathname.startsWith(`/${l}/`));
+      loginUrl.pathname = localePrefix ? `/${localePrefix}/login` : "/login";
       loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
       return NextResponse.redirect(loginUrl);
     }

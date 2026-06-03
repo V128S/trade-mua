@@ -9,22 +9,25 @@ interface Props {
   coinSymbol?: string;
   revenuePerTH: number;  // USD per TH-equivalent per day (spot)
   revenue24h?: number;   // 24h average (more stable for ROI calc)
+  usdUah: number;        // live USD→UAH rate; electricity is entered in UAH
   initialHashrate?: string;
   initialPower?: number;
   initialPrice?: number;
 }
 
-export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH, revenue24h, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
+export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH, revenue24h, usdUah, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
   const t = useTranslations("calculator");
   const [hashrate, setHashrate] = useState(initialHashrate);
   const [powerW, setPowerW] = useState(initialPower);
-  const [electricityRate, setElectricityRate] = useState(0.07);
+  // Electricity tariff in UAH (грн/кВт·год); 3.6 is the mining-hotel rate.
+  const [electricityRate, setElectricityRate] = useState(3.6);
   const [price, setPrice] = useState(initialPrice);
 
   const result = useMemo(() => {
     const th = parseHashrateTH(hashrate);
     if (th <= 0 || revenuePerTH <= 0) return null;
-    const dailyCost = (powerW / 1000) * 24 * electricityRate;
+    // Tariff is in UAH; convert the daily cost to USD to match USD revenue.
+    const dailyCost = ((powerW / 1000) * 24 * electricityRate) / usdUah;
     const dailyRevenue = revenuePerTH * th;
     const dailyProfit = Math.max(0, dailyRevenue - dailyCost);
     // ROI uses 24h average for more stable estimate
@@ -38,7 +41,7 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
       roi,
       hasPrice: price > 0,
     };
-  }, [hashrate, powerW, electricityRate, revenuePerTH, revenue24h, price]);
+  }, [hashrate, powerW, electricityRate, revenuePerTH, revenue24h, price, usdUah]);
 
   const periods = [
     { key: "periodDay", data: result?.daily },
@@ -118,21 +121,24 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
             <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">
               {t("electricityLabel")}
             </label>
-            <span className="font-technical-data text-technical-data text-primary">{t("unitKwhRate", { rate: `$${electricityRate.toFixed(3)}` })}</span>
+            <span className="font-technical-data text-technical-data text-primary">{t("unitKwhRate", { rate: electricityRate })}</span>
           </div>
           <input
             type="range"
-            min={0.02}
-            max={0.30}
-            step={0.005}
+            min={1}
+            max={12}
+            step={0.1}
             value={electricityRate}
             onChange={(e) => setElectricityRate(Number(e.target.value))}
           />
           <div className="flex justify-between font-label-caps text-[10px] text-on-surface-variant">
-            <span>$0.02</span>
+            <span>{t("electricityMinMark")}</span>
             <span className="text-primary">{t("electricityHotelMark")}</span>
-            <span>$0.30</span>
+            <span>{t("electricityMaxMark")}</span>
           </div>
+          <p className="font-label-caps text-[10px] text-on-surface-variant">
+            {t("fxNote", { rate: Math.round(usdUah * 100) / 100 })}
+          </p>
         </div>
 
         {/* Equipment price (optional — enables payback calc) */}

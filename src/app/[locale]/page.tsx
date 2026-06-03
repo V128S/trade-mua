@@ -13,7 +13,7 @@ export const revalidate = 60; // refresh every minute
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    alternates: { languages: { uk: "/", en: "/en", "x-default": "/" } },
+    alternates: { languages: { uk: "/", en: "/en", ru: "/ru", "x-default": "/" } },
   };
 }
 
@@ -371,7 +371,7 @@ export default async function Home({
                 <div className="min-w-0">
                   <p className="font-technical-data text-sm text-on-surface leading-tight">{review.author_name}</p>
                   <p className="font-label-caps text-[9px] text-on-surface-variant uppercase tracking-widest mt-0.5">
-                    {[review.author_location, new Date(review.review_date).toLocaleDateString(locale === "en" ? "en-US" : "uk-UA", { day: "2-digit", month: "short", year: "numeric" })].filter(Boolean).join(" · ")}
+                    {[review.author_location, new Date(review.review_date).toLocaleDateString({ uk: "uk-UA", en: "en-US", ru: "ru-RU" }[locale] ?? "uk-UA", { day: "2-digit", month: "short", year: "numeric" })].filter(Boolean).join(" · ")}
                   </p>
                 </div>
               </div>

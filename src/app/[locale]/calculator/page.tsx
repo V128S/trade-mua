@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Calculator from "@/components/calculator/Calculator";
 import { getMinerstatRevenue, ALGO_NAMES } from "@/lib/minerstat";
+import { getUsdUahRate } from "@/lib/fx";
 
 export const revalidate = 300;
 
@@ -11,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t("calculatorTitle"),
     description: t("calculatorDescription"),
-    alternates: { languages: { uk: "/calculator", en: "/en/calculator", "x-default": "/calculator" } },
+    alternates: { languages: { uk: "/calculator", en: "/en/calculator", ru: "/ru/calculator", "x-default": "/calculator" } },
   };
 }
 
@@ -30,7 +31,7 @@ export default async function CalculatorPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations("calculator");
 
-  const [revenueMap, sp] = await Promise.all([getMinerstatRevenue(), searchParams]);
+  const [revenueMap, usdUah, sp] = await Promise.all([getMinerstatRevenue(), getUsdUahRate(), searchParams]);
 
   const requestedAlgo = sp.algorithm ?? "SHA256";
   const algo = Object.keys(ALGO_NAMES).includes(requestedAlgo) ? requestedAlgo : "SHA256";
@@ -78,6 +79,7 @@ export default async function CalculatorPage({ params, searchParams }: Props) {
         coinSymbol={algoData?.coin ?? "BTC"}
         revenuePerTH={algoData?.revenuePerTH ?? 0}
         revenue24h={algoData?.revenue24h}
+        usdUah={usdUah}
         initialHashrate={sp.hashrate ?? ""}
         initialPower={sp.power ? Number(sp.power) : 3500}
         initialPrice={sp.price ? Number(sp.price) : 0}

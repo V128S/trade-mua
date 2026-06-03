@@ -26,14 +26,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/about", destination: "/contact", permanent: true },
       { source: "/en/about", destination: "/en/contact", permanent: true },
-      // The RU locale was replaced by EN. Permanently redirect old /ru URLs to
-      // /en with an explicit 301. Specific rules come before the catch-all so
-      // they win (first match wins, and these run before the next-intl
-      // middleware). /ru/about goes straight to /en/contact to avoid a
-      // /ru/about -> /en/about -> /en/contact double hop.
-      { source: "/ru/about", destination: "/en/contact", statusCode: 301 },
-      { source: "/ru", destination: "/en", statusCode: 301 },
-      { source: "/ru/:path*", destination: "/en/:path*", statusCode: 301 },
+      // /ru is a hidden SEO-only locale (real pages, not in the UI). It must NOT
+      // redirect to /en, so the old /ru -> /en rules are gone. Keep only the
+      // about -> contact parity so the merged page stays consistent per locale.
+      { source: "/ru/about", destination: "/ru/contact", permanent: true },
     ];
   },
 };
