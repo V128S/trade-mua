@@ -6,6 +6,7 @@ import { getProductsFromDB } from "@/lib/products";
 import ProductDetail from "@/components/products/ProductDetail";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
+import { getModelContentKey } from "@/lib/model-content";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import JsonLd from "@/components/seo/JsonLd";
 import TrustBar from "@/components/ui/TrustBar";
@@ -92,6 +93,15 @@ export default async function ProductPage({ params }: Props) {
 
   const descKey = cooling === "Hydro" ? "descHydro" : cooling === "Immersion" ? "descImmersion" : "descAir";
 
+  // Curated per-model SEO copy (description + FAQ) for top Antminer families.
+  const modelKey = getModelContentKey(product.name);
+  const modelFaqs = modelKey
+    ? [1, 2, 3].map((i) => ({
+        q: t(`model${modelKey}Faq${i}Q`),
+        a: t(`model${modelKey}Faq${i}A`),
+      }))
+    : [];
+
   // ── Structured data (built from live catalog data) ──
   const localePrefix = locale === "uk" ? "" : `/${locale}`;
   const productUrl = `${SITE_URL}${localePrefix}/products/${product.id}`;
@@ -130,10 +140,22 @@ export default async function ProductPage({ params }: Props) {
       { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
     ],
   };
+  const faqLd = modelFaqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: modelFaqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
+  const jsonLd = faqLd ? [productLd, breadcrumbLd, faqLd] : [productLd, breadcrumbLd];
 
   return (
     <div className="pb-section-gap">
-      <JsonLd data={[productLd, breadcrumbLd]} />
+      <JsonLd data={jsonLd} />
 
       {/* ── Hero section ── */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto pt-10 pb-16">
@@ -268,6 +290,35 @@ export default async function ProductPage({ params }: Props) {
           ))}
         </div>
       </section>
+
+      {/* ── About this model (curated SEO copy + FAQ) ── */}
+      {modelKey && (
+        <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-16">
+          <div className="head-rule mb-8">
+            <div className="line" />
+            <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest whitespace-nowrap text-base">
+              {t("modelAboutHeading")}
+            </h2>
+            <div className="line" />
+          </div>
+          <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-3xl">
+            {t(`model${modelKey}Body`)}
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start mt-8">
+            {modelFaqs.map((f) => (
+              <details key={f.q} className="glass p-5 group">
+                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
+                  <span className="font-technical-data text-technical-data text-on-surface text-sm">{f.q}</span>
+                  <span className="material-symbols-outlined text-primary text-[18px] transition-transform group-open:rotate-180">expand_more</span>
+                </summary>
+                <p className="font-body-md text-body-md text-on-surface-variant text-sm leading-relaxed mt-3">
+                  {f.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── Similar models ── */}
       {similar.length > 0 && (
