@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-const DNIPRO_MAP_QUERY = "Kosmichna St 19, Dnipro, 49000";
+const DNIPRO_MAP_QUERY = "Robocha St, Dnipro";
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
