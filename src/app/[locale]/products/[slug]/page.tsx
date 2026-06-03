@@ -6,6 +6,7 @@ import { getProductsFromDB } from "@/lib/products";
 import ProductDetail from "@/components/products/ProductDetail";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
+import { getUsdUahRate } from "@/lib/fx";
 import { getModelContentKey } from "@/lib/model-content";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import JsonLd from "@/components/seo/JsonLd";
@@ -62,7 +63,7 @@ export default async function ProductPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations("products");
 
-  const [products, revenueMap] = await Promise.all([getProductsFromDB(), getMinerstatRevenue()]);
+  const [products, revenueMap, usdUah] = await Promise.all([getProductsFromDB(), getMinerstatRevenue(), getUsdUahRate()]);
 
   const product = products.find((p) => p.id === slug);
   if (!product) notFound();
@@ -257,6 +258,7 @@ export default async function ProductPage({ params }: Props) {
                 inStock: c.inStock,
               }))}
               revenuePerTH={revenuePerTH}
+              usdUah={usdUah}
             />
           </div>
         </div>

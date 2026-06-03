@@ -18,14 +18,16 @@ interface Props {
   product: Product;
   configs: Config[];
   revenuePerTH: number; // USD per TH-equivalent per day
+  usdUah: number;       // live USD→UAH rate; electricity is entered in UAH
 }
 
-export default function ProductDetail({ product, configs, revenuePerTH }: Props) {
+export default function ProductDetail({ product, configs, revenuePerTH, usdUah }: Props) {
   const t = useTranslations("products");
-  const [rate, setRate] = useState(0.07);
+  const [rate, setRate] = useState(3.6); // грн/кВт·год (mining-hotel rate)
 
   const th = parseHashrateTH(product.hashrate);
-  const dailyElec = (product.powerW / 1000) * 24 * rate;
+  // Tariff is in UAH; convert the daily cost to USD to match USD revenue.
+  const dailyElec = ((product.powerW / 1000) * 24 * rate) / usdUah;
   const dailyRev = revenuePerTH > 0 && th > 0 ? revenuePerTH * th : 0;
   const dailyProfit = Math.max(0, dailyRev - dailyElec);
 
@@ -83,10 +85,10 @@ export default function ProductDetail({ product, configs, revenuePerTH }: Props)
             <span className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">
               {t("calcElecLabel")}
             </span>
-            <span className="font-technical-data text-technical-data text-primary text-sm">${rate.toFixed(3)}</span>
+            <span className="font-technical-data text-technical-data text-primary text-sm">{t("calcElecUnit", { rate })}</span>
           </div>
           <input
-            type="range" min={0.02} max={0.25} step={0.005}
+            type="range" min={0} max={8.8} step={0.1}
             value={rate} onChange={(e) => setRate(Number(e.target.value))}
           />
         </div>
