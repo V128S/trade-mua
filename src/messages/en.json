@@ -120,8 +120,8 @@
     "testimonialSource": "Telegram",
     "managerReply": "Manager's reply",
     "viewInTelegram": "View on Telegram",
-    "reviewsPrev": "Previous reviews",
-    "reviewsNext": "Next reviews"
+    "reviewsMore": "Read more",
+    "reviewsLess": "Show less"
   },
   "products": {
     "badgeNew": "New",

@@ -120,8 +120,8 @@
     "testimonialSource": "Telegram",
     "managerReply": "Ответ менеджера",
     "viewInTelegram": "Смотреть в Telegram",
-    "reviewsPrev": "Предыдущие отзывы",
-    "reviewsNext": "Следующие отзывы"
+    "reviewsMore": "Читать полностью",
+    "reviewsLess": "Свернуть"
   },
   "products": {
     "badgeNew": "Новинка",
