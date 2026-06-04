@@ -28,6 +28,25 @@ export default async function Home({
   const t = await getTranslations("home");
   const tHiw = await getTranslations("howItWorks");
   const tAbout = await getTranslations("about");
+
+  // Hero headline: in Ukrainian the title wraps as "Промислові" / "та домашні".
+  // Tighten the first word so its trailing "і" lines up over the "і" below.
+  const heroTitle1 = t("heroTitle1");
+  const heroTitle1Node =
+    locale === "uk"
+      ? (() => {
+          const i = heroTitle1.indexOf(" ");
+          return (
+            <>
+              <span style={{ letterSpacing: "0.011em" }}>
+                {heroTitle1.slice(0, i)}
+              </span>
+              {heroTitle1.slice(i)}
+            </>
+          );
+        })()
+      : heroTitle1;
+
   const ABOUT_VALUES = [
     { icon: "verified", title: tAbout("value1Title"), desc: tAbout("value1Desc") },
     { icon: "speed", title: tAbout("value2Title"), desc: tAbout("value2Desc") },
@@ -96,7 +115,7 @@ export default async function Home({
 
               {/* Headline */}
               <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none">
-                {t("heroTitle1")}{" "}
+                {heroTitle1Node}{" "}
                 <span
                   className="gold-text"
                   style={
