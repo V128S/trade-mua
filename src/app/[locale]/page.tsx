@@ -97,7 +97,16 @@ export default async function Home({
               {/* Headline */}
               <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none">
                 {t("heroTitle1")}{" "}
-                <span className="gold-text">ASIC</span>
+                <span
+                  className="gold-text"
+                  style={
+                    locale === "ru" || locale === "uk"
+                      ? { letterSpacing: "0.06em" }
+                      : undefined
+                  }
+                >
+                  ASIC
+                </span>
                 <br />
                 {t("heroTitle2")}
               </h1>
