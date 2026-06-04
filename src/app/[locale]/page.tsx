@@ -120,7 +120,7 @@ export default async function Home({
                   className="gold-text"
                   style={
                     locale === "ru" || locale === "uk"
-                      ? { letterSpacing: "0.055em" }
+                      ? { letterSpacing: "0.056em" }
                       : undefined
                   }
                 >
