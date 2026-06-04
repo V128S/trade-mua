@@ -114,7 +114,7 @@ export default async function Home({
               </div>
 
               {/* Headline */}
-              <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none">
+              <h1 className="font-display-lg text-display-lg text-on-surface uppercase leading-none max-lg:hyphens-auto max-lg:break-words">
                 {heroTitle1Node}{" "}
                 <span
                   className="gold-text"

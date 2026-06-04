@@ -1,11 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Review } from "@/lib/reviews";
 
 const AUTO_MS = 4500;        // auto-advance interval
 const CLAMP_CHARS = 180;     // show "read more" past this length
+
+// Fisher–Yates shuffle (returns a new array).
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 // Auto-scrolling, seamlessly looping reviews track. The list is duplicated; once
 // scrolling passes the first copy we jump back by exactly one copy's width — the
@@ -18,8 +28,14 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState(false);
 
+  // Randomize the order so the row isn't strictly chronological. Start from the
+  // server order (keeps SSR/client markup identical — no hydration mismatch),
+  // then shuffle on the client after mount.
+  const [ordered, setOrdered] = useState(reviews);
+  useEffect(() => setOrdered(shuffle(reviews)), [reviews]);
+
   const paused = hovered || expanded.size > 0;
-  const items = [...reviews, ...reviews]; // duplicate for the seamless loop
+  const items = useMemo(() => [...ordered, ...ordered], [ordered]); // duplicate for the seamless loop
 
   // Scroll one card in a direction, with the invisible wrap at either edge so
   // the loop is seamless (used by both auto-scroll and the side buttons).
@@ -32,6 +48,18 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
     if (dir > 0 && el.scrollLeft >= half) el.scrollLeft -= half;
     if (dir < 0 && el.scrollLeft <= 0) el.scrollLeft += half;
     el.scrollBy({ left: dir * step, behavior: "smooth" });
+  }, []);
+
+  // Seamless infinite loop for native scrolling (swipe / trackpad), which never
+  // hits the JS `scroll()` wrap above: the list is duplicated, so position X and
+  // X + half show identical content. Snapping back by one copy once we pass the
+  // first copy keeps the loop endless and invisible — so reaching the end just
+  // continues from the start.
+  const onScroll = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const half = el.scrollWidth / 2;
+    if (half > 0 && el.scrollLeft >= half) el.scrollLeft -= half;
   }, []);
 
   useEffect(() => {
@@ -58,7 +86,8 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
     >
       <div
         ref={trackRef}
-        className="flex gap-gutter overflow-x-auto snap-x snap-mandatory scroll-smooth py-4 px-1 -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        onScroll={onScroll}
+        className="flex gap-gutter overflow-x-auto snap-x snap-mandatory py-4 px-1 -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((review, idx) => {
           const isOpen = expanded.has(review.id);
