@@ -12,6 +12,7 @@ import NavigationProgress from "@/components/ui/NavigationProgress";
 import GlassBackground from "@/components/ui/GlassBackground";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import FloatingContact from "@/components/ui/FloatingContact";
+import RuToUkPrompt from "@/components/layout/RuToUkPrompt";
 import JsonLd from "@/components/seo/JsonLd";
 import "../globals.css";
 
@@ -126,6 +127,7 @@ export default async function LocaleLayout({
           <Footer />
           <ScrollToTop />
           <FloatingContact />
+          <RuToUkPrompt />
         </NextIntlClientProvider>
         {/* GA deferred to idle (lazyOnload) so the ~155 KB GTM payload stays off
             the load/TBT critical path. */}
