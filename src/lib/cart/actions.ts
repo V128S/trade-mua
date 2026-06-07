@@ -2,6 +2,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { buildOrderItems, applyDiscount } from '@/lib/cart/cart-math'
 import { composeShippingAddress } from '@/lib/cart/shipping'
+import { notifyDirectorNewOrder } from '@/lib/notify/telegram'
 
 export async function previewPromo(code: string): Promise<{ discountPct: number } | { error: string }> {
   const trimmed = code.trim()
@@ -95,5 +96,26 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
     .single()
 
   if (insErr || !order) return { error: 'Не вдалося створити замовлення' }
+
+  // Notify the director. The order is already persisted (the source of truth),
+  // so a Telegram failure is logged and swallowed — it must not break checkout.
+  try {
+    await notifyDirectorNewOrder({
+      id: order.id,
+      items: orderItems,
+      total,
+      firstName,
+      lastName,
+      phone,
+      city,
+      branch,
+      notes,
+      promoCode,
+      discountPct: discountPct || null,
+    })
+  } catch (e) {
+    console.error('telegram notify failed', e)
+  }
+
   return { orderId: order.id }
 }
