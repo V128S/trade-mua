@@ -51,10 +51,23 @@ export function formatOrderMessage(o: OrderNotification): string {
   return lines.join('\n')
 }
 
-// Side effect: sends the message to the director's Telegram chat. No-ops when
-// the env keys are missing so local dev without credentials still works. Never
-// throws on transport failure — callers must not let this break order creation.
-export async function notifyDirectorNewOrder(order: OrderNotification): Promise<void> {
+// Pure: message sent to the director when a customer cancels their order.
+export function formatCancellationMessage(o: OrderNotification): string {
+  const lines: string[] = []
+  lines.push(`❌ <b>Замовлення скасовано клієнтом</b> #${esc(o.id.slice(0, 8))}`)
+  lines.push('')
+  lines.push(`👤 ${esc(o.firstName)} ${esc(o.lastName)}`)
+  lines.push(`📞 ${esc(o.phone)}`)
+  lines.push(`💰 $${o.total.toLocaleString('en-US')}`)
+  lines.push('')
+  lines.push(`🔗 ${SITE_URL}/admin/orders`)
+  return lines.join('\n')
+}
+
+// Side effect: POST a message to the director's chat. No-ops when env keys are
+// missing (local dev without credentials). Throws only on transport failure —
+// callers wrap this so it never breaks the order action.
+async function sendToDirector(text: string): Promise<void> {
   const token = process.env.TELEGRAM_BOT_TOKEN
   const chatId = process.env.TELEGRAM_DIRECTOR_CHAT_ID
   if (!token || !chatId) return
@@ -64,7 +77,7 @@ export async function notifyDirectorNewOrder(order: OrderNotification): Promise<
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       chat_id: chatId,
-      text: formatOrderMessage(order),
+      text,
       parse_mode: 'HTML',
       disable_web_page_preview: true,
     }),
@@ -73,4 +86,12 @@ export async function notifyDirectorNewOrder(order: OrderNotification): Promise<
     const detail = await res.text().catch(() => '')
     throw new Error(`Telegram sendMessage failed: ${res.status} ${detail}`)
   }
+}
+
+export async function notifyDirectorNewOrder(order: OrderNotification): Promise<void> {
+  await sendToDirector(formatOrderMessage(order))
+}
+
+export async function notifyDirectorOrderCancelled(order: OrderNotification): Promise<void> {
+  await sendToDirector(formatCancellationMessage(order))
 }

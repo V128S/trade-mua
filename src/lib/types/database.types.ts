@@ -18,6 +18,7 @@ export interface Database {
     Functions: {
       validate_promo: { Args: { p_code: string }; Returns: number }
       redeem_promo: { Args: { p_code: string }; Returns: number }
+      cancel_order: { Args: { p_order_id: string }; Returns: boolean }
     }
     Tables: {
       profiles: {

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { buildOrderItems, applyDiscount } from '@/lib/cart/cart-math'
 import { composeShippingAddress } from '@/lib/cart/shipping'
 import { notifyDirectorNewOrder } from '@/lib/notify/telegram'
+import { isCompleteUaPhone } from '@/lib/phone'
 
 export async function previewPromo(code: string): Promise<{ discountPct: number } | { error: string }> {
   const trimmed = code.trim()
@@ -37,6 +38,9 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
   const branch = input.branch.trim()
   if (!firstName || !lastName || !phone || !city || !branch) {
     return { error: 'Заповніть усі обовʼязкові поля' }
+  }
+  if (!isCompleteUaPhone(phone)) {
+    return { error: 'Введіть коректний номер телефону' }
   }
 
   const ids = input.items.map(i => i.id)

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatOrderMessage, type OrderNotification } from './telegram'
+import { formatOrderMessage, formatCancellationMessage, type OrderNotification } from './telegram'
 
 const base: OrderNotification = {
   id: 'abcdef12-3456-7890-abcd-ef1234567890',
@@ -75,5 +75,26 @@ describe('formatOrderMessage', () => {
     // Raw, unescaped user input must not survive into the message.
     expect(msg).not.toContain('A<b>')
     expect(msg).not.toContain('<script>')
+  })
+})
+
+describe('formatCancellationMessage', () => {
+  it('marks the message as a customer cancellation', () => {
+    expect(formatCancellationMessage(base)).toContain('скасовано клієнтом')
+  })
+  it('includes order id, customer name, phone and total', () => {
+    const msg = formatCancellationMessage(base)
+    expect(msg).toContain('abcdef12')
+    expect(msg).toContain('Денис')
+    expect(msg).toContain('+380501234567')
+    expect(msg).toContain('14,000')
+  })
+  it('includes the admin orders link', () => {
+    expect(formatCancellationMessage(base)).toContain('/admin/orders')
+  })
+  it('HTML-escapes user-provided fields', () => {
+    const msg = formatCancellationMessage({ ...base, firstName: 'A<b>' })
+    expect(msg).toContain('A&lt;b&gt;')
+    expect(msg).not.toContain('A<b>')
   })
 })

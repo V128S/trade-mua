@@ -7,6 +7,7 @@ import { useCart } from '@/lib/cart/useCart'
 import { applyDiscount } from '@/lib/cart/cart-math'
 import { placeOrder } from '@/lib/cart/actions'
 import { splitFullName } from '@/lib/cart/shipping'
+import { formatUaPhone } from '@/lib/phone'
 
 export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaultPhone: string; defaultFullName: string }) {
   const t = useTranslations('checkout')
@@ -15,7 +16,7 @@ export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaul
   const prefill = useMemo(() => splitFullName(defaultFullName), [defaultFullName])
   const [firstName, setFirstName] = useState(prefill.first)
   const [lastName, setLastName] = useState(prefill.last)
-  const [phone, setPhone] = useState(defaultPhone)
+  const [phone, setPhone] = useState(() => formatUaPhone(defaultPhone))
   const [city, setCity] = useState('')
   const [branch, setBranch] = useState('')
   const [notes, setNotes] = useState('')
@@ -70,7 +71,7 @@ export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaul
         </div>
         <div>
           <label htmlFor="co-phone" className={labelCls}>{t('labelPhone')}</label>
-          <input id="co-phone" type="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} required placeholder="+380..." className={field} />
+          <input id="co-phone" type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(formatUaPhone(e.target.value))} required placeholder="+380 67 123 45 67" className={field} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
