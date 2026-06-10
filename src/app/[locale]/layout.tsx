@@ -80,12 +80,36 @@ export default async function LocaleLayout({
   );
 
   // Site-wide structured data (built from our own constants, not user input)
+  const tc = await getTranslations({ locale, namespace: "contact" });
   const orgLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "TradeM",
     url: SITE_URL,
     logo: `${SITE_URL}/icon.png`,
+    telephone: "+380974225060",
+    sameAs: ["https://t.me/BOSSDnepra"],
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+380974225060",
+      contactType: "sales",
+      areaServed: "UA",
+      availableLanguage: ["Ukrainian", "Russian"],
+    },
+    address: [
+      {
+        "@type": "PostalAddress",
+        streetAddress: tc("office1Address"),
+        addressLocality: tc("office1City"),
+        addressCountry: "UA",
+      },
+      {
+        "@type": "PostalAddress",
+        streetAddress: tc("office2Address"),
+        addressLocality: tc("office2City"),
+        addressCountry: "UA",
+      },
+    ],
   };
   const websiteLd = {
     "@context": "https://schema.org",

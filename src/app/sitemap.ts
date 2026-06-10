@@ -3,7 +3,7 @@ import { getProductsFromDB } from "@/lib/products";
 import { BLOG_SLUGS } from "@/lib/blog";
 
 const BASE = "https://trade-mua.vercel.app";
-const STATIC_PATHS = ["", "/products", "/services", "/calculator", "/blog", "/contact", "/asic/sha256", "/asic/scrypt", "/asic/zcash", "/asic/kaspa"];
+const STATIC_PATHS = ["", "/products", "/services", "/calculator", "/blog", "/contact", "/asic/sha256", "/asic/scrypt", "/asic/zcash", "/asic/kaspa", "/asic/antminer"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await getProductsFromDB();

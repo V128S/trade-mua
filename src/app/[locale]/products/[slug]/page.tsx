@@ -47,6 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = products.find((p) => p.id === slug);
   if (!product) return { title: "TradeM" };
   const path = `/products/${slug}`;
+  const localePrefix = locale === "uk" ? "" : `/${locale}`;
   return {
     title: t("metaSlugTitle", { name: product.name }),
     description: t("metaSlugDescription", {
@@ -54,7 +55,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       hashrate: product.hashrate,
       power: product.powerW,
     }),
-    alternates: { languages: { uk: path, en: `/en${path}`, ru: `/ru${path}`, "x-default": path } },
+    alternates: {
+      // self-referential canonical per locale (EN must not point at the UA URL)
+      canonical: `${localePrefix}${path}`,
+      languages: { uk: path, en: `/en${path}`, ru: `/ru${path}`, "x-default": path },
+    },
   };
 }
 
@@ -130,6 +135,29 @@ export default async function ProductPage({ params }: Props) {
       priceValidUntil: PRICE_VALID_UNTIL,
       url: productUrl,
       seller: { "@type": "Organization", name: "TradeM" },
+      // Nova Poshta across Ukraine; pre-order units ship from China in 10–14 days
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingDestination: { "@type": "DefinedRegion", addressCountry: "UA" },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: product.inStock ? 0 : 10,
+            maxValue: product.inStock ? 1 : 14,
+            unitCode: "DAY",
+          },
+          transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "UA",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+      },
     },
   };
   const breadcrumbLd = {

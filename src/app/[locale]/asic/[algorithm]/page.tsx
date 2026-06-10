@@ -11,15 +11,17 @@ export const revalidate = 60;
 
 const SITE_URL = "https://trade-mua.vercel.app";
 
-// Indexable algorithm hubs. slug → DB `algorithm` value. Seeded with SHA-256
-// (the largest cluster); add more entries to spin up new hubs.
+// Indexable hubs. Algorithm hubs filter by DB `algorithm`, brand hubs by DB
+// `brand` (mixed algorithms). Add entries to spin up new hubs.
 // `faqCount` / `hasBody` opt a hub into the extended SEO sections (intro body +
 // FAQ + FAQPage schema). Hubs without them render the lean layout unchanged.
-const HUBS: Record<string, { dbAlgo: string; faqCount?: number; hasBody?: boolean }> = {
+type HubConfig = { dbAlgo?: string; dbBrand?: string; faqCount?: number; hasBody?: boolean };
+const HUBS: Record<string, HubConfig> = {
   sha256: { dbAlgo: "SHA256", faqCount: 6, hasBody: true },
   scrypt: { dbAlgo: "Scrypt", faqCount: 6, hasBody: true },
   zcash: { dbAlgo: "Equihash", faqCount: 6, hasBody: true },
   kaspa: { dbAlgo: "KHeavyHash", faqCount: 6, hasBody: true },
+  antminer: { dbBrand: "AntMiner", faqCount: 6, hasBody: true },
 };
 
 export function generateStaticParams() {
@@ -60,11 +62,10 @@ export default async function AsicHubPage({ params }: Props) {
   ]);
 
   const items = products
-    .filter((p) => p.algorithm === hub.dbAlgo)
+    .filter((p) => (hub.dbAlgo ? p.algorithm === hub.dbAlgo : p.brand === hub.dbBrand))
     .sort((a, b) => b.priceUSDT - a.priceUSDT);
   if (items.length === 0) notFound();
 
-  const revenuePerTH = revenueMap[hub.dbAlgo]?.revenuePerTH ?? 0;
   const localePrefix = locale === "uk" ? "" : `/${locale}`;
   const hubUrl = `${SITE_URL}${localePrefix}/asic/${algorithm}`;
 
@@ -134,7 +135,8 @@ export default async function AsicHubPage({ params }: Props) {
       {/* Product grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
         {items.map((p) => (
-          <ProductCard key={p.id} product={p} revenuePerTH={revenuePerTH} />
+          // Brand hubs mix algorithms — resolve revenue per product, not per hub
+          <ProductCard key={p.id} product={p} revenuePerTH={revenueMap[p.algorithm]?.revenuePerTH ?? 0} />
         ))}
       </div>
 

@@ -14,10 +14,13 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "products" });
+  const localePrefix = locale === "uk" ? "" : `/${locale}`;
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
     alternates: {
+      // self-referential canonical per locale — keeps faceted ?query URLs out of the index
+      canonical: `${localePrefix}/products`,
       languages: {
         uk: "/products",
         en: "/en/products",
