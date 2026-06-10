@@ -20,7 +20,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const t = await getTranslations("contact");
 
   const CONTACT_CARDS = [
-    { icon: "phone", label: t("phoneLabel"), value: t("phoneNumber"), href: "tel:+380974225060", external: false },
+    { icon: "phone", label: t("phoneLabel"), value: t("phoneNumber"), sub: t("phoneMessengers"), href: "tel:+380974225060", external: false },
     { icon: "send", label: t("telegramLabel"), value: t("telegramHandle"), href: "https://t.me/BOSSDnepra", external: true },
     { icon: "campaign", label: t("channelLabel"), value: t("channelHandle"), href: "https://t.me/TRADEM_UA", external: true },
     { icon: "schedule", label: t("hoursLabel"), value: t("hoursValue"), href: "https://t.me/BOSSDnepra", external: true },
@@ -64,6 +64,9 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             <div>
               <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-1.5">{c.label}</p>
               <p className="font-technical-data text-technical-data text-on-surface group-hover:text-primary transition-colors">{c.value}</p>
+              {"sub" in c && c.sub && (
+                <p className="font-label-caps text-[9px] text-on-surface-variant/70 uppercase tracking-widest mt-1">{c.sub}</p>
+              )}
             </div>
           </a>
         ))}
