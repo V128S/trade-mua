@@ -86,3 +86,14 @@ export async function getLastSyncTime(): Promise<string | null> {
     .maybeSingle()
   return data?.synced_at ?? null
 }
+
+// Lightweight id+synced_at pairs for sitemap lastModified — avoids fetching
+// full product rows when we only need the modification timestamp.
+export async function getProductModifiedDates(): Promise<{ id: string; syncedAt: string | null }[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('products')
+    .select('id, synced_at')
+  if (error || !data) return []
+  return data.map((r) => ({ id: r.id, syncedAt: r.synced_at }))
+}

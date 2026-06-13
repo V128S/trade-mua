@@ -23,6 +23,19 @@ const PRICE_VALID_UNTIL = new Date(Date.now() + 365 * 86400000)
   .toISOString()
   .slice(0, 10);
 
+// Maps DB algorithm value → hub slug + short display label.
+// Only algorithms that have an indexable hub page are listed here.
+// AntMiner models with no algo hub fall back to the brand hub.
+const ALGO_HUB: Record<string, { slug: string; label: string }> = {
+  SHA256:     { slug: "sha256", label: "SHA-256" },
+  Scrypt:     { slug: "scrypt", label: "Scrypt"  },
+  KHeavyHash: { slug: "kaspa",  label: "KHeavyHash" },
+  Equihash:   { slug: "zcash",  label: "Equihash"   },
+};
+const BRAND_HUB: Record<string, { slug: string; label: string }> = {
+  AntMiner: { slug: "antminer", label: "Antminer" },
+};
+
 // Strip hashrate suffix to get base model name
 // "Antminer S21 Hydro 335Th" → "Antminer S21 Hydro"
 function getBaseName(name: string): string {
@@ -111,6 +124,10 @@ export default async function ProductPage({ params }: Props) {
   // ── Structured data (built from live catalog data) ──
   const localePrefix = locale === "uk" ? "" : `/${locale}`;
   const productUrl = `${SITE_URL}${localePrefix}/products/${product.id}`;
+
+  // Resolve which hub (algo > brand) this product belongs to for breadcrumbs
+  const hub = ALGO_HUB[product.algorithm] ?? BRAND_HUB[product.brand] ?? null;
+  const hubUrl = hub ? `${SITE_URL}${localePrefix}/asic/${hub.slug}` : null;
   const productImg = getProductImage(product.name, product.imageUrl);
   const productLd = {
     "@context": "https://schema.org",
@@ -163,11 +180,18 @@ export default async function ProductPage({ params }: Props) {
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: t("breadcrumbHome"), item: `${SITE_URL}${localePrefix}/` },
-      { "@type": "ListItem", position: 2, name: t("breadcrumbProducts"), item: `${SITE_URL}${localePrefix}/products` },
-      { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
-    ],
+    itemListElement: hub && hubUrl
+      ? [
+          { "@type": "ListItem", position: 1, name: t("breadcrumbHome"), item: `${SITE_URL}${localePrefix}/` },
+          { "@type": "ListItem", position: 2, name: t("breadcrumbProducts"), item: `${SITE_URL}${localePrefix}/products` },
+          { "@type": "ListItem", position: 3, name: hub.label, item: hubUrl },
+          { "@type": "ListItem", position: 4, name: product.name, item: productUrl },
+        ]
+      : [
+          { "@type": "ListItem", position: 1, name: t("breadcrumbHome"), item: `${SITE_URL}${localePrefix}/` },
+          { "@type": "ListItem", position: 2, name: t("breadcrumbProducts"), item: `${SITE_URL}${localePrefix}/products` },
+          { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
+        ],
   };
   const faqLd = modelFaqs.length
     ? {
@@ -194,6 +218,12 @@ export default async function ProductPage({ params }: Props) {
           <Link href="/" className="hover:text-primary transition-colors">{t("breadcrumbHome")}</Link>
           <span className="material-symbols-outlined text-[12px]">chevron_right</span>
           <Link href="/products" className="hover:text-primary transition-colors">{t("breadcrumbProducts")}</Link>
+          {hub && (
+            <>
+              <span className="material-symbols-outlined text-[12px]">chevron_right</span>
+              <Link href={`/asic/${hub.slug}`} className="hover:text-primary transition-colors">{hub.label}</Link>
+            </>
+          )}
           <span className="material-symbols-outlined text-[12px]">chevron_right</span>
           <span className="text-on-surface truncate max-w-[220px] uppercase">{product.name}</span>
         </nav>
