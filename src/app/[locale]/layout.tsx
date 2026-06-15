@@ -45,7 +45,7 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_URL),
     title: t("homeTitle"),
     description: t("homeDescription"),
-    verification: { google: "GUtZWvOqzDL18Dibg_f1RtVsE8o2kaNPEZErzjycOsc" },
+    verification: { google: ["GUtZWvOqzDL18Dibg_f1RtVsE8o2kaNPEZErzjycOsc", "ZFeSC3ED9gWxNInuJkcxII2mVL-aO-tbDbvnxHHnXyY"] },
     // Shared link previews (Telegram, etc.). Omit og title/description so each
     // page's own <title>/<meta description> is used; provide the brand image,
     // site name and locale site-wide.
