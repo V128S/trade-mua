@@ -16,7 +16,7 @@ const HUBS = [
 
 export const revalidate = 60;
 
-const SITE_URL = "https://трейдм.com.ua";
+const SITE_URL = "https://традем.com.ua";
 
 type Props = { params: Promise<{ locale: string }> };
 

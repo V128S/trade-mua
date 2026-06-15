@@ -78,7 +78,7 @@ export default function ProductsSyncPanel({
     .getScriptProperties()
     .getProperty('SYNC_SECRET');
   UrlFetchApp.fetch(
-    'https://трейдм.com.ua/api/sync-products',
+    'https://традем.com.ua/api/sync-products',
     {
       method: 'post',
       headers: { 'Authorization': 'Bearer ' + secret },

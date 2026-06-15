@@ -114,7 +114,7 @@ export default async function Image() {
             letterSpacing: "0.2em",
           }}
         >
-          трейдм.com.ua
+          традем.com.ua
         </div>
 
         {/* Gold bottom bar */}

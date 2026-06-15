@@ -15,7 +15,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const revalidate = 60;
 
-const SITE_URL = "https://трейдм.com.ua";
+const SITE_URL = "https://традем.com.ua";
 
 // Offer needs a future priceValidUntil. Computed once at module load (refreshes
 // on each deploy/ISR rebuild) so it isn't an impure call during render.
