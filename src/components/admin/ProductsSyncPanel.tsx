@@ -78,7 +78,7 @@ export default function ProductsSyncPanel({
     .getScriptProperties()
     .getProperty('SYNC_SECRET');
   UrlFetchApp.fetch(
-    'https://trademua.vercel.app/api/sync-products',
+    'https://tradem.com.ua/api/sync-products',
     {
       method: 'post',
       headers: { 'Authorization': 'Bearer ' + secret },
