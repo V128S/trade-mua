@@ -3,7 +3,7 @@ import { getProductModifiedDates } from "@/lib/products";
 import { BLOG_SLUGS } from "@/lib/blog";
 
 const BASE = "https://традем.com.ua";
-const STATIC_PATHS = ["", "/products", "/services", "/calculator", "/blog", "/contact", "/asic/sha256", "/asic/scrypt", "/asic/zcash", "/asic/kaspa", "/asic/antminer"];
+const STATIC_PATHS = ["", "/products", "/services", "/calculator", "/blog", "/contact", "/asic/sha256", "/asic/scrypt", "/asic/zcash", "/asic/kaspa", "/asic/antminer", "/asic/avalon", "/asic/fluminer"];
 
 function entry(path: string, lastModified?: Date | string): MetadataRoute.Sitemap[number] {
   return {
