@@ -46,6 +46,14 @@ export async function generateMetadata({
     title: t("homeTitle"),
     description: t("homeDescription"),
     verification: { google: ["GUtZWvOqzDL18Dibg_f1RtVsE8o2kaNPEZErzjycOsc", "ZFeSC3ED9gWxNInuJkcxII2mVL-aO-tbDbvnxHHnXyY"] },
+    icons: {
+      icon: [
+        { url: "/favicon.ico?v=2", sizes: "any" },
+        { url: "/icon.png?v=2", type: "image/png", sizes: "640x640" },
+      ],
+      apple: { url: "/icon.png?v=2", sizes: "640x640", type: "image/png" },
+      shortcut: "/favicon.ico?v=2",
+    },
     // Shared link previews (Telegram, etc.). Omit og title/description so each
     // page's own <title>/<meta description> is used; provide the brand image,
     // site name and locale site-wide.
