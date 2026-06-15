@@ -1,7 +1,7 @@
 import type { OrderItem } from '@/lib/types/database.types'
 
 // Base site URL, mirrored from layout.tsx / sitemap.ts (no NEXT_PUBLIC_SITE_URL).
-const SITE_URL = 'https://trade-mua.vercel.app'
+const SITE_URL = 'https://трейдм.com.ua'
 
 export interface OrderNotification {
   id: string

@@ -16,7 +16,7 @@ import RuToUkPrompt from "@/components/layout/RuToUkPrompt";
 import JsonLd from "@/components/seo/JsonLd";
 import "../globals.css";
 
-const SITE_URL = "https://trade-mua.vercel.app";
+const SITE_URL = "https://трейдм.com.ua";
 
 // Material Symbols Outlined is self-hosted (subset of the 56 icons used) via an
 // @font-face + .material-symbols-outlined class in globals.css — no Google

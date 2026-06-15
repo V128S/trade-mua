@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/dashboard", "/api", "/en/admin", "/en/dashboard", "/ru/admin", "/ru/dashboard", "/login", "/register", "/auth", "/cart", "/checkout", "/en/checkout", "/ru/checkout"],
     },
-    sitemap: "https://trade-mua.vercel.app/sitemap.xml",
+    sitemap: "https://трейдм.com.ua/sitemap.xml",
   };
 }
