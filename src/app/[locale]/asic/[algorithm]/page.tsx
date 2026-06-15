@@ -22,6 +22,8 @@ const HUBS: Record<string, HubConfig> = {
   zcash: { dbAlgo: "Equihash", faqCount: 6, hasBody: true },
   kaspa: { dbAlgo: "KHeavyHash", faqCount: 6, hasBody: true },
   antminer: { dbBrand: "AntMiner", faqCount: 6, hasBody: true },
+  avalon:   { dbBrand: "Avalon",   faqCount: 4, hasBody: true },
+  fluminer: { dbBrand: "FluMiner", faqCount: 4, hasBody: true },
 };
 
 export function generateStaticParams() {

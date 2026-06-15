@@ -8,6 +8,8 @@ import JsonLd from "@/components/seo/JsonLd";
 
 const HUBS = [
   { slug: "antminer", labelKey: "hubAntminer" as const },
+  { slug: "avalon",   labelKey: "hubAvalon"   as const },
+  { slug: "fluminer", labelKey: "hubFluminer" as const },
   { slug: "sha256",   labelKey: "hubSha256"   as const },
   { slug: "scrypt",   labelKey: "hubScrypt"   as const },
   { slug: "kaspa",    labelKey: "hubKaspa"    as const },

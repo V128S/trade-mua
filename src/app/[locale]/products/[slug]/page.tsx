@@ -34,6 +34,8 @@ const ALGO_HUB: Record<string, { slug: string; label: string }> = {
 };
 const BRAND_HUB: Record<string, { slug: string; label: string }> = {
   AntMiner: { slug: "antminer", label: "Antminer" },
+  Avalon:   { slug: "avalon",   label: "Avalon"   },
+  FluMiner: { slug: "fluminer", label: "FluMiner" },
 };
 
 // Strip hashrate suffix to get base model name

@@ -127,6 +127,14 @@ export default async function LocaleLayout({
     name: "TradeM",
     url: SITE_URL,
     inLanguage: { uk: "uk-UA", en: "en-US", ru: "ru-RU" }[locale] ?? "uk-UA",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}${locale === "uk" ? "" : `/${locale}`}/products?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 
   return (

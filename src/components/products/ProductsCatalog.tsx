@@ -1,6 +1,7 @@
 // src/components/products/ProductsCatalog.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { useProductFilters, type SortOption } from "@/hooks/useProductFilters";
@@ -18,6 +19,7 @@ export default function ProductsCatalog({
   revenueByAlgo?: Record<string, number>;
 }) {
   const t = useTranslations("products");
+  const searchParams = useSearchParams();
 
   const SORT_LABELS: Record<SortOption, string> = {
     price_desc: t("sortPriceDesc"),
@@ -29,6 +31,13 @@ export default function ProductsCatalog({
 
   const { filters, setters, filtered, facets, globalRanges, activeCount, resetAll } =
     useProductFilters(products);
+
+  // Initialise search from ?q= URL param (enables SearchAction sitelinks search box)
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) setters.setSearch(q);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [page, setPage] = useState(1);
 
