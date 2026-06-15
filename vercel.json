@@ -4,5 +4,13 @@
       "path": "/api/sync-products",
       "schedule": "0 3 * * *"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "trade-mua.vercel.app" }],
+      "destination": "https://традем.com.ua/$1",
+      "permanent": true
+    }
   ]
 }
