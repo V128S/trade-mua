@@ -2,9 +2,10 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useCart } from '@/lib/cart/useCart'
+import { trackAddToCart } from '@/lib/analytics'
 import type { Product } from '@/lib/sheets'
 
-type Props = { product: Pick<Product, 'id' | 'name' | 'hashrate' | 'powerW' | 'priceUSDT' | 'inStock' | 'imageUrl'> }
+type Props = { product: Pick<Product, 'id' | 'name' | 'brand' | 'algorithm' | 'hashrate' | 'powerW' | 'priceUSDT' | 'inStock' | 'imageUrl'> }
 
 export default function AddToCartButton({ product }: Props) {
   const t = useTranslations('cart')
@@ -20,6 +21,10 @@ export default function AddToCartButton({ product }: Props) {
       priceUSDT: product.priceUSDT,
       imageUrl: product.imageUrl,
     })
+    trackAddToCart(
+      { id: product.id, name: product.name, brand: product.brand, algorithm: product.algorithm, priceUSDT: product.priceUSDT },
+      1,
+    )
     setAdded(true)
     window.setTimeout(() => setAdded(false), 1500)
   }
