@@ -5,6 +5,7 @@ import { getMinerstatRevenue } from "@/lib/minerstat";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ProductCard } from "@/components/products/ProductCard";
+import { TrackItemList } from "@/lib/analytics/TrackView";
 import JsonLd from "@/components/seo/JsonLd";
 
 export const revalidate = 60;
@@ -136,10 +137,18 @@ export default async function AsicHubPage({ params }: Props) {
 
       {/* Product grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
-        {items.map((p) => (
+        {items.map((p, i) => (
           // Brand hubs mix algorithms — resolve revenue per product, not per hub
-          <ProductCard key={p.id} product={p} revenuePerTH={revenueMap[p.algorithm]?.revenuePerTH ?? 0} />
+          <ProductCard
+            key={p.id}
+            product={p}
+            revenuePerTH={revenueMap[p.algorithm]?.revenuePerTH ?? 0}
+            index={i}
+            listId={`asic_${algorithm}`}
+            listName={t(`${algorithm}H1`)}
+          />
         ))}
+        <TrackItemList products={items} listId={`asic_${algorithm}`} listName={t(`${algorithm}H1`)} />
       </div>
 
       {/* SEO body */}

@@ -9,6 +9,7 @@ import { getMinerstatRevenue } from "@/lib/minerstat";
 import { getUsdUahRate } from "@/lib/fx";
 import { getModelContentKey } from "@/lib/model-content";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import { TrackProductView } from "@/lib/analytics/TrackView";
 import JsonLd from "@/components/seo/JsonLd";
 import TrustBar from "@/components/ui/TrustBar";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -301,6 +302,7 @@ export default async function ProductPage({ params }: Props) {
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 mt-6">
               <AddToCartButton product={product} />
+              <TrackProductView product={product} />
               <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px]">contact_support</span>
                 {t("consultButton")}

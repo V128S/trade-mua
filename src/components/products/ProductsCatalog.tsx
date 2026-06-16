@@ -1,7 +1,8 @@
 // src/components/products/ProductsCatalog.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { trackViewItemList } from "@/lib/analytics";
 import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { useProductFilters, type SortOption } from "@/hooks/useProductFilters";
@@ -55,6 +56,14 @@ export default function ProductsCatalog({
   const hasMore = visibleProducts.length < filtered.length;
   const remaining = filtered.length - visibleProducts.length;
   const loadCount = Math.min(remaining, PAGE_SIZE);
+
+  // One GA4 view_item_list impression for the catalog's first visible page.
+  const listFired = useRef(false);
+  useEffect(() => {
+    if (listFired.current || visibleProducts.length === 0) return;
+    listFired.current = true;
+    trackViewItemList(visibleProducts, { listId: "catalog", listName: "Каталог" });
+  }, [visibleProducts]);
 
   return (
     <>
@@ -138,12 +147,15 @@ export default function ProductsCatalog({
           {filtered.length > 0 ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
-                {visibleProducts.map(p => (
+                {visibleProducts.map((p, i) => (
                   <ProductCard
                     key={p.id}
                     product={p}
                     revenuePerTH={revenueByAlgo[p.algorithm] ?? 0}
                     compact
+                    index={i}
+                    listId="catalog"
+                    listName="Каталог"
                   />
                 ))}
               </div>

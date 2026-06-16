@@ -8,6 +8,7 @@ import TrustBar from "@/components/ui/TrustBar";
 import HowItWorks from "@/components/ui/HowItWorks";
 import { ProductCard } from "@/components/products/ProductCard";
 import ReviewsCarousel from "@/components/home/ReviewsCarousel";
+import { TrackItemList } from "@/lib/analytics/TrackView";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const revalidate = 60; // refresh every minute
@@ -198,9 +199,10 @@ export default async function Home({
 
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {products.map((p, i) => (
+              <ProductCard key={p.id} product={p} index={i} listId="home_top" listName="Топ ASIC на головній" />
             ))}
+            <TrackItemList products={products} listId="home_top" listName="Топ ASIC на головній" />
           </div>
         ) : (
           <p className="text-center font-body-md text-body-md text-on-surface-variant py-16">
