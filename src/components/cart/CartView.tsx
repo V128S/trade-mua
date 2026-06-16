@@ -1,9 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import { useCart } from '@/lib/cart/useCart'
+import { trackRemoveFromCart, trackViewCart } from '@/lib/analytics'
 import { getProductImage } from '@/lib/product-images'
 import { previewPromo } from '@/lib/cart/actions'
 import { applyDiscount } from '@/lib/cart/cart-math'
@@ -26,6 +27,14 @@ export default function CartView() {
   }
 
   const total = promo ? applyDiscount(subtotal, promo.pct) : subtotal
+
+  // One GA4 view_cart impression once the cart has hydrated and is non-empty.
+  const viewFired = useRef(false)
+  useEffect(() => {
+    if (viewFired.current || !hydrated || items.length === 0) return
+    viewFired.current = true
+    trackViewCart(items, subtotal)
+  }, [hydrated, items, subtotal])
 
   if (!hydrated) return <div className="py-24" />
 
@@ -79,7 +88,7 @@ export default function CartView() {
                   <span className="w-8 text-center font-technical-data text-technical-data text-on-surface">{i.qty}</span>
                   <button type="button" aria-label={t('ariaIncrease')} onClick={() => setQty(i.id, i.qty + 1)} className="w-8 h-8 text-on-surface-variant hover:text-primary">+</button>
                 </div>
-                <button type="button" onClick={() => remove(i.id)} className="font-label-caps text-[10px] text-on-surface-variant hover:text-red-400 uppercase tracking-widest transition-colors">
+                <button type="button" onClick={() => { trackRemoveFromCart(i, i.qty); remove(i.id) }} className="font-label-caps text-[10px] text-on-surface-variant hover:text-red-400 uppercase tracking-widest transition-colors">
                   {t('remove')}
                 </button>
               </div>
