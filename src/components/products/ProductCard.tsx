@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 import { parseHashrateTH } from "@/lib/utils";
+import { trackSelectItem } from "@/lib/analytics";
 
 // Default electricity rate for the catalog profit estimate ($/kWh).
 // Matches the product-detail mini-calculator default.
@@ -15,10 +16,16 @@ export function ProductCard({
   product,
   revenuePerTH = 0,
   compact = false,
+  listId,
+  listName,
+  index,
 }: {
   product: Product;
   revenuePerTH?: number;
   compact?: boolean;
+  listId?: string;
+  listName?: string;
+  index?: number;
 }) {
   const t = useTranslations("products");
   const imgSrc = getProductImage(product.name, product.imageUrl);
@@ -31,6 +38,14 @@ export function ProductCard({
   return (
     <Link
       href={`/products/${product.id}`}
+      onClick={() => {
+        if (listId && listName) {
+          trackSelectItem(
+            { id: product.id, name: product.name, brand: product.brand, algorithm: product.algorithm, priceUSDT: product.priceUSDT },
+            { listId, listName, index },
+          );
+        }
+      }}
       className="glass glass-hover group overflow-hidden flex flex-col"
     >
       <div className={`relative ${compact ? "h-40" : "h-44"} plate flex items-center justify-center overflow-hidden border-b border-white/5`}>
