@@ -682,5 +682,14 @@
     "step3Desc": "USDT, cash or bank transfer — convenient and secure.",
     "step4Title": "Delivery & launch",
     "step4Desc": "Shipping in 10–14 days, testing and a 6-month warranty."
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundDesc": "It may have been moved or removed. Check the address or head back to the catalog.",
+    "notFoundHome": "Go home",
+    "notFoundCatalog": "Browse catalog",
+    "errorTitle": "Something went wrong",
+    "errorDesc": "An unexpected error occurred. Please try again or come back later.",
+    "errorRetry": "Try again"
   }
 }
