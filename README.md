@@ -32,7 +32,7 @@
 - **Авторизація** (Supabase Auth, SSR) — реєстрація, вхід, скидання пароля.
 - **Особистий кабінет** — профіль і історія замовлень.
 - **Адмін-панель** (захист за роллю) — керування замовленнями, користувачами, промокодами та ручний запуск синхронізації товарів.
-- **UI-деталі** — крипто-тікер курсів, hero-карусель, біжучий рядок брендів, **карусель відгуків** (авто-скрол із безкінечним циклом, clamp/expand, перемішування), Open Graph для лінк-прев'ю (Telegram тощо), анімований фон (`tsparticles`), перемикач теми (темна/світла).
+- **UI-деталі** — крипто-тікер курсів, hero-карусель, біжучий рядок брендів, **карусель відгуків** (авто-скрол із безкінечним циклом, clamp/expand, перемішування), Open Graph для лінк-прев'ю (Telegram тощо), ambient-фон (CSS-градієнт + grain), перемикач теми (темна/світла).
 
 ---
 
@@ -45,7 +45,7 @@
 | Стилі | Tailwind CSS 4 + кастомні класи в `src/app/globals.css` (`@theme`) |
 | БД + Auth | Supabase (PostgreSQL + Auth SSR + RLS) через `@supabase/ssr` |
 | Контент | Markdown (`react-markdown`, `remark-gfm`, `gray-matter`) |
-| Анімації | tsparticles |
+| Анімації | Framer Motion + CSS / IntersectionObserver |
 | Шрифти | Syne, Hanken Grotesk, JetBrains Mono (`next/font`) + Material Symbols |
 | Деплой | Vercel (+ Vercel Cron) |
 
