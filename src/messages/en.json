@@ -136,6 +136,7 @@
     "catalogHeading": "ASIC Catalog",
     "searchPlaceholder": "Search model...",
     "filtersButton": "Filters",
+    "sortPopular": "Popular",
     "sortPriceDesc": "Price: high to low",
     "sortPriceAsc": "Price: low to high",
     "sortPowerAsc": "Power ↑",

@@ -136,6 +136,7 @@
     "catalogHeading": "Каталог ASIC",
     "searchPlaceholder": "Поиск модели...",
     "filtersButton": "Фильтры",
+    "sortPopular": "Популярное",
     "sortPriceDesc": "Цена: убывание",
     "sortPriceAsc": "Цена: возрастание",
     "sortPowerAsc": "Мощность ↑",

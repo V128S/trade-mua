@@ -22,6 +22,7 @@ export default function ProductsCatalog({
   const searchParams = useSearchParams();
 
   const SORT_LABELS: Record<SortOption, string> = {
+    popular:    t("sortPopular"),
     price_desc: t("sortPriceDesc"),
     price_asc:  t("sortPriceAsc"),
     power_asc:  t("sortPowerAsc"),

@@ -1,14 +1,25 @@
 "use client";
 import { useState, useMemo, type Dispatch, type SetStateAction } from "react";
 import type { Product } from "@/lib/sheets";
-import { ALGO_COINS, getCoolingType } from "@/lib/product-filters-meta";
+import { ALGO_COINS, getCoolingType, getPopularityRank } from "@/lib/product-filters-meta";
 
 export type SortOption =
+  | "popular"
   | "price_desc"
   | "price_asc"
   | "power_asc"
   | "power_desc"
   | "new_first";
+
+// "Популярне" — curated model-family order (getPopularityRank), with stock-first
+// then priciest-first tie-breaks so the flagship of each family floats up.
+function comparePopularity(a: Product, b: Product): number {
+  const ra = getPopularityRank(a.name);
+  const rb = getPopularityRank(b.name);
+  if (ra !== rb) return ra - rb;
+  if (a.inStock !== b.inStock) return a.inStock ? -1 : 1;
+  return b.priceUSDT - a.priceUSDT;
+}
 
 export interface FilterState {
   search: string;
@@ -66,11 +77,12 @@ function applyFilters(products: Product[], f: FilterState): Product[] {
   r = r.filter(p => p.priceUSDT >= f.priceRange[0] && p.priceUSDT <= f.priceRange[1]);
   r = r.filter(p => p.powerW >= f.powerRange[0] && p.powerW <= f.powerRange[1]);
   switch (f.sortBy) {
+    case "price_desc": return [...r].sort((a, b) => b.priceUSDT - a.priceUSDT);
     case "price_asc":  return [...r].sort((a, b) => a.priceUSDT - b.priceUSDT);
     case "power_asc":  return [...r].sort((a, b) => a.powerW - b.powerW);
     case "power_desc": return [...r].sort((a, b) => b.powerW - a.powerW);
     case "new_first":  return [...r].sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
-    default:           return [...r].sort((a, b) => b.priceUSDT - a.priceUSDT);
+    default:           return [...r].sort(comparePopularity); // "popular"
   }
 }
 
@@ -128,7 +140,7 @@ export function useProductFilters(products: Product[]) {
     const powers = products.map(p => p.powerW);
     return powers.length ? [Math.min(...powers), Math.max(...powers)] : [0, 10000];
   });
-  const [sortBy,       setSortBy]       = useState<SortOption>("price_desc");
+  const [sortBy,       setSortBy]       = useState<SortOption>("popular");
 
   const toggle = (setter: Dispatch<SetStateAction<string[]>>) =>
     (val: string) => setter(prev => prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]);
@@ -151,7 +163,7 @@ export function useProductFilters(products: Product[]) {
     setSearch(""); setStockOnly(false);
     setBrands([]); setAlgorithms([]); setCoins([]); setCoolingTypes([]);
     setPriceRange(globalRanges.price); setPowerRange(globalRanges.power);
-    setSortBy("price_desc");
+    setSortBy("popular");
   };
 
   return {
