@@ -1,3 +1,14 @@
+// Ambient typing for the gtag.js function injected by the GA <Script> in
+// src/app/[locale]/layout.tsx. Declared here (rather than a sibling gtag.d.ts,
+// which TS treats as this module's declaration file) so the augmentation is
+// reliably applied.
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void
+    dataLayer?: unknown[]
+  }
+}
+
 // The single low-level entry point for every GA4 event. Guards on browser +
 // gtag presence so calls are safe on the server, in dev (GA is prod-only) and
 // before the lazyOnload GA script has loaded. Never throws — analytics must
