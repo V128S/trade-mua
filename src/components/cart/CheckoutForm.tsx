@@ -1,10 +1,11 @@
 'use client'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { useCart } from '@/lib/cart/useCart'
 import { applyDiscount } from '@/lib/cart/cart-math'
+import { trackAddShippingInfo, trackBeginCheckout, trackPurchase } from '@/lib/analytics'
 import { placeOrder } from '@/lib/cart/actions'
 import { splitFullName } from '@/lib/cart/shipping'
 import { formatUaPhone } from '@/lib/phone'
@@ -23,6 +24,15 @@ export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaul
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  // One GA4 begin_checkout once the cart has hydrated and is non-empty.
+  const beginFired = useRef(false)
+  useEffect(() => {
+    if (beginFired.current || !hydrated || items.length === 0) return
+    beginFired.current = true
+    const value = promo ? applyDiscount(subtotal, promo.pct) : subtotal
+    trackBeginCheckout(items, { value, coupon: promo?.code })
+  }, [hydrated, items, subtotal, promo])
+
   if (hydrated && items.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
@@ -38,6 +48,7 @@ export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaul
     e.preventDefault()
     setLoading(true)
     setError(null)
+    trackAddShippingInfo(items, { value: total, coupon: promo?.code })
     const res = await placeOrder({
       items: items.map(i => ({ id: i.id, qty: i.qty })),
       promoCode: promo?.code ?? null,
@@ -49,6 +60,7 @@ export default function CheckoutForm({ defaultPhone, defaultFullName }: { defaul
       notes,
     })
     if ('error' in res) { setError(res.error); setLoading(false); return }
+    trackPurchase({ orderId: res.orderId, items, value: total, coupon: promo?.code })
     clear()
     router.push(`/dashboard/orders?success=${res.orderId}`)
   }
