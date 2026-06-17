@@ -1,6 +1,7 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
 import { notifyDirectorOrderCancelled } from '@/lib/notify/telegram'
+import { sendCustomerOrderEmail } from '@/lib/notify/email'
 import type { OrderItem } from '@/lib/types/database.types'
 
 // Cancels the caller's own order via the SECURITY DEFINER `cancel_order` RPC,
@@ -18,7 +19,7 @@ export async function cancelOrder(orderId: string): Promise<{ ok: true } | { err
 
   const { data: order } = await supabase
     .from('orders')
-    .select('id, items, total_usdt, recipient_first_name, recipient_last_name, recipient_phone')
+    .select('id, items, total_usdt, recipient_first_name, recipient_last_name, recipient_phone, recipient_email, city, nova_poshta_branch')
     .eq('id', orderId)
     .single()
 
@@ -36,6 +37,24 @@ export async function cancelOrder(orderId: string): Promise<{ ok: true } | { err
       })
     } catch (e) {
       console.error('telegram cancel notify failed', e)
+    }
+
+    try {
+      await sendCustomerOrderEmail(
+        {
+          id: order.id,
+          email: order.recipient_email ?? null,
+          items: (Array.isArray(order.items) ? order.items : []) as OrderItem[],
+          total: Number(order.total_usdt),
+          firstName: order.recipient_first_name ?? '',
+          lastName: order.recipient_last_name ?? '',
+          city: order.city ?? '',
+          branch: order.nova_poshta_branch ?? '',
+        },
+        'cancelled',
+      )
+    } catch (e) {
+      console.error('customer cancel email failed', e)
     }
   }
 
