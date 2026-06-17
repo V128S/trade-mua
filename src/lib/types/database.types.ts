@@ -57,6 +57,7 @@ export interface Database {
           recipient_first_name: string | null
           recipient_last_name: string | null
           recipient_phone: string | null
+          recipient_email: string | null
           city: string | null
           nova_poshta_branch: string | null
           nova_poshta_address: string | null
@@ -73,6 +74,7 @@ export interface Database {
           recipient_first_name?: string | null
           recipient_last_name?: string | null
           recipient_phone?: string | null
+          recipient_email?: string | null
           city?: string | null
           nova_poshta_branch?: string | null
           nova_poshta_address?: string | null
@@ -83,6 +85,7 @@ export interface Database {
           recipient_first_name?: string | null
           recipient_last_name?: string | null
           recipient_phone?: string | null
+          recipient_email?: string | null
           city?: string | null
           nova_poshta_branch?: string | null
           nova_poshta_address?: string | null
