@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { buildOrderItems, applyDiscount } from '@/lib/cart/cart-math'
 import { composeShippingAddress } from '@/lib/cart/shipping'
 import { notifyDirectorNewOrder } from '@/lib/notify/telegram'
+import { sendCustomerOrderEmail } from '@/lib/notify/email'
 import { isCompleteUaPhone } from '@/lib/phone'
 
 export async function previewPromo(code: string): Promise<{ discountPct: number } | { error: string }> {
@@ -82,6 +83,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
     .from('orders')
     .insert({
       user_id: user.id,
+      recipient_email: user.email ?? null,
       items: orderItems,
       total_usdt: total,
       status: 'pending',
@@ -119,6 +121,26 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
     })
   } catch (e) {
     console.error('telegram notify failed', e)
+  }
+
+  try {
+    await sendCustomerOrderEmail(
+      {
+        id: order.id,
+        email: user.email ?? null,
+        items: orderItems,
+        total,
+        firstName,
+        lastName,
+        city,
+        branch,
+        promoCode,
+        discountPct: discountPct || null,
+      },
+      'placed',
+    )
+  } catch (e) {
+    console.error('customer order email failed', e)
   }
 
   return { orderId: order.id }
