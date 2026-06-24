@@ -8,30 +8,41 @@ import { parseHashrateTH } from "@/lib/utils";
 
 type HashrateUnit = "TH/s" | "GH/s" | "MH/s" | "kH/s" | "kSol/s";
 
-const ALL_UNITS: HashrateUnit[] = ["TH/s", "GH/s", "MH/s", "kH/s", "kSol/s"];
+// Per-algorithm allowed units (ordered largest → smallest for the dropdown).
+// Only units that actually make sense for that algo's ASICs / miners are listed.
+const ALGO_UNITS: Record<string, HashrateUnit[]> = {
+  SHA256:     ["TH/s", "GH/s"],                   // BTC  — S21 ~200 TH/s
+  Scrypt:     ["GH/s", "MH/s"],                   // DOGE+LTC — L9 ~16 GH/s
+  KHeavyHash: ["TH/s", "GH/s"],                   // KAS  — KS5 ~21 TH/s
+  EthHash:    ["GH/s", "MH/s"],                   // ETC  — GPU rigs, GH or MH
+  Eaglesong:  ["TH/s", "GH/s"],                   // CKB  — K9 Pro ~5 TH/s
+  Equihash:   ["kSol/s"],                          // ZEC  — Z15 ~420 kSol/s
+  X11:        ["TH/s", "GH/s"],                   // DASH — D9 ~2.8 TH/s
+  RandomX:    ["kH/s", "MH/s"],                   // XMR  — XMR-Stak ~10 kH/s
+};
 
-/** Pick a sensible default unit from the coin ticker. */
-function defaultUnit(coinSymbol: string): HashrateUnit {
-  const sym = coinSymbol.toUpperCase();
-  if (sym === "ETC")                         return "MH/s";
-  if (sym === "XMR")                         return "kH/s";
-  if (sym === "ZEC" || sym === "ARRR")       return "kSol/s";
-  if (sym === "DOGE" || sym === "LTC" || sym === "DASH") return "GH/s";
-  return "TH/s";
+const FALLBACK_UNITS: HashrateUnit[] = ["TH/s", "GH/s", "MH/s", "kH/s"];
+
+/** Units list for the given algo key (falls back to common set without kSol/s). */
+function unitsFor(algo: string): HashrateUnit[] {
+  return ALGO_UNITS[algo] ?? FALLBACK_UNITS;
 }
 
 /** Parse an existing hashrate string like "335 TH/s" → { value: "335", unit: "TH/s" } */
-function splitHashrateString(s: string, fallbackUnit: HashrateUnit): { value: string; unit: HashrateUnit } {
+function splitHashrateString(
+  s: string,
+  allowedUnits: HashrateUnit[],
+): { value: string; unit: HashrateUnit } {
+  const fallback = allowedUnits[0];
   const m = s.match(/([\d.,]+)\s*(TH\/s|GH\/s|MH\/s|kH\/s|kSol\/s)/i);
   if (m) {
     const raw = m[2].replace(/^k/i, "k").replace(/sol/i, "Sol").replace(/\/s/i, "/s") as HashrateUnit;
-    // Normalise to one of our known units
-    const unit = ALL_UNITS.find((u) => u.toLowerCase() === raw.toLowerCase()) ?? fallbackUnit;
+    // If the parsed unit is in the allowed list, keep it; otherwise fall back.
+    const unit = allowedUnits.find((u) => u.toLowerCase() === raw.toLowerCase()) ?? fallback;
     return { value: m[1], unit };
   }
-  // No unit in string → keep value, use fallback unit
   const numMatch = s.match(/([\d.,]+)/);
-  return { value: numMatch ? numMatch[1] : "", unit: fallbackUnit };
+  return { value: numMatch ? numMatch[1] : "", unit: fallback };
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -39,6 +50,8 @@ function splitHashrateString(s: string, fallbackUnit: HashrateUnit): { value: st
 interface Props {
   coinPrice: number;
   coinSymbol?: string;
+  /** ALGO_CONFIGS key, e.g. "SHA256" | "Scrypt" | "KHeavyHash" … */
+  algo?: string;
   revenuePerTH: number;  // USD per TH-equivalent per day (spot)
   revenue24h?: number;   // 24h average (more stable for ROI calc)
   usdUah: number;        // live USD→UAH rate; electricity is entered in UAH
@@ -50,6 +63,7 @@ interface Props {
 export default function Calculator({
   coinPrice,
   coinSymbol = "BTC",
+  algo = "",
   revenuePerTH,
   revenue24h,
   usdUah,
@@ -59,8 +73,8 @@ export default function Calculator({
 }: Props) {
   const t = useTranslations("calculator");
 
-  const defUnit = defaultUnit(coinSymbol);
-  const parsed  = splitHashrateString(initialHashrate, defUnit);
+  const allowedUnits = unitsFor(algo);
+  const parsed       = splitHashrateString(initialHashrate, allowedUnits);
 
   const [hashrateValue, setHashrateValue] = useState(parsed.value);
   const [hashrateUnit,  setHashrateUnit]  = useState<HashrateUnit>(parsed.unit);
@@ -156,7 +170,7 @@ export default function Calculator({
                 className="appearance-none h-full pl-3 pr-7 bg-transparent font-mono text-sm text-primary font-semibold outline-none cursor-pointer"
                 aria-label={t("hashrateUnitLabel")}
               >
-                {ALL_UNITS.map((u) => (
+                {allowedUnits.map((u) => (
                   <option key={u} value={u}>{u}</option>
                 ))}
               </select>

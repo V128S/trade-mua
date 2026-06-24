@@ -77,6 +77,7 @@ export default async function CalculatorPage({ params, searchParams }: Props) {
       <Calculator
         coinPrice={algoData?.coinPrice ?? 0}
         coinSymbol={algoData?.coin ?? "BTC"}
+        algo={algo}
         revenuePerTH={algoData?.revenuePerTH ?? 0}
         revenue24h={algoData?.revenue24h}
         usdUah={usdUah}
