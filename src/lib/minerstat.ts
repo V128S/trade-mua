@@ -1,5 +1,6 @@
 // Primary: WhatToMine API v1 /calculate
-// Fallback (EthHash only): CoinGecko + formula
+// Fallback: public asic.json (all algos incl. EthHash via EthereumClassic entry)
+// Last-resort EthHash fallback: CoinGecko price + hardcoded formula
 
 const WTM_URL = "https://whattomine.com/api/v1/calculate";
 
@@ -56,15 +57,16 @@ const ALGO_CONFIGS: Record<string, AlgoConfig> = {
   SHA256:     { param: "sha256", refUnit: "1T", scaleToTH: 1,    coinNames: ["Bitcoin"]                     },
   Scrypt:     { param: "scrypt", refUnit: "1G", scaleToTH: 1000, coinNames: ["Dogecoin", "Litecoin"], mergeMine: true },
   KHeavyHash: { param: "hh",     refUnit: "1T", scaleToTH: 1,    coinNames: ["Kaspa"]                      },
+  EthHash:    { param: "etc",    refUnit: "1T", scaleToTH: 1,    coinNames: ["EthereumClassic"]             },
   Eaglesong:  { param: "esg",    refUnit: "1T", scaleToTH: 1,    coinNames: ["Nervos"]                     },
   Equihash:   { param: "eq",     refUnit: "1K", scaleToTH: 1e9,  coinNames: ["Zcash", "Pirate"]            },
   X11:        { param: "x11",    refUnit: "1G", scaleToTH: 1000, coinNames: ["Dash"]                       },
   RandomX:    { param: "rmx",    refUnit: "1K", scaleToTH: 1e9,  coinNames: ["Monero"]                     },
 };
 
-// EthHash fallback: WhatToMine doesn't have Etchash (ETC) in its calculate endpoint.
-// Use CoinGecko price + hardcoded network stats.
-async function getEthHashFallback(): Promise<AlgoRevenue | null> {
+// EthHash last-resort fallback: CoinGecko price + hardcoded network stats.
+// Used only when asic.json is also unavailable.
+async function getEthHashCoinGeckoFallback(): Promise<AlgoRevenue | null> {
   try {
     const res = await fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=ethereum-classic&vs_currencies=usd",
@@ -74,7 +76,7 @@ async function getEthHashFallback(): Promise<AlgoRevenue | null> {
     const data = await res.json() as { "ethereum-classic"?: { usd?: number } };
     const price = data["ethereum-classic"]?.usd;
     if (!price) return null;
-    // ETC Etchash: ~200 TH/s network, 13s blocks, 2.56 ETC reward
+    // ETC Etchash: ~200 TH/s network, 13s blocks, 2.56 ETC reward (static fallback only)
     const revenuePerTH = (1e12 / 2e14) * (86400 / 13) * 2.56 * price;
     return { revenuePerTH, coin: "ETC", coinPrice: price, revenue24h: revenuePerTH };
   } catch {
@@ -132,7 +134,8 @@ async function getPublicAsicRevenue(): Promise<Record<string, AlgoRevenue>> {
           const blockTime = parseFloat(coinData.block_time);
           if (!coinData.nethash || !blockTime) return null;
 
-          const reward = (unitHashrate / coinData.nethash) * (86400 / blockTime) * coinData.block_reward;
+          const reward   = (unitHashrate / coinData.nethash) * (86400 / blockTime) * coinData.block_reward;
+          // Use block_reward24 for 24h average — reflects uncle/variance smoothing
           const reward24 = (unitHashrate / coinData.nethash) * (86400 / blockTime) * coinData.block_reward24;
 
           const revenue = reward * coinBtcPrice * btcPrice;
@@ -173,14 +176,13 @@ async function getPublicAsicRevenue(): Promise<Record<string, AlgoRevenue>> {
 
 export async function getMinerstatRevenue(): Promise<Record<string, AlgoRevenue>> {
   const wtmKey = process.env.WHATTOMINE_API_KEY;
-  // No key → skip the WhatToMine call. EthHash fallback (CoinGecko) still works.
+  // No key → use asic.json (covers all algos incl. EthHash via EthereumClassic).
   if (!wtmKey) {
-    const [publicData, ethHashData] = await Promise.all([
-      getPublicAsicRevenue(),
-      getEthHashFallback(),
-    ]);
-    if (ethHashData) {
-      publicData.EthHash = ethHashData;
+    const publicData = await getPublicAsicRevenue();
+    // If asic.json didn't return EthHash (e.g. EthereumClassic coin absent), try CoinGecko.
+    if (!publicData.EthHash) {
+      const ethHashData = await getEthHashCoinGeckoFallback();
+      if (ethHashData) publicData.EthHash = ethHashData;
     }
     return publicData;
   }
@@ -191,15 +193,14 @@ export async function getMinerstatRevenue(): Promise<Record<string, AlgoRevenue>
       .join("&");
     const url = `${WTM_URL}?${algoQuery}&cost=0&api_token=${wtmKey}`;
 
-    const [wtmRes, ethHashData] = await Promise.all([
-      fetch(url, { next: { revalidate: 300 } }),
-      getEthHashFallback(),
-    ]);
+    const wtmRes = await fetch(url, { next: { revalidate: 300 } });
 
     if (!wtmRes.ok) {
+      // WTM calculate API failed — fall back to asic.json (includes EthereumClassic)
       const publicData = await getPublicAsicRevenue();
-      if (ethHashData) {
-        publicData.EthHash = ethHashData;
+      if (!publicData.EthHash) {
+        const ethHashData = await getEthHashCoinGeckoFallback();
+        if (ethHashData) publicData.EthHash = ethHashData;
       }
       return publicData;
     }
@@ -242,20 +243,26 @@ export async function getMinerstatRevenue(): Promise<Record<string, AlgoRevenue>
       };
     }
 
-    // EthHash: WhatToMine doesn't cover ETC Etchash → fallback
-    if (ethHashData) {
-      result.EthHash = ethHashData;
+    // EthHash: WhatToMine calculate doesn't cover ETC Etchash.
+    // asic.json (via getPublicAsicRevenue) is the reliable source.
+    if (!result.EthHash) {
+      const asicData = await getPublicAsicRevenue();
+      if (asicData.EthHash) {
+        result.EthHash = asicData.EthHash;
+      } else {
+        // Last resort: CoinGecko
+        const ethHashData = await getEthHashCoinGeckoFallback();
+        if (ethHashData) result.EthHash = ethHashData;
+      }
     }
 
     return result;
   } catch {
     try {
-      const [publicData, ethHashData] = await Promise.all([
-        getPublicAsicRevenue(),
-        getEthHashFallback(),
-      ]);
-      if (ethHashData) {
-        publicData.EthHash = ethHashData;
+      const publicData = await getPublicAsicRevenue();
+      if (!publicData.EthHash) {
+        const ethHashData = await getEthHashCoinGeckoFallback();
+        if (ethHashData) publicData.EthHash = ethHashData;
       }
       return publicData;
     } catch {

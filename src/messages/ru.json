@@ -332,8 +332,8 @@
     "coinPriceLabel": "Текущая цена {coinSymbol}",
     "coinPriceLoading": "Загрузка...",
     "hashrateLabel": "Хешрейт",
-    "hashratePlaceholder": "например: 335 TH/s или 335",
-    "hashrateHint": "TH/s, GH/s, MH/s, kH/s или kSol/s",
+    "hashratePlaceholder": "напр. 335",
+    "hashrateHint": "Введите значение — выберите единицу из списка",
     "powerLabel": "Потребление",
     "electricityLabel": "Тариф электроэнергии",
     "electricityHotelMark": "3,6 грн (отель)",
@@ -360,7 +360,8 @@
     "unitKwhRate": "{rate, number} грн/кВт·ч",
     "electricityMinMark": "0 грн",
     "electricityMaxMark": "8,8 грн",
-    "fxNote": "Курс НБУ: {rate, number} грн/$"
+    "fxNote": "Курс НБУ: {rate, number} грн/$",
+    "hashrateUnitLabel": "Единица хешрейта"
   },
   "about": {
     "metaTitle": "О компании | TradeM",

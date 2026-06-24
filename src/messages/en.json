@@ -332,8 +332,8 @@
     "coinPriceLabel": "Current {coinSymbol} price",
     "coinPriceLoading": "Loading...",
     "hashrateLabel": "Hashrate",
-    "hashratePlaceholder": "e.g. 335 TH/s or 335",
-    "hashrateHint": "TH/s, GH/s, MH/s, kH/s or kSol/s",
+    "hashratePlaceholder": "e.g. 335",
+    "hashrateHint": "Enter the value — select the unit from the dropdown",
     "powerLabel": "Consumption",
     "electricityLabel": "Electricity rate",
     "electricityHotelMark": "₴3.6 (hotel)",
@@ -360,7 +360,8 @@
     "unitKwhRate": "₴{rate, number}/kWh",
     "electricityMinMark": "₴0",
     "electricityMaxMark": "₴8.8",
-    "fxNote": "NBU rate: {rate, number} UAH/$"
+    "fxNote": "NBU rate: {rate, number} UAH/$",
+    "hashrateUnitLabel": "Hashrate unit"
   },
   "about": {
     "metaTitle": "About | TradeM",

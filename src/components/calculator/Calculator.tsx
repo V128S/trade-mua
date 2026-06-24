@@ -4,6 +4,38 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { parseHashrateTH } from "@/lib/utils";
 
+// ── Hashrate unit helpers ─────────────────────────────────────────────────────
+
+type HashrateUnit = "TH/s" | "GH/s" | "MH/s" | "kH/s" | "kSol/s";
+
+const ALL_UNITS: HashrateUnit[] = ["TH/s", "GH/s", "MH/s", "kH/s", "kSol/s"];
+
+/** Pick a sensible default unit from the coin ticker. */
+function defaultUnit(coinSymbol: string): HashrateUnit {
+  const sym = coinSymbol.toUpperCase();
+  if (sym === "ETC")                         return "MH/s";
+  if (sym === "XMR")                         return "kH/s";
+  if (sym === "ZEC" || sym === "ARRR")       return "kSol/s";
+  if (sym === "DOGE" || sym === "LTC" || sym === "DASH") return "GH/s";
+  return "TH/s";
+}
+
+/** Parse an existing hashrate string like "335 TH/s" → { value: "335", unit: "TH/s" } */
+function splitHashrateString(s: string, fallbackUnit: HashrateUnit): { value: string; unit: HashrateUnit } {
+  const m = s.match(/([\d.,]+)\s*(TH\/s|GH\/s|MH\/s|kH\/s|kSol\/s)/i);
+  if (m) {
+    const raw = m[2].replace(/^k/i, "k").replace(/sol/i, "Sol").replace(/\/s/i, "/s") as HashrateUnit;
+    // Normalise to one of our known units
+    const unit = ALL_UNITS.find((u) => u.toLowerCase() === raw.toLowerCase()) ?? fallbackUnit;
+    return { value: m[1], unit };
+  }
+  // No unit in string → keep value, use fallback unit
+  const numMatch = s.match(/([\d.,]+)/);
+  return { value: numMatch ? numMatch[1] : "", unit: fallbackUnit };
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
 interface Props {
   coinPrice: number;
   coinSymbol?: string;
@@ -15,38 +47,55 @@ interface Props {
   initialPrice?: number;
 }
 
-export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH, revenue24h, usdUah, initialHashrate = "", initialPower = 3500, initialPrice = 0 }: Props) {
+export default function Calculator({
+  coinPrice,
+  coinSymbol = "BTC",
+  revenuePerTH,
+  revenue24h,
+  usdUah,
+  initialHashrate = "",
+  initialPower = 3500,
+  initialPrice = 0,
+}: Props) {
   const t = useTranslations("calculator");
-  const [hashrate, setHashrate] = useState(initialHashrate);
-  const [powerW, setPowerW] = useState(initialPower);
+
+  const defUnit = defaultUnit(coinSymbol);
+  const parsed  = splitHashrateString(initialHashrate, defUnit);
+
+  const [hashrateValue, setHashrateValue] = useState(parsed.value);
+  const [hashrateUnit,  setHashrateUnit]  = useState<HashrateUnit>(parsed.unit);
+  const [powerW,           setPowerW]           = useState(initialPower);
   // Electricity tariff in UAH (грн/кВт·год); 3.6 is the mining-hotel rate.
-  const [electricityRate, setElectricityRate] = useState(3.6);
-  const [price, setPrice] = useState(initialPrice);
+  const [electricityRate,  setElectricityRate]  = useState(3.6);
+  const [price,            setPrice]            = useState(initialPrice);
+
+  // Compose the full hashrate string for parseHashrateTH
+  const hashrateString = hashrateValue ? `${hashrateValue} ${hashrateUnit}` : "";
 
   const result = useMemo(() => {
-    const th = parseHashrateTH(hashrate);
+    const th = parseHashrateTH(hashrateString);
     if (th <= 0 || revenuePerTH <= 0) return null;
     // Tariff is in UAH; convert the daily cost to USD to match USD revenue.
-    const dailyCost = ((powerW / 1000) * 24 * electricityRate) / usdUah;
+    const dailyCost    = ((powerW / 1000) * 24 * electricityRate) / usdUah;
     const dailyRevenue = revenuePerTH * th;
-    const dailyProfit = Math.max(0, dailyRevenue - dailyCost);
+    const dailyProfit  = Math.max(0, dailyRevenue - dailyCost);
     // ROI uses 24h average for more stable estimate
-    const rev24 = (revenue24h ?? revenuePerTH) * th;
+    const rev24    = (revenue24h ?? revenuePerTH) * th;
     const profit24 = Math.max(0, rev24 - dailyCost);
-    const roi = price > 0 && profit24 > 0 ? Math.ceil(price / profit24) : Infinity;
+    const roi      = price > 0 && profit24 > 0 ? Math.ceil(price / profit24) : Infinity;
     return {
-      daily: { cost: dailyCost, revenue: dailyRevenue, profit: dailyProfit },
-      monthly: { cost: dailyCost * 30, revenue: dailyRevenue * 30, profit: dailyProfit * 30 },
-      annual: { cost: dailyCost * 365, revenue: dailyRevenue * 365, profit: dailyProfit * 365 },
+      daily:   { cost: dailyCost,       revenue: dailyRevenue,       profit: dailyProfit       },
+      monthly: { cost: dailyCost * 30,  revenue: dailyRevenue * 30,  profit: dailyProfit * 30  },
+      annual:  { cost: dailyCost * 365, revenue: dailyRevenue * 365, profit: dailyProfit * 365 },
       roi,
       hasPrice: price > 0,
     };
-  }, [hashrate, powerW, electricityRate, revenuePerTH, revenue24h, price, usdUah]);
+  }, [hashrateString, powerW, electricityRate, revenuePerTH, revenue24h, price, usdUah]);
 
   const periods = [
-    { key: "periodDay", data: result?.daily },
-    { key: "periodMonth", data: result?.monthly },
-    { key: "periodYear", data: result?.annual },
+    { key: "periodDay",   data: result?.daily   },
+    { key: "periodMonth", data: result?.monthly  },
+    { key: "periodYear",  data: result?.annual   },
   ] as const;
 
   return (
@@ -76,18 +125,50 @@ export default function Calculator({ coinPrice, coinSymbol = "BTC", revenuePerTH
           <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase">Live</span>
         </div>
 
-        {/* Hashrate */}
+        {/* Hashrate — numeric input + unit dropdown */}
         <div className="space-y-2">
           <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] block">
             {t("hashrateLabel")}
           </label>
-          <input
-            type="text"
-            value={hashrate}
-            onChange={(e) => setHashrate(e.target.value)}
-            placeholder={t("hashratePlaceholder")}
-            className="field font-mono"
-          />
+
+          {/* Input + dropdown row */}
+          <div className="flex items-stretch gap-0 rounded-lg overflow-hidden border border-[var(--color-outline)] focus-within:border-[var(--color-primary)] transition-colors bg-[var(--color-surface-container)]">
+            {/* Numeric part */}
+            <input
+              type="number"
+              min={0}
+              step="any"
+              inputMode="decimal"
+              value={hashrateValue}
+              onChange={(e) => setHashrateValue(e.target.value)}
+              placeholder={t("hashratePlaceholder")}
+              className="flex-1 min-w-0 px-3 py-2.5 bg-transparent font-mono text-sm text-on-surface placeholder:text-on-surface-variant/50 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+
+            {/* Divider */}
+            <div className="w-px bg-[var(--color-outline-variant)] self-stretch" />
+
+            {/* Unit selector */}
+            <div className="relative flex items-center">
+              <select
+                value={hashrateUnit}
+                onChange={(e) => setHashrateUnit(e.target.value as HashrateUnit)}
+                className="appearance-none h-full pl-3 pr-7 bg-transparent font-mono text-sm text-primary font-semibold outline-none cursor-pointer"
+                aria-label={t("hashrateUnitLabel")}
+              >
+                {ALL_UNITS.map((u) => (
+                  <option key={u} value={u}>{u}</option>
+                ))}
+              </select>
+              {/* Custom chevron */}
+              <span className="pointer-events-none absolute right-2 text-primary">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                  <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
           <p className="font-label-caps text-label-caps text-on-surface-variant text-[10px]">
             {t("hashrateHint")}
           </p>
