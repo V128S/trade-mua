@@ -95,6 +95,48 @@ against code instead of trusting the backlog (which was written from assumptions
 Verified: `npm run build` ✓ compiled, 134/134 static pages, blog/[slug] SSG with all
 13 slugs × 3 locales; typecheck + lint clean.
 
+## GSC-grounded re-prioritization (item 1, completed after re-auth)
+
+Pulled live data (90d, both properties) once GSC auth was restored. **The data
+overturns the "write more articles" premise** — the bottleneck is discovery, not content.
+
+**Dominant finding — the whole site has 0 indexed pages.** Sitemap is healthy
+(`https://xn--80aid2aql.com.ua/sitemap.xml`, 80 URLs, 0 errors, last downloaded
+2026-06-24) but **indexed = 0**. A spot URL inspection returns "URL is unknown to
+Google". традем.com.ua is a young domain with negligible authority; everything we've
+shipped (articles, hub copy, schema, interlinking) is correct groundwork that can't
+rank until pages get indexed.
+
+**Real demand signal (tiny volume, but directionally clear):**
+- Transactional model queries dominate: **Antminer Z15 Pro** (`antminer z15 купить`,
+  `z15 цена`, `купить z15`, `bitmain antminer z15 цена`, … ~8 queries, pos 27–31) and
+  **Antminer L7** (`antminer l7 цена`, `купить antminer l7`, … ~5 queries, pos 27–47).
+- **Whatsminer M10** (`whatsminer m10`, `whatsminer m10 купить`) — real demand, **zero
+  catalog coverage**.
+- Brand `tradem` pos 3–5. striking_distance / low_ctr: empty (not enough volume).
+
+**Verified the transactional pages are already well-optimized** — `/asic/zcash` title
+= "Купити Antminer Z15 Pro — ASIC для Zcash", `/asic/scrypt` title = "Купити Antminer
+L7, L9…"; Z15 ×24 / L7 ×22 mentions in the catalog. Page-3 positions reflect domain
+age, **not** an on-page gap → no code fix to make here.
+
+**Re-prioritized next actions (ranked, GSC-grounded):**
+1. **Indexation nudge (highest leverage).** In the GSC UI, "Request indexing" for the
+   ~10 key URLs (home, `/asic/zcash`, `/asic/scrypt`, Z15 Pro + L7 product cards, the
+   7 newly-registered blog posts). API sitemap resubmit is blocked — the current OAuth
+   token has **read-only** scope (`webmasters.readonly`); re-auth granting full
+   `webmasters` if API submit is wanted. Sitemap auto-redownloads regardless.
+2. **Whatsminer decision (only true gap in the data).** Sync Whatsminer SKUs → indexable
+   product pages for live demand, or drop Whatsminer from positioning. Business/catalog
+   call, not on-page.
+3. **Off-site authority** (backlinks, brand mentions) — the real long-term lever for a
+   new domain; outside the codebase.
+4. Today's blog cluster + interlinking is the right topical-authority groundwork feeding
+   1 & 3 over time. No further article production is the priority right now.
+
+> Net: the codebase-side SEO is in good shape; the gating factor is now indexation +
+> domain authority + the Whatsminer catalog decision — none of which is "write more".
+
 ## Files touched
 - `src/lib/blog.ts` — `BLOG_SLUGS` 6 → 13 (3 orphan re-registrations + 4 new).
 - `src/content/blog/{asic-cooling-air-hydro-immersion-2026,electricity-cost-mining-ukraine-2026,home-mining-quiet-asic-2026,mining-pool-guide-2026}.{uk,ru,en}.md` — 12 new files.
