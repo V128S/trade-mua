@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import Calculator from "@/components/calculator/Calculator";
 import { getMinerstatRevenue, ALGO_NAMES } from "@/lib/minerstat";
 import { getUsdUahRate } from "@/lib/fx";
+import { getPost } from "@/lib/blog";
+
+// Calculator → blog internal links: tariff/payback/pool guides most relevant here.
+const CALC_GUIDES = ["electricity-cost-mining-ukraine-2026", "asic-profitability-payback", "mining-pool-guide-2026"];
 
 export const revalidate = 300;
 
@@ -32,6 +37,10 @@ export default async function CalculatorPage({ params, searchParams }: Props) {
   const t = await getTranslations("calculator");
 
   const [revenueMap, usdUah, sp] = await Promise.all([getMinerstatRevenue(), getUsdUahRate(), searchParams]);
+
+  const guides = CALC_GUIDES
+    .map((s) => getPost(s, locale))
+    .filter((p): p is NonNullable<ReturnType<typeof getPost>> => p !== null);
 
   const requestedAlgo = sp.algorithm ?? "SHA256";
   const algo = Object.keys(ALGO_NAMES).includes(requestedAlgo) ? requestedAlgo : "SHA256";
@@ -85,6 +94,23 @@ export default async function CalculatorPage({ params, searchParams }: Props) {
         initialPower={sp.power ? Number(sp.power) : 3500}
         initialPrice={sp.price ? Number(sp.price) : 0}
       />
+
+      {/* Related blog guides (calculator → blog) */}
+      {guides.length > 0 && (
+        <section className="mt-16">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest mb-8 text-center">
+            {t("guidesHeading")}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start max-w-container-max mx-auto">
+            {guides.map((g) => (
+              <Link key={g.slug} href={`/blog/${g.slug}`} className="glass glass-hover p-6 flex flex-col gap-2 group">
+                <h3 className="font-technical-data text-technical-data text-on-surface group-hover:text-primary transition-colors leading-snug">{g.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-2">{g.description}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

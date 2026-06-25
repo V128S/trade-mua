@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductsFromDB } from "@/lib/products";
 import { getMinerstatRevenue } from "@/lib/minerstat";
+import { getPost } from "@/lib/blog";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -16,15 +17,17 @@ const SITE_URL = "https://традем.com.ua";
 // `brand` (mixed algorithms). Add entries to spin up new hubs.
 // `faqCount` / `hasBody` opt a hub into the extended SEO sections (intro body +
 // FAQ + FAQPage schema). Hubs without them render the lean layout unchanged.
-type HubConfig = { dbAlgo?: string; dbBrand?: string; faqCount?: number; hasBody?: boolean };
+// `relatedPosts` wires each hub to relevant blog guides (hub → blog internal
+// links, complementing the blog → hub links already in the articles).
+type HubConfig = { dbAlgo?: string; dbBrand?: string; faqCount?: number; hasBody?: boolean; relatedPosts?: string[] };
 const HUBS: Record<string, HubConfig> = {
-  sha256: { dbAlgo: "SHA256", faqCount: 6, hasBody: true },
-  scrypt: { dbAlgo: "Scrypt", faqCount: 6, hasBody: true },
-  zcash: { dbAlgo: "Equihash", faqCount: 6, hasBody: true },
-  kaspa: { dbAlgo: "KHeavyHash", faqCount: 6, hasBody: true },
-  antminer: { dbBrand: "AntMiner", faqCount: 6, hasBody: true },
-  avalon:   { dbBrand: "Avalon",   faqCount: 4, hasBody: true },
-  fluminer: { dbBrand: "FluMiner", faqCount: 4, hasBody: true },
+  sha256: { dbAlgo: "SHA256", faqCount: 6, hasBody: true, relatedPosts: ["asic-cooling-air-hydro-immersion-2026", "electricity-cost-mining-ukraine-2026", "bitcoin-mining-ukraine-2026"] },
+  scrypt: { dbAlgo: "Scrypt", faqCount: 6, hasBody: true, relatedPosts: ["litecoin-dogecoin-scrypt-mining-2026", "electricity-cost-mining-ukraine-2026"] },
+  zcash: { dbAlgo: "Equihash", faqCount: 6, hasBody: true, relatedPosts: ["how-to-choose-asic-2026", "asic-profitability-payback"] },
+  kaspa: { dbAlgo: "KHeavyHash", faqCount: 6, hasBody: true, relatedPosts: ["kaspa-mining-ukraine-2026", "mining-pool-guide-2026"] },
+  antminer: { dbBrand: "AntMiner", faqCount: 6, hasBody: true, relatedPosts: ["antminer-s21-vs-s23", "asic-firmware-guide", "asic-repair-guide"] },
+  avalon:   { dbBrand: "Avalon",   faqCount: 6, hasBody: true, relatedPosts: ["home-mining-quiet-asic-2026", "asic-cooling-air-hydro-immersion-2026"] },
+  fluminer: { dbBrand: "FluMiner", faqCount: 4, hasBody: true, relatedPosts: ["how-to-choose-asic-2026", "asic-profitability-payback"] },
 };
 
 export function generateStaticParams() {
@@ -96,6 +99,11 @@ export default async function AsicHubPage({ params }: Props) {
     q: t(`${algorithm}Faq${i + 1}Q`),
     a: t(`${algorithm}Faq${i + 1}A`),
   }));
+
+  // Related blog guides for this hub (hub → blog internal links)
+  const guides = (hub.relatedPosts ?? [])
+    .map((s) => getPost(s, locale))
+    .filter((p): p is NonNullable<ReturnType<typeof getPost>> => p !== null);
   const faqLd = faqs.length
     ? {
         "@context": "https://schema.org",
@@ -180,6 +188,23 @@ export default async function AsicHubPage({ params }: Props) {
                   {f.a}
                 </p>
               </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Related blog guides (hub → blog) */}
+      {guides.length > 0 && (
+        <section className="mt-16">
+          <h2 className="font-headline-md text-headline-md gold-text uppercase tracking-widest mb-8">
+            {t("guidesHeading")}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            {guides.map((g) => (
+              <Link key={g.slug} href={`/blog/${g.slug}`} className="glass glass-hover p-6 flex flex-col gap-2 group">
+                <h3 className="font-technical-data text-technical-data text-on-surface group-hover:text-primary transition-colors leading-snug">{g.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-2">{g.description}</p>
+              </Link>
             ))}
           </div>
         </section>

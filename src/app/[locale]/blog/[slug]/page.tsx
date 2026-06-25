@@ -58,6 +58,7 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: post.date,
     dateModified: post.date,
     inLanguage: { uk: "uk-UA", en: "en-US", ru: "ru-RU" }[locale] ?? "uk-UA",
+    image: `${SITE_URL}${localePrefix}/opengraph-image`,
     mainEntityOfPage: url,
     author: { "@type": "Organization", name: "TradeM" },
     publisher: { "@type": "Organization", name: "TradeM", logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.png` } },
