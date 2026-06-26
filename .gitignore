@@ -33,6 +33,13 @@ next-env.d.ts
 # Internal planning docs (plans, specs, brainstorming)
 docs/superpowers/
 
+# Internal strategy & security docs
+docs/seo/
+docs/accepted-advisor-residuals.md
+
+# Design working files (mockups, screenshots)
+Design/
+
 # AI tooling — не включаем в репозиторий
 .claude/
 CLAUDE.md
