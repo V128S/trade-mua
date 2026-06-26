@@ -1,12 +1,18 @@
+import { unstable_cache } from 'next/cache'
+import { createClient as createAnon } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/lib/types/database.types'
 
 export type Review = Database['public']['Tables']['reviews']['Row']
 
-// Published-review count + average rating for the site-wide AggregateRating.
-// Returns null when there are no published reviews so callers omit the schema.
-export async function getReviewsAggregate(): Promise<{ count: number; average: number } | null> {
-  const supabase = await createClient()
+async function _getReviewsAggregate(): Promise<{ count: number; average: number } | null> {
+  // Reviews are publicly readable — use the anon client so this result can be
+  // safely cached across requests (the SSR client reads cookies and cannot be
+  // used inside unstable_cache).
+  const supabase = createAnon<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  )
   const { data, error } = await supabase
     .from('reviews')
     .select('rating')
@@ -16,8 +22,14 @@ export async function getReviewsAggregate(): Promise<{ count: number; average: n
   return { count: data.length, average: Math.round((sum / data.length) * 10) / 10 }
 }
 
-// Published reviews for the homepage. RLS (reviews_public_read) already limits
-// anon reads to is_published, but we filter explicitly for clarity + ordering.
+// Cached for 1 hour. Invalidate via revalidateTag('reviews-aggregate') from the
+// admin reviews route when a review is published or unpublished.
+export const getReviewsAggregate = unstable_cache(
+  _getReviewsAggregate,
+  ['reviews-aggregate'],
+  { revalidate: 3600 },
+)
+
 export async function getPublishedReviews(limit = 8): Promise<Review[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
