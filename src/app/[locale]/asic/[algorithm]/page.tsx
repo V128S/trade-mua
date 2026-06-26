@@ -13,6 +13,7 @@ export const revalidate = 60;
 
 const SITE_URL = "https://традем.com.ua";
 
+// Catalog chip list (slug+label only) lives in src/lib/hubs.ts to avoid drift.
 // Indexable hubs. Algorithm hubs filter by DB `algorithm`, brand hubs by DB
 // `brand` (mixed algorithms). Add entries to spin up new hubs.
 // `faqCount` / `hasBody` opt a hub into the extended SEO sections (intro body +

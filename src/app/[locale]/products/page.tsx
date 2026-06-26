@@ -5,16 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import ProductsCatalog from "@/components/products/ProductsCatalog";
 import JsonLd from "@/components/seo/JsonLd";
-
-const HUBS = [
-  { slug: "antminer", labelKey: "hubAntminer" as const },
-  { slug: "avalon",   labelKey: "hubAvalon"   as const },
-  { slug: "fluminer", labelKey: "hubFluminer" as const },
-  { slug: "sha256",   labelKey: "hubSha256"   as const },
-  { slug: "scrypt",   labelKey: "hubScrypt"   as const },
-  { slug: "kaspa",    labelKey: "hubKaspa"    as const },
-  { slug: "zcash",    labelKey: "hubZcash"    as const },
-] as const;
+import { PRODUCT_HUBS } from "@/lib/hubs";
 
 export const revalidate = 60;
 
@@ -107,7 +98,7 @@ export default async function ProductsPage({ params }: Props) {
           {t("catalogHubsHeading")}
         </p>
         <div className="flex flex-wrap gap-2">
-          {HUBS.map((h) => (
+          {PRODUCT_HUBS.map((h) => (
             <Link
               key={h.slug}
               href={`/asic/${h.slug}`}
