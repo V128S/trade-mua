@@ -30,6 +30,9 @@ npm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Internal planning docs (plans, specs, brainstorming)
+docs/superpowers/
+
 # AI tooling — не включаем в репозиторий
 .claude/
 CLAUDE.md
