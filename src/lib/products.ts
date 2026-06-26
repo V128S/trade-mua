@@ -72,22 +72,12 @@ export async function getShuffledTopProductsFromDB(limit = 8): Promise<Product[]
 
 export async function getRandomProductsFromDB(count: number): Promise<Product[]> {
   const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('products')
-    .select(PRODUCT_COLUMNS)
-
+  const { data, error } = await supabase.rpc('random_products', { n: count })
   if (error || !data) {
-    if (error) console.error('[products] DB read failed:', error.message)
+    if (error) console.error('[products] random RPC failed:', error.message)
     return []
   }
-
-  const shuffled = [...data]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-
-  return shuffled.slice(0, count).map(mapRow)
+  return (data as unknown as ProductRow[]).map(mapRow)
 }
 
 export async function getLastSyncTime(): Promise<string | null> {
