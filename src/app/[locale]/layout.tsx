@@ -15,6 +15,7 @@ import FloatingContact from "@/components/ui/FloatingContact";
 import RuToUkPrompt from "@/components/layout/RuToUkPrompt";
 import JsonLd from "@/components/seo/JsonLd";
 import { getReviewsAggregate } from "@/lib/reviews";
+import { CLIENT_NAMESPACES } from "@/i18n/client-namespaces";
 import "../globals.css";
 import { SITE_URL } from "@/lib/site";
 
@@ -78,13 +79,8 @@ export default async function LocaleLayout({
 
   // Only ship namespaces that CLIENT components actually use to the browser —
   // server components translate on the server and don't need messages hydrated.
-  // (Halves the i18n payload in every page's RSC stream. Audited: every
-  // "use client" component's useTranslations namespace is listed here.)
-  const CLIENT_NAMESPACES = [
-    "auth", "calculator", "cart", "checkout", "common", "home", "nav", "products",
-  ];
   const clientMessages = Object.fromEntries(
-    Object.entries(messages).filter(([ns]) => CLIENT_NAMESPACES.includes(ns))
+    Object.entries(messages).filter(([ns]) => (CLIENT_NAMESPACES as readonly string[]).includes(ns))
   );
 
   const ratings = await getReviewsAggregate()
