@@ -22,7 +22,7 @@ export async function getPublishedReviews(limit = 8): Promise<Review[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('reviews')
-    .select('*')
+    .select('id, author_name, author_location, rating, review_text, manager_reply, review_date, telegram_url, is_published, sort_order, created_at')
     .eq('is_published', true)
     .order('sort_order', { ascending: false })
     .order('review_date', { ascending: false })

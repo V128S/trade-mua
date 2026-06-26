@@ -3,10 +3,12 @@ import { runSync } from '@/lib/sync'
 
 function isAuthorized(request: NextRequest): boolean {
   const authHeader = request.headers.get('authorization')
+  // Apps Script webhook authenticates with SYNC_SECRET.
+  // Vercel Cron sends `Authorization: Bearer ${CRON_SECRET}` automatically.
+  // The x-vercel-cron header is informational-only and spoofable — do not trust it.
   const isValidBearer = !!process.env.SYNC_SECRET && authHeader === `Bearer ${process.env.SYNC_SECRET}`
   const isValidCron = !!process.env.CRON_SECRET && authHeader === `Bearer ${process.env.CRON_SECRET}`
-  const isVercelCron = request.headers.get('x-vercel-cron') === '1'
-  return isValidBearer || isValidCron || isVercelCron
+  return isValidBearer || isValidCron
 }
 
 async function handle(request: NextRequest) {
