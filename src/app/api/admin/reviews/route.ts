@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { requireStaff } from '@/lib/supabase/admin'
 import type { Database } from '@/lib/types/database.types'
 
@@ -29,5 +30,7 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabase.from('reviews').insert(row).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  revalidateTag('reviews-aggregate')
   return NextResponse.json(data, { status: 201 })
 }

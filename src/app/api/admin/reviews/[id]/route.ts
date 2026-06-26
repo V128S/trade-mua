@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { requireStaff } from '@/lib/supabase/admin'
 import type { Database } from '@/lib/types/database.types'
 
@@ -31,6 +32,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   const { error } = await supabase.from('reviews').update(update).eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  revalidateTag('reviews-aggregate')
   return NextResponse.json({ ok: true })
 }
 
@@ -40,5 +43,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const { error } = await supabase.from('reviews').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  revalidateTag('reviews-aggregate')
   return NextResponse.json({ ok: true })
 }
