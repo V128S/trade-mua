@@ -12,14 +12,25 @@ advisor warnings are intentionally left open and should not be re-flagged in fut
 | `authenticated_security_definer_function_executable` | `redeem_promo(text)` | Intentionally callable by authenticated users from `placeOrder` server action |
 | `auth_leaked_password_protection` | — | HaveIBeenPwned integration — enable in Supabase Dashboard → Auth → Password settings (Task 12 Step 1) |
 
-## Deferred Hardening (backlog, not accepted as permanent)
+## Cleared in 0007 + 0008 + post-hardening-2
 
-See the plan's "Deferred / Future Hardening" section for items consciously deferred:
-- Authenticated promo redeem abuse (fold into transactional place_order RPC)
-- `getRandomProductsFromDB` full-table shuffle → replace with Postgres RPC
-- Atomic sync (wrap upsert+delete in a DB function)
-- Rate limiting via Vercel WAF / BotID
-- Full error monitoring (Sentry / Vercel Observability)
+- Authenticated promo redeem abuse → fixed by `place_order` RPC (0008): validate + insert + redeem in one transaction
+- `getRandomProductsFromDB` full-table shuffle → replaced with `random_products` RPC (0006)
+- Atomic sync → replaced with `sync_products` RPC (0007)
+- Full error monitoring → `@vercel/otel` instrumentation added (`src/instrumentation.ts`)
+
+## Rate Limiting (manual platform step — required)
+
+**Status:** Requires Vercel Dashboard configuration. No code changes needed.
+
+**Steps:**
+1. Vercel Dashboard → project `trade-mua` → **Settings → Security → BotID** → enable, set Managed Challenge on paths: `/login`, `/register`, `/en/login`, `/en/register`, `/ru/login`, `/ru/register`, `/checkout`.
+2. Vercel Dashboard → **Firewall** → add rules:
+   - Path `/login OR /register` (all locales) + rate > 10 req/60s per IP → **Challenge**
+   - Path `/api/sync-products` + rate > 3 req/60s per IP → **Block**
+   - Path `/checkout` + rate > 5 req/60s per IP → **Challenge**
+
+**Why not in middleware:** In-memory rate limiting doesn't work across multiple Vercel function instances. Vercel Firewall is the correct layer; Upstash Redis would add an unneeded dependency.
 
 ## Cleared in 0004 + 0005
 
