@@ -125,7 +125,10 @@ export async function getProducts(): Promise<Product[]> {
     // Data Cache) would make a price change invisible until the TTL expired,
     // even though the sync "ran" and bumped synced_at.
     const res = await fetch(SHEETS_CSV_URL, { cache: 'no-store' });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.error('[sheets] CSV fetch non-OK:', res.status)
+      return [];
+    }
     const rows = parseCsv(await res.text());
 
     const seen = new Set<string>();
@@ -137,7 +140,8 @@ export async function getProducts(): Promise<Product[]> {
       products.push(p);
     }
     return products;
-  } catch {
+  } catch (e) {
+    console.error('[sheets] CSV fetch threw:', e)
     return [];
   }
 }

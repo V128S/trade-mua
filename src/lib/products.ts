@@ -4,6 +4,11 @@ import type { Database } from '@/lib/types/database.types'
 
 type ProductRow = Database['public']['Tables']['products']['Row']
 
+// Exactly the columns mapRow consumes — avoids select('*') over-fetch on the
+// catalog (every card) and similar-products paths.
+const PRODUCT_COLUMNS =
+  'id, algorithm, brand, name, hashrate, power_w, price_usdt, in_stock, is_new, image_url, image_url_admin, synced_at'
+
 // Single source of truth for DB row → Product mapping (used by every reader below).
 function mapRow(row: ProductRow): Product {
   return {
@@ -26,10 +31,13 @@ export async function getProductsFromDB(): Promise<Product[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select(PRODUCT_COLUMNS)
     .order('price_usdt', { ascending: false })
 
-  if (error || !data) return []
+  if (error || !data) {
+    if (error) console.error('[products] DB read failed:', error.message)
+    return []
+  }
 
   return data.map(mapRow)
 }
@@ -38,11 +46,14 @@ export async function getTopProductsFromDB(limit = 8): Promise<Product[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select(PRODUCT_COLUMNS)
     .order('price_usdt', { ascending: false })
     .limit(limit)
 
-  if (error || !data) return []
+  if (error || !data) {
+    if (error) console.error('[products] DB read failed:', error.message)
+    return []
+  }
 
   return data.map(mapRow)
 }
@@ -63,9 +74,12 @@ export async function getRandomProductsFromDB(count: number): Promise<Product[]>
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select(PRODUCT_COLUMNS)
 
-  if (error || !data) return []
+  if (error || !data) {
+    if (error) console.error('[products] DB read failed:', error.message)
+    return []
+  }
 
   const shuffled = [...data]
   for (let i = shuffled.length - 1; i > 0; i--) {
