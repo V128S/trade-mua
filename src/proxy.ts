@@ -6,12 +6,69 @@ import { stripLocale, isProtectedPath } from "@/lib/auth-routing";
 
 const intlMiddleware = createMiddleware(routing);
 
+// Rate limiting: max requests per 1-minute window per IP, keyed by path group.
+const RATE_RULES: { group: string; limit: number; test: (p: string) => boolean }[] = [
+  {
+    group: 'auth',
+    limit: 10,
+    test: (p) => p === '/login' || p === '/register' || p === '/auth/reset-password',
+  },
+  {
+    group: 'checkout',
+    limit: 5,
+    test: (p) => p === '/checkout',
+  },
+]
+
+// Calls the rate_limit_check Postgres RPC via the Supabase REST API.
+// Fails open (returns true = allowed) on any network or HTTP error so a
+// Supabase hiccup never blocks legitimate users.
+async function isAllowed(ip: string, group: string, limit: number): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/rate_limit_check`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+        },
+        body: JSON.stringify({ p_ip: ip, p_path_group: group, p_limit: limit }),
+      }
+    )
+    if (!res.ok) return true
+    return (await res.json()) as boolean
+  } catch {
+    return true
+  }
+}
+
 export async function proxy(request: NextRequest) {
   // 1) Locale routing first (may rewrite/redirect for prefixes)
   const intlResponse = intlMiddleware(request);
 
-  // 2) Auth gate on the locale-stripped path
   const strippedPath = stripLocale(request.nextUrl.pathname);
+
+  // 2) Rate limiting on auth and checkout paths.
+  // Skip if IP is unavailable (local dev without a proxy in front).
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+  if (ip) {
+    for (const rule of RATE_RULES) {
+      if (rule.test(strippedPath)) {
+        const allowed = await isAllowed(ip, rule.group, rule.limit)
+        if (!allowed) {
+          return new NextResponse('Too Many Requests', {
+            status: 429,
+            headers: { 'Retry-After': '60' },
+          })
+        }
+        break
+      }
+    }
+  }
+
+  // 3) Auth gate on the locale-stripped path
   if (isProtectedPath(strippedPath)) {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
