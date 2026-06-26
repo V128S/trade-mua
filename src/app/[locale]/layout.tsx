@@ -14,6 +14,7 @@ import ScrollToTop from "@/components/ui/ScrollToTop";
 import FloatingContact from "@/components/ui/FloatingContact";
 import RuToUkPrompt from "@/components/layout/RuToUkPrompt";
 import JsonLd from "@/components/seo/JsonLd";
+import { getReviewsAggregate } from "@/lib/reviews";
 import "../globals.css";
 import { SITE_URL } from "@/lib/site";
 
@@ -86,6 +87,8 @@ export default async function LocaleLayout({
     Object.entries(messages).filter(([ns]) => CLIENT_NAMESPACES.includes(ns))
   );
 
+  const ratings = await getReviewsAggregate()
+
   // Site-wide structured data (built from our own constants, not user input)
   const tc = await getTranslations({ locale, namespace: "contact" });
   const orgLd = {
@@ -117,16 +120,17 @@ export default async function LocaleLayout({
         addressCountry: "UA",
       },
     ],
-    // 11 published reviews, all 5★ — site-level rating.
-    // Note: Google may not surface Organization-level stars as a rich result
-    // (policy since 2021), but the data remains valid for other parsers.
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5",
-      reviewCount: "11",
-      bestRating: "5",
-      worstRating: "1",
-    },
+    ...(ratings
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: String(ratings.average),
+            reviewCount: String(ratings.count),
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
   };
   const websiteLd = {
     "@context": "https://schema.org",
