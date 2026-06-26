@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/dashboard", "/api", "/en/admin", "/en/dashboard", "/ru/admin", "/ru/dashboard", "/login", "/register", "/auth", "/cart", "/checkout", "/en/checkout", "/ru/checkout"],
     },
-    sitemap: "https://традем.com.ua/sitemap.xml",
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

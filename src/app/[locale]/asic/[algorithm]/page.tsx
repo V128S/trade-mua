@@ -11,7 +11,7 @@ import JsonLd from "@/components/seo/JsonLd";
 
 export const revalidate = 60;
 
-const SITE_URL = "https://традем.com.ua";
+import { SITE_URL } from "@/lib/site";
 
 // Catalog chip list (slug+label only) lives in src/lib/hubs.ts to avoid drift.
 // Indexable hubs. Algorithm hubs filter by DB `algorithm`, brand hubs by DB

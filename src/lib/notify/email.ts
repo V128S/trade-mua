@@ -1,6 +1,5 @@
 import type { OrderItem } from '@/lib/types/database.types'
-
-const SITE_URL = 'https://традем.com.ua'
+import { SITE_URL } from '@/lib/site'
 const FROM = 'TradeM <no-reply@xn--80aid2aql.com.ua>'
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 

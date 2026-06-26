@@ -6,10 +6,9 @@ import { Link } from "@/i18n/navigation";
 import ProductsCatalog from "@/components/products/ProductsCatalog";
 import JsonLd from "@/components/seo/JsonLd";
 import { PRODUCT_HUBS } from "@/lib/hubs";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 60;
-
-const SITE_URL = "https://традем.com.ua";
 
 type Props = { params: Promise<{ locale: string }> };
 

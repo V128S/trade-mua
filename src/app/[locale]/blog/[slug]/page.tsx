@@ -7,7 +7,7 @@ import PostBody from "@/components/blog/PostBody";
 import JsonLd from "@/components/seo/JsonLd";
 
 export const dynamicParams = false;
-const SITE_URL = "https://традем.com.ua";
+import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
   return BLOG_SLUGS.map((slug) => ({ slug }));

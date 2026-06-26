@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getProductModifiedDates } from "@/lib/products";
 import { BLOG_SLUGS, getBlogDates } from "@/lib/blog";
+import { SITE_URL } from "@/lib/site";
 
-const BASE = "https://традем.com.ua";
+const BASE = SITE_URL;
 const STATIC_PATHS = ["", "/products", "/services", "/calculator", "/blog", "/contact", "/asic/sha256", "/asic/scrypt", "/asic/zcash", "/asic/kaspa", "/asic/antminer", "/asic/avalon", "/asic/fluminer"];
 
 function entry(path: string, lastModified?: Date | string): MetadataRoute.Sitemap[number] {

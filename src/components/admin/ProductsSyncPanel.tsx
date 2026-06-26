@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SITE_URL } from '@/lib/site'
 
 export default function ProductsSyncPanel({
   lastSync,
@@ -78,7 +79,7 @@ export default function ProductsSyncPanel({
     .getScriptProperties()
     .getProperty('SYNC_SECRET');
   UrlFetchApp.fetch(
-    'https://традем.com.ua/api/sync-products',
+    `${SITE_URL}/api/sync-products`,
     {
       method: 'post',
       headers: { 'Authorization': 'Bearer ' + secret },
