@@ -64,6 +64,18 @@ describe('formatOrderMessage', () => {
     expect(msg).toContain('Подзвоніть зранку')
   })
 
+  it('marks out-of-stock item as pre-order, leaves in-stock item unmarked', () => {
+    const msg = formatOrderMessage({
+      ...base,
+      items: [
+        { product_id: 'p1', name: 'InStock Model', price_usdt: 100, qty: 1, in_stock: true },
+        { product_id: 'p2', name: 'PreOrder Model', price_usdt: 200, qty: 1, in_stock: false },
+      ],
+    })
+    expect(msg).toContain('PreOrder Model ×1 (під замовлення)')
+    expect(msg).not.toContain('InStock Model ×1 (під замовлення)')
+  })
+
   it('HTML-escapes user-provided fields', () => {
     const msg = formatOrderMessage({
       ...base,
