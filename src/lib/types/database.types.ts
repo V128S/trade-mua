@@ -10,6 +10,7 @@ export interface OrderItem {
   price_usdt: number
   qty: number
   image_url?: string | null
+  in_stock?: boolean
 }
 
 export interface Database {

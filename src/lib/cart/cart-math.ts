@@ -16,13 +16,13 @@ export const MAX_LINE_QTY = 999
 
 export function buildOrderItems(
   lines: { id: string; qty: number }[],
-  products: { id: string; name: string; priceUSDT: number; imageUrl?: string | null }[],
+  products: { id: string; name: string; priceUSDT: number; imageUrl?: string | null; inStock?: boolean }[],
 ): OrderItem[] {
   const byId = new Map(products.map(p => [p.id, p]))
   return lines.flatMap(line => {
     const p = byId.get(line.id)
     if (!p || !Number.isFinite(line.qty) || line.qty <= 0) return []
     const qty = Math.min(Math.floor(line.qty), MAX_LINE_QTY)
-    return [{ product_id: p.id, name: p.name, price_usdt: p.priceUSDT, qty, image_url: p.imageUrl ?? null }]
+    return [{ product_id: p.id, name: p.name, price_usdt: p.priceUSDT, qty, image_url: p.imageUrl ?? null, in_stock: p.inStock }]
   })
 }

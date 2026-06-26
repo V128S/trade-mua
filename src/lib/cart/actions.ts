@@ -49,7 +49,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
 
   const { data: rows, error: prodErr } = await supabase
     .from('products')
-    .select('id, name, price_usdt, image_url, image_url_admin')
+    .select('id, name, price_usdt, image_url, image_url_admin, in_stock')
     .in('id', ids)
   if (prodErr) return { error: 'Не вдалося завантажити товари' }
 
@@ -58,6 +58,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
     name: r.name,
     priceUSDT: Number(r.price_usdt),
     imageUrl: r.image_url_admin ?? r.image_url,
+    inStock: r.in_stock,
   }))
   const orderItems = buildOrderItems(input.items, products)
   if (orderItems.length === 0) return { error: 'Товари недоступні' }

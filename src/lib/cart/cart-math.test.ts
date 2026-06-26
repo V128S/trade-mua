@@ -54,3 +54,20 @@ describe('buildOrderItems', () => {
     expect(buildOrderItems([{ id: 'a', qty: NaN }, { id: 'b', qty: Infinity }], products)).toEqual([])
   })
 })
+
+describe('buildOrderItems stock flag', () => {
+  it('records in_stock=false for a pre-order item', () => {
+    const items = buildOrderItems(
+      [{ id: 'p1', qty: 1 }],
+      [{ id: 'p1', name: 'Antminer', priceUSDT: 100, imageUrl: null, inStock: false }],
+    )
+    expect(items[0].in_stock).toBe(false)
+  })
+  it('records in_stock=true for an available item', () => {
+    const items = buildOrderItems(
+      [{ id: 'p1', qty: 1 }],
+      [{ id: 'p1', name: 'Antminer', priceUSDT: 100, imageUrl: null, inStock: true }],
+    )
+    expect(items[0].in_stock).toBe(true)
+  })
+})

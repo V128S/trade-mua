@@ -35,7 +35,8 @@ export function formatOrderMessage(o: OrderNotification): string {
   lines.push(`📞 ${esc(o.phone)}`)
   lines.push('')
   for (const item of o.items) {
-    lines.push(`• ${esc(item.name)} ×${item.qty}`)
+    const tag = item.in_stock === false ? ' (під замовлення)' : ''
+    lines.push(`• ${esc(item.name)} ×${item.qty}${tag}`)
   }
   if (o.promoCode) {
     lines.push(`🏷 Промокод ${esc(o.promoCode)} (−${o.discountPct ?? 0}%)`)
