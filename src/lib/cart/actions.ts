@@ -65,44 +65,41 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
 
   const base = orderItems.reduce((s, o) => s + o.price_usdt * o.qty, 0)
 
+  const promoCode = input.promoCode?.trim().toUpperCase() || null
+  // Discount is resolved inside place_order RPC; compute it here for notifications.
   let discountPct = 0
-  let promoCode: string | null = null
-  if (input.promoCode?.trim()) {
-    const { data: pct, error: promoErr } = await supabase.rpc('redeem_promo', { p_code: input.promoCode.trim() })
-    if (promoErr) return { error: 'Помилка промокоду' }
-    if (pct == null) return { error: 'Недійсний промокод' }
-    discountPct = Number(pct)
-    promoCode = input.promoCode.trim().toUpperCase()
+  if (promoCode) {
+    const { data: pct } = await supabase.rpc('validate_promo', { p_code: promoCode })
+    discountPct = pct != null ? Number(pct) : 0
   }
 
   const total = applyDiscount(base, discountPct)
-
-  // Comment-only notes now — recipient/contact data lives in dedicated columns.
   const notes = input.notes?.trim() || null
 
-  const { data: order, error: insErr } = await supabase
-    .from('orders')
-    .insert({
-      user_id: user.id,
-      recipient_email: user.email ?? null,
-      items: orderItems,
-      total_usdt: total,
-      status: 'pending',
-      promo_code: promoCode,
-      discount_pct: discountPct || null,
-      recipient_first_name: firstName,
-      recipient_last_name: lastName,
-      recipient_phone: phone,
-      city,
-      nova_poshta_branch: branch,
-      // Keep the legacy single-line address for backward-compatible display.
-      nova_poshta_address: composeShippingAddress(city, branch),
-      notes,
-    })
-    .select('id')
-    .single()
+  // Single atomic RPC: validate promo + insert order + redeem promo.
+  // Throws INVALID_PROMO if the code is invalid or exhausted.
+  const { data: orderId, error: rpcErr } = await supabase.rpc('place_order', {
+    p_user_id:    user.id,
+    p_email:      user.email ?? null,
+    p_items:      orderItems as unknown as Record<string, unknown>[],
+    p_total:      total,
+    p_promo_code: promoCode ?? '',
+    p_first_name: firstName,
+    p_last_name:  lastName,
+    p_phone:      phone,
+    p_city:       city,
+    p_branch:     branch,
+    p_address:    composeShippingAddress(city, branch),
+    p_notes:      notes ?? '',
+  })
 
-  if (insErr || !order) return { error: 'Не вдалося створити замовлення' }
+  if (rpcErr) {
+    if (rpcErr.message.includes('INVALID_PROMO')) return { error: 'Промокод недійсний або вичерпано ліміт' }
+    console.error('[placeOrder] RPC failed:', rpcErr.message)
+    return { error: 'Не вдалося створити замовлення' }
+  }
+
+  const order = { id: orderId as string }
 
   // Notify the director. The order is already persisted (the source of truth),
   // so a Telegram failure is logged and swallowed — it must not break checkout.
