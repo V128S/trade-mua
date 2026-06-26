@@ -44,4 +44,21 @@ describe('formatCustomerOrderEmail', () => {
     expect(html).toContain('&lt;b&gt;x')
     expect(html).not.toContain('<b>x')
   })
+
+  it('includes delivery city and branch in html', () => {
+    const { html } = formatCustomerOrderEmail(base, 'placed')
+    expect(html).toContain('Дніпро')
+    expect(html).toContain('Відділення №5')
+  })
+
+  it('omits promo row when promoCode is null', () => {
+    const { html } = formatCustomerOrderEmail(base, 'placed')
+    expect(html).not.toContain('Промокод')
+  })
+
+  it('shows promo code and discount when provided', () => {
+    const { html } = formatCustomerOrderEmail({ ...base, promoCode: 'MINE20', discountPct: 20 }, 'placed')
+    expect(html).toContain('MINE20')
+    expect(html).toContain('−20%')
+  })
 })
