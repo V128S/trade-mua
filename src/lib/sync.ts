@@ -39,19 +39,15 @@ export async function runSync(): Promise<{ synced: number; timestamp: string } |
     synced_at: now,
   }))
 
-  const { error: upsertError } = await supabase.from('products').upsert(rows, { onConflict: 'id' })
-  if (upsertError) return { error: upsertError.message }
+  const keepIds = rows.map((r) => r.id)
 
-  // Delete rows no longer in the Sheet via an array filter (supabase-js `.in()`
-  // escapes each value), so a SKU id with reserved chars can't corrupt the query.
-  const { data: existing, error: fetchError } = await supabase.from('products').select('id')
-  if (fetchError) return { error: `Sync ok but cleanup failed: ${fetchError.message}` }
+  // Single atomic DB call: upsert all rows + delete stale in one transaction.
+  const { error } = await supabase.rpc('sync_products', {
+    rows: rows,
+    keep_ids: keepIds,
+  })
 
-  const staleIds = computeStaleIds(rows.map((r) => r.id), (existing ?? []).map((r) => r.id))
-  if (staleIds.length > 0) {
-    const { error: deleteError } = await supabase.from('products').delete().in('id', staleIds)
-    if (deleteError) return { error: `Sync ok but cleanup failed: ${deleteError.message}` }
-  }
+  if (error) return { error: error.message }
 
   return { synced: rows.length, timestamp: now }
 }
