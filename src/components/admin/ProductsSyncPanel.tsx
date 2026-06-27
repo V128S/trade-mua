@@ -79,7 +79,7 @@ export default function ProductsSyncPanel({
     .getScriptProperties()
     .getProperty('SYNC_SECRET');
   UrlFetchApp.fetch(
-    `${SITE_URL}/api/sync-products`,
+    \`${SITE_URL}/api/sync-products\`,
     {
       method: 'post',
       headers: { 'Authorization': 'Bearer ' + secret },
