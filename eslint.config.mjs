@@ -12,7 +12,17 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored AI-tooling skills (gitignored, symlinked into .claude/skills/) —
+    // not our code; linting it buries real findings from src/.
+    ".agents/**",
   ]),
+  {
+    // Test files mock next/image with a bare <img>; the LCP concern doesn't apply.
+    files: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    rules: {
+      "@next/next/no-img-element": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
