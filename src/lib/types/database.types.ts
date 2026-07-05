@@ -20,6 +20,26 @@ export interface Database {
       validate_promo: { Args: { p_code: string }; Returns: number }
       redeem_promo: { Args: { p_code: string }; Returns: number }
       cancel_order: { Args: { p_order_id: string }; Returns: boolean }
+      place_order: {
+        Args: {
+          p_user_id: string
+          p_email: string | null
+          p_items: Json
+          p_total: number
+          p_promo_code: string
+          p_first_name: string
+          p_last_name: string
+          p_phone: string
+          p_city: string
+          p_branch: string
+          p_address: string
+          p_notes: string
+        }
+        Returns: string
+      }
+      sync_products: { Args: { rows: Json; keep_ids: string[] }; Returns: number }
+      random_products: { Args: { n: number }; Returns: Database['public']['Tables']['products']['Row'][] }
+      rate_limit_check: { Args: { p_ip: string; p_path_group: string; p_limit: number }; Returns: boolean }
     }
     Tables: {
       profiles: {

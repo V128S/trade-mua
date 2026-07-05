@@ -31,6 +31,6 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase.from('reviews').insert(row).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  revalidateTag('reviews-aggregate')
+  revalidateTag('reviews-aggregate', 'max')
   return NextResponse.json(data, { status: 201 })
 }

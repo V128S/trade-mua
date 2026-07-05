@@ -5,6 +5,7 @@ import { composeShippingAddress } from '@/lib/cart/shipping'
 import { notifyDirectorNewOrder } from '@/lib/notify/telegram'
 import { sendCustomerOrderEmail } from '@/lib/notify/email'
 import { isCompleteUaPhone } from '@/lib/phone'
+import type { Json } from '@/lib/types/database.types'
 
 export async function previewPromo(code: string): Promise<{ discountPct: number } | { error: string }> {
   const trimmed = code.trim()
@@ -81,7 +82,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ orderId: str
   const { data: orderId, error: rpcErr } = await supabase.rpc('place_order', {
     p_user_id:    user.id,
     p_email:      user.email ?? null,
-    p_items:      orderItems as unknown as Record<string, unknown>[],
+    p_items:      orderItems as unknown as Json,
     p_total:      total,
     p_promo_code: promoCode ?? '',
     p_first_name: firstName,
