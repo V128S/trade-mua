@@ -22,7 +22,7 @@ async function _getReviewsAggregate(): Promise<{ count: number; average: number 
   return { count: data.length, average: Math.round((sum / data.length) * 10) / 10 }
 }
 
-// Cached for 1 hour. Invalidate via revalidateTag('reviews-aggregate') from the
+// Cached for 1 hour. Invalidate via revalidateTag('reviews-aggregate', 'max') from the
 // admin reviews route when a review is published or unpublished.
 export const getReviewsAggregate = unstable_cache(
   _getReviewsAggregate,
