@@ -11,7 +11,7 @@ type HashrateUnit = "TH/s" | "GH/s" | "MH/s" | "kH/s" | "kSol/s";
 // Per-algorithm allowed units (ordered largest → smallest for the dropdown).
 // Only units that actually make sense for that algo's ASICs / miners are listed.
 const ALGO_UNITS: Record<string, HashrateUnit[]> = {
-  SHA256:     ["TH/s", "GH/s"],                   // BTC  — S21 ~200 TH/s
+  SHA256:     ["TH/s"],                            // BTC  — S21 ~200 TH/s
   Scrypt:     ["GH/s", "MH/s"],                   // DOGE+LTC — L9 ~16 GH/s
   KHeavyHash: ["TH/s", "GH/s"],                   // KAS  — KS5 ~21 TH/s
   EthHash:    ["GH/s", "MH/s"],                   // ETC  — GPU rigs, GH or MH
@@ -199,14 +199,14 @@ export default function Calculator({
           <input
             type="range"
             min={100}
-            max={10000}
+            max={25000}
             step={50}
             value={powerW}
             onChange={(e) => setPowerW(Number(e.target.value))}
           />
           <div className="flex justify-between font-label-caps text-[10px] text-on-surface-variant">
             <span>100 W</span>
-            <span>10 000 W</span>
+            <span>25 000 W</span>
           </div>
         </div>
 
