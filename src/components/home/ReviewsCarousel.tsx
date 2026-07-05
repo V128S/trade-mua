@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useHydrated } from "@/hooks/useHydrated";
 import type { Review } from "@/lib/reviews";
 
 const AUTO_MS = 4500;        // auto-advance interval
@@ -28,11 +29,11 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState(false);
 
-  // Randomize the order so the row isn't strictly chronological. Start from the
-  // server order (keeps SSR/client markup identical — no hydration mismatch),
-  // then shuffle on the client after mount.
-  const [ordered, setOrdered] = useState(reviews);
-  useEffect(() => setOrdered(shuffle(reviews)), [reviews]);
+  // Randomize the order so the row isn't strictly chronological. SSR and the
+  // hydration render keep the server order (no hydration mismatch); the
+  // shuffle applies on the first post-hydration render.
+  const hydrated = useHydrated();
+  const ordered = useMemo(() => (hydrated ? shuffle(reviews) : reviews), [hydrated, reviews]);
 
   const paused = hovered || expanded.size > 0;
   const items = useMemo(() => [...ordered, ...ordered], [ordered]); // duplicate for the seamless loop
@@ -72,7 +73,8 @@ export default function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
   const toggle = (id: string) =>
     setExpanded((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { useHydrated } from "@/hooks/useHydrated";
 
 /**
  * Shown only on the hidden SEO-only "ru" locale: Russian-speaking searchers
@@ -15,26 +16,26 @@ export default function RuToUkPrompt() {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-
-  // Open after mount to avoid an SSR/hydration mismatch.
-  useEffect(() => {
-    if (locale === "ru") setOpen(true);
-  }, [locale]);
+  const [dismissed, setDismissed] = useState(false);
+  // Derived, not set in an effect: closed during SSR + hydration (identical
+  // markup, and the interstitial stays out of the crawled HTML), open on the
+  // first post-hydration render until dismissed.
+  const hydrated = useHydrated();
+  const open = hydrated && locale === "ru" && !dismissed;
 
   // Close on Escape.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") setDismissed(true);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  if (locale !== "ru" || !open) return null;
+  if (!open) return null;
 
-  const close = () => setOpen(false);
+  const close = () => setDismissed(true);
   const switchToUk = () => router.replace(pathname, { locale: "uk" });
 
   return (
