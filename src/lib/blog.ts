@@ -19,6 +19,8 @@ export const BLOG_SLUGS = [
   "electricity-cost-mining-ukraine-2026",
   "home-mining-quiet-asic-2026",
   "mining-pool-guide-2026",
+  "asic-power-wiring-guide-2026",
+  "used-vs-new-asic-2026",
 ] as const;
 export type BlogSlug = (typeof BLOG_SLUGS)[number];
 

@@ -27,13 +27,13 @@
 - **Калькулятор прибутковості** на живих даних [WhatToMine](https://whattomine.com) — SHA-256, Scrypt (DOGE+LTC merge), KHeavyHash, EthHash, Eaglesong, Equihash, X11, RandomX. ROI рахується за 24-годинним середнім; **тариф на електрику — у гривнях** із перерахунком у USD за живим курсом НБУ.
 - **Тримовність (i18n)** на `next-intl`: UA — основна, EN — повноцінна, RU — **прихована SEO-локаль** (немає в UI, але в `sitemap` + `hreflang`). Перемикач мов; на `/ru` — модалка з пропозицією перейти на українську версію сторінки.
 - **SEO-хаби за алгоритмами та брендами** — `/asic/sha256`, `/asic/scrypt`, `/asic/kaspa`, `/asic/zcash`, `/asic/antminer`, `/asic/avalon`, `/asic/fluminer`: keyword-first H1/meta, розгорнутий контент-блок, 6-питальний FAQ + `FAQPage` JSON-LD.
-- **Блог** (`/blog`) — контент-кластер на Markdown: 13 статей × 3 мови, рендер через `react-markdown`, схема `BlogPosting` + `BreadcrumbList`, canonical/hreflang, внутрішні лінки на хаби та калькулятор.
+- **Блог** (`/blog`) — контент-кластер на Markdown: 15 статей × 3 мови, рендер через `react-markdown`, схема `BlogPosting` + `BreadcrumbList`, canonical/hreflang, внутрішні лінки на хаби та калькулятор.
 - **Автосинхронізація каталогу** з Google Sheets → Supabase (Vercel Cron щодня + миттєвий webhook; атомарний RPC `sync_products`).
 - **Авторизація** (Supabase Auth, SSR) — реєстрація, вхід, скидання пароля.
 - **Особистий кабінет** — профіль і історія замовлень.
 - **Адмін-панель** (захист за роллю) — керування замовленнями, користувачами, товарами, промокодами, відгуками та фото; ручний запуск синхронізації.
-- **Кошик → Оформлення замовлення** — атомарний RPC `place_order` (валідація + промокод + вставка замовлення в одній транзакції); Telegram-повідомлення директору.
-- **IP-ліміти** — `rate_limit_check` Postgres RPC, викликається з `src/proxy.ts` на `/login`, `/register`, `/checkout`.
+- **Кошик → Оформлення замовлення** — атомарний RPC `place_order` (валідація + промокод + вставка замовлення в одній транзакції); Telegram-повідомлення директору та лист покупцеві через Resend. Онлайн-оплати немає: замовлення створюється як `pending` і ведеться вручну в `/admin/orders`, зміна статусу теж надсилає лист. Усі сповіщення не працюють без своїх env-змінних і ніколи не ламають оформлення.
+- **IP-ліміти** — `rate_limit_check` Postgres RPC, викликається з `src/proxy.ts`: 10 запитів/хв на `/login`, `/register`, `/auth/reset-password` і 5 запитів/хв на `/checkout`. Перевірка fail-open — збій Supabase не блокує користувачів.
 - **UI-деталі** — крипто-тікер курсів, hero-карусель, біжучий рядок брендів, **карусель відгуків** (авто-скрол, clamp/expand), Open Graph для лінк-прев'ю, ambient-фон (CSS-градієнт + grain), перемикач теми (темна/світла), `@vercel/otel` інструментація.
 
 ---
@@ -47,8 +47,10 @@
 | Стилі | Tailwind CSS 4 + кастомні класи в `src/app/globals.css` (`@theme`) |
 | БД + Auth | Supabase (PostgreSQL + Auth SSR + RLS) через `@supabase/ssr` |
 | Контент | Markdown (`react-markdown`, `remark-gfm`, `gray-matter`) |
-| Анімації | Framer Motion + CSS / IntersectionObserver |
+| Анімації | Чистий CSS (transitions/keyframes) + `IntersectionObserver` — без Framer Motion |
 | Шрифти | Unbounded, Manrope, JetBrains Mono (`next/font`) + Material Symbols (self-hosted) |
+| Сповіщення | Telegram Bot API + Resend (обидва через REST, без SDK) |
+| Тести | Vitest + Testing Library + jsdom |
 | Observability | `@vercel/otel` (`src/instrumentation.ts`) |
 | Деплой | Vercel (+ Vercel Cron) |
 
@@ -61,7 +63,7 @@ npm install
 npm run dev      # http://localhost:3000
 ```
 
-Скрипти: `npm run dev` · `npm run build` · `npm run start` · `npm run lint` · `npm test`
+Скрипти: `npm run dev` · `npm run build` · `npm run start` · `npm run lint` · `npm test` · `npm run test:watch`
 
 ### Змінні оточення (`.env.local`)
 
@@ -71,12 +73,24 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=   # публічний anon-ключ
 SUPABASE_SERVICE_ROLE_KEY=       # service-role ключ (синхронізація товарів)
 SYNC_SECRET=                     # Bearer-токен для вебхука синхронізації
 WHATTOMINE_API_KEY=              # ключ WhatToMine для калькулятора
-# Опціональні (Telegram-повідомлення директору):
-TELEGRAM_BOT_TOKEN=
+# Опціональні (сповіщення про замовлення):
+TELEGRAM_BOT_TOKEN=              # Telegram-повідомлення директору
 TELEGRAM_DIRECTOR_CHAT_ID=
+RESEND_API_KEY=                  # листи покупцеві; без ключа відправка просто не виконується
 ```
 
+Повний перелік із коментарями — у `.env.example`.
 На Vercel ці змінні задаються в **Settings → Environment Variables** (Production / Preview / Development).
+
+### Тести та CI
+
+```bash
+npm test          # vitest run — юніт-тести поруч із кодом: src/**/*.test.ts(x)
+npm run test:watch
+```
+
+`.github/workflows/ci.yml` на кожен push і PR у `main` проганяє `lint → test → build` на Node 24
+(збірка використовує плейсхолдери `NEXT_PUBLIC_SUPABASE_*`, реальні значення підставляє Vercel при деплої).
 
 ---
 
