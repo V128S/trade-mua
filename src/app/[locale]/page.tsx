@@ -228,20 +228,24 @@ export default async function Home({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+          {/* min-h, not a fixed h: a fixed height makes the flex children shrink
+              to fit, and the icon (overflow:hidden, 1em box) is what gives —
+              it gets clipped, or collapsed to 0 on the tallest card. Grid
+              stretch still keeps every card in the row the same height. */}
           {SERVICES.map((s) => (
-            <div key={s.title} className="service-flip h-[260px]">
+            <div key={s.title} className="service-flip min-h-[260px]">
               <div className="service-flip-inner h-full">
 
                 {/* ── Front ── */}
                 <div className="service-flip-face glass px-8 pt-8 pb-10 h-full flex flex-col items-center text-center gap-4 cursor-default">
-                  <span className="material-symbols-outlined text-primary text-[32px]">{s.icon}</span>
+                  <span className="material-symbols-outlined shrink-0 text-primary text-[32px]">{s.icon}</span>
                   <h3 className="font-headline-md text-headline-md text-on-surface uppercase tracking-widest">{s.title}</h3>
                   <p className="font-body-md text-body-md text-on-surface-variant">{s.desc}</p>
                 </div>
 
                 {/* ── Back ── */}
                 <div className="service-flip-face service-flip-back glass p-8 flex flex-col items-center justify-center gap-6 text-center" style={{ borderColor: "rgba(236,194,70,0.3)" }}>
-                  <span className="material-symbols-outlined text-primary text-[40px]">{s.icon}</span>
+                  <span className="material-symbols-outlined shrink-0 text-primary text-[40px]">{s.icon}</span>
                   <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{s.back}</p>
                   <Link
                     href="/services"
