@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/lib/sheets";
@@ -33,7 +33,6 @@ interface Props {
 export default function ProductDetail({ product, configs, batches, revenuePerTH, usdUah }: Props) {
   const t = useTranslations("products");
   const locale = useLocale();
-  const router = useRouter();
   const [rate, setRate] = useState(3.6); // грн/кВт·год (mining-hotel rate)
 
   const th = parseHashrateTH(product.hashrate);
@@ -49,24 +48,38 @@ export default function ProductDetail({ product, configs, batches, revenuePerTH,
     <>
       {/* ── Batch selector — supply-batch (delivery month), separate from
           the hashrate config selector below: same hashrate, different
-          price/arrival month. Navigates like the config selector does. ── */}
+          price/arrival month. Same tile-grid pattern + navigation. ── */}
       {hasBatches && (
         <div className="mt-6">
           <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-3">
             {t("batchSelectorLabel")}
           </p>
-          <select
-            value={product.id}
-            onChange={(e) => router.push(`/products/${e.target.value}`)}
-            className="w-full sm:w-auto rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 font-technical-data text-technical-data text-on-surface focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
-          >
-            {batches.map((b) => (
-              <option key={b.id} value={b.id}>
-                {formatBatchLabel(b.batch, locale)} — ${b.priceUSDT.toLocaleString()}
-                {!b.inStock ? ` · ${t("onOrder")}` : ""}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {batches.map((b) => {
+              const isCurrent = b.id === product.id;
+              return (
+                <Link
+                  key={b.id}
+                  href={`/products/${b.id}`}
+                  className={`p-3 rounded-lg border transition-colors duration-200 flex flex-col gap-0.5 ${
+                    isCurrent
+                      ? "border-primary bg-primary/10"
+                      : "border-white/10 hover:border-primary/50 bg-white/[0.02]"
+                  }`}
+                >
+                  <span className={`font-technical-data text-technical-data text-sm ${isCurrent ? "text-primary" : "text-on-surface"}`}>
+                    {formatBatchLabel(b.batch, locale)}
+                  </span>
+                  <span className="font-label-caps text-[10px] text-on-surface-variant">
+                    ${b.priceUSDT.toLocaleString()}
+                  </span>
+                  <span className={`font-label-caps text-[10px] mt-1 ${b.inStock ? "text-green-400" : "text-on-surface-variant"}`}>
+                    {b.inStock ? t("inStock") : t("onOrder")}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       )}
 
