@@ -172,6 +172,7 @@
     "priceCurrency": "USDT / USD / Наличные",
     "consultButton": "Консультация",
     "configSelectorLabel": "Выберите конфигурацию",
+    "batchSelectorLabel": "Партия поставки",
     "specsSectionTitle": "Технические Характеристики",
     "specAlgorithm": "Алгоритм",
     "specHashrate": "Хешрейт",

@@ -172,6 +172,7 @@
     "priceCurrency": "USDT / USD / Cash",
     "consultButton": "Consultation",
     "configSelectorLabel": "Choose configuration",
+    "batchSelectorLabel": "Delivery batch",
     "specsSectionTitle": "Technical Specifications",
     "specAlgorithm": "Algorithm",
     "specHashrate": "Hashrate",

@@ -8,6 +8,7 @@ import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
 import { getUsdUahRate } from "@/lib/fx";
 import { getModelContentKey } from "@/lib/model-content";
+import { collapseBatches, monthsFromNow, type BatchMonth } from "@/lib/batch";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import { TrackProductView } from "@/lib/analytics/TrackView";
 import JsonLd from "@/components/seo/JsonLd";
@@ -96,10 +97,19 @@ export default async function ProductPage({ params }: Props) {
   const baseName = getBaseName(product.name);
   const cooling = getCooling(product.name);
 
-  // All configurations = same base name, sorted by hashrate desc
-  const configs = products
-    .filter((p) => getBaseName(p.name) === baseName)
+  // All configurations = same base name, one per hashrate — supply-batch
+  // siblings (same name+hashrate, different delivery month) collapse to
+  // their soonest batch here; the full batch choice is its own selector
+  // below, sorted by hashrate desc
+  const configs = collapseBatches(products.filter((p) => getBaseName(p.name) === baseName))
     .sort((a, b) => b.priceUSDT - a.priceUSDT);
+
+  // Supply-batch siblings for this exact hashrate — same name+hashrate,
+  // differing only by delivery month ("(Dec)"/"(Jan)"/… in the Sheet),
+  // sorted soonest-first.
+  const batches = products
+    .filter((p) => p.name === product.name && p.hashrate === product.hashrate && p.batch)
+    .sort((a, b) => monthsFromNow(a.batch as BatchMonth) - monthsFromNow(b.batch as BatchMonth));
 
   // Similar models = same algorithm, different base name, max 4
   const similar = products
@@ -318,6 +328,12 @@ export default async function ProductPage({ params }: Props) {
                 powerW: c.powerW,
                 priceUSDT: c.priceUSDT,
                 inStock: c.inStock,
+              }))}
+              batches={batches.map((b) => ({
+                id: b.id,
+                batch: b.batch as BatchMonth,
+                priceUSDT: b.priceUSDT,
+                inStock: b.inStock,
               }))}
               revenuePerTH={revenuePerTH}
               usdUah={usdUah}

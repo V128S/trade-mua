@@ -40,6 +40,7 @@ const product: Product = {
   inStock: true,
   isNew: false,
   imageUrl: null,
+  batch: null,
 }
 
 describe('ProductCard', () => {

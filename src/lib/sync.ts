@@ -36,6 +36,7 @@ export async function runSync(): Promise<{ synced: number; timestamp: string } |
     in_stock: p.inStock,
     is_new: p.isNew,
     image_url: p.imageUrl,
+    batch: p.batch,
     synced_at: now,
   }))
 

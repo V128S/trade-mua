@@ -1,10 +1,11 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { parseHashrateTH } from "@/lib/utils";
+import { formatBatchLabel, type BatchMonth } from "@/lib/batch";
 
 interface Config {
   id: string;
@@ -14,15 +15,25 @@ interface Config {
   inStock: boolean;
 }
 
+interface BatchOption {
+  id: string;
+  batch: BatchMonth;
+  priceUSDT: number;
+  inStock: boolean;
+}
+
 interface Props {
   product: Product;
   configs: Config[];
+  batches: BatchOption[];
   revenuePerTH: number; // USD per TH-equivalent per day
   usdUah: number;       // live USD→UAH rate; electricity is entered in UAH
 }
 
-export default function ProductDetail({ product, configs, revenuePerTH, usdUah }: Props) {
+export default function ProductDetail({ product, configs, batches, revenuePerTH, usdUah }: Props) {
   const t = useTranslations("products");
+  const locale = useLocale();
+  const router = useRouter();
   const [rate, setRate] = useState(3.6); // грн/кВт·год (mining-hotel rate)
 
   const th = parseHashrateTH(product.hashrate);
@@ -32,9 +43,33 @@ export default function ProductDetail({ product, configs, revenuePerTH, usdUah }
   const dailyProfit = Math.max(0, dailyRev - dailyElec);
 
   const hasConfigs = configs.length > 1;
+  const hasBatches = batches.length > 1;
 
   return (
     <>
+      {/* ── Batch selector — supply-batch (delivery month), separate from
+          the hashrate config selector below: same hashrate, different
+          price/arrival month. Navigates like the config selector does. ── */}
+      {hasBatches && (
+        <div className="mt-6">
+          <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-3">
+            {t("batchSelectorLabel")}
+          </p>
+          <select
+            value={product.id}
+            onChange={(e) => router.push(`/products/${e.target.value}`)}
+            className="w-full sm:w-auto rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 font-technical-data text-technical-data text-on-surface focus:outline-none focus:border-primary/60 transition-colors cursor-pointer"
+          >
+            {batches.map((b) => (
+              <option key={b.id} value={b.id}>
+                {formatBatchLabel(b.batch, locale)} — ${b.priceUSDT.toLocaleString()}
+                {!b.inStock ? ` · ${t("onOrder")}` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {/* ── Config selector ── */}
       {hasConfigs && (
         <div className="mt-6">

@@ -7,7 +7,7 @@ type ProductRow = Database['public']['Tables']['products']['Row']
 // Exactly the columns mapRow consumes — avoids select('*') over-fetch on the
 // catalog (every card) and similar-products paths.
 const PRODUCT_COLUMNS =
-  'id, algorithm, brand, name, hashrate, power_w, price_usdt, in_stock, is_new, image_url, image_url_admin, synced_at'
+  'id, algorithm, brand, name, hashrate, power_w, price_usdt, in_stock, is_new, image_url, image_url_admin, batch, synced_at'
 
 // Single source of truth for DB row → Product mapping (used by every reader below).
 function mapRow(row: ProductRow): Product {
@@ -24,6 +24,7 @@ function mapRow(row: ProductRow): Product {
     // Effective photo override: admin upload wins over the Sheet URL. Anything
     // null here falls through to the name→file mapping in getProductImage.
     imageUrl: row.image_url_admin ?? row.image_url ?? null,
+    batch: row.batch,
   }
 }
 

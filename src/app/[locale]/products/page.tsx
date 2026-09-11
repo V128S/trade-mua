@@ -7,6 +7,7 @@ import ProductsCatalog from "@/components/products/ProductsCatalog";
 import JsonLd from "@/components/seo/JsonLd";
 import { PRODUCT_HUBS } from "@/lib/hubs";
 import { SITE_URL } from "@/lib/site";
+import { collapseBatches } from "@/lib/batch";
 
 export const revalidate = 60;
 
@@ -75,7 +76,9 @@ export default async function ProductsPage({ params }: Props) {
   return (
     <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-16 pb-section-gap">
       <JsonLd data={[breadcrumbLd, faqLd]} />
-      <ProductsCatalog products={products} revenueByAlgo={revenueByAlgo} />
+      {/* Batch siblings (same model+hashrate, different delivery month) collapse
+          to one card — the full batch choice lives on the product detail page. */}
+      <ProductsCatalog products={collapseBatches(products)} revenueByAlgo={revenueByAlgo} />
 
       {/* SEO text + hub links + FAQ — below the fold, after the product grid */}
       <section className="mt-20 max-w-3xl">

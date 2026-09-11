@@ -2,14 +2,17 @@ export interface Product {
   id: string;
   algorithm: string;
   brand: string;
-  name: string;     // brand + model (no hashrate)
+  name: string;     // brand + model (no hashrate, no batch tag)
   hashrate: string;
   powerW: number;
   priceUSDT: number;
   inStock: boolean;
   isNew: boolean;
   imageUrl: string | null;  // optional photo URL from the Sheet (overrides name→file mapping)
+  batch: string | null;     // supply-batch month, e.g. "dec" — parsed from "(Dec)" in the model column
 }
+
+import { parseBatchFromModel } from "@/lib/batch";
 
 const SHEETS_CSV_URL =
   "https://docs.google.com/spreadsheets/d/1mfpuFvJMgQ-VMZlD7gUbqkxtOA5libclgxHsQBn-UPQ/export?format=csv&gid=1046763892";
@@ -59,7 +62,7 @@ function autoSlug(firm: string, model: string, hashrate: string): string {
 function parseRow(cols: string[]): Product | null {
   const algo     = cols[0]?.trim() ?? "";
   const firm     = cols[1]?.trim() ?? "";
-  const model    = cols[2]?.trim() ?? "";
+  const rawModel = cols[2]?.trim() ?? "";
   const hashrate = cols[3]?.trim() ?? "";
   const powerRaw = cols[4]?.trim() ?? "";
   const inStockRaw = cols[5]?.trim() ?? "";
@@ -68,7 +71,7 @@ function parseRow(cols: string[]): Product | null {
   const imageRaw   = cols[9]?.trim() ?? "";
 
   if (!KNOWN_ALGOS.has(algo.toLowerCase())) return null;
-  if (!firm || !model || !hashrate || !powerRaw) return null;
+  if (!firm || !rawModel || !hashrate || !powerRaw) return null;
 
   const powerW = parseWatts(powerRaw, hashrate);
   if (!powerW) return null;
@@ -78,8 +81,13 @@ function parseRow(cols: string[]): Product | null {
   const priceUSDT  = stockPrice || orderPrice;
   if (!priceUSDT) return null;
 
+  // A trailing "(Dec)"-style tag marks a supply batch — same spec, different
+  // delivery month/price. Strip it from the display name; the slug/id still
+  // derives from the untouched rawModel so each batch keeps a unique id.
+  const { model, batch } = parseBatchFromModel(rawModel);
+
   return {
-    id:        sku || autoSlug(firm, model, hashrate),
+    id:        sku || autoSlug(firm, rawModel, hashrate),
     algorithm: algo,
     brand:     firm,
     name:      `${firm} ${model}`,
@@ -91,6 +99,7 @@ function parseRow(cols: string[]): Product | null {
     // Only accept absolute http(s) URLs; anything else (stray text, relative
     // path) is treated as "no override" so the name→file mapping kicks in.
     imageUrl:  /^https?:\/\//i.test(imageRaw) ? imageRaw : null,
+    batch,
   };
 }
 

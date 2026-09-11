@@ -172,6 +172,7 @@
     "priceCurrency": "USDT / USD / Готівка",
     "consultButton": "Консультація",
     "configSelectorLabel": "Вибери конфігурацію",
+    "batchSelectorLabel": "Партія постачання",
     "specsSectionTitle": "Технічні Характеристики",
     "specAlgorithm": "Алгоритм",
     "specHashrate": "Хешрейт",
