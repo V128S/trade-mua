@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { parseHashrateTH } from "@/lib/utils";
+import InfoTooltip from "@/components/ui/InfoTooltip";
 
 // ── Hashrate unit helpers ─────────────────────────────────────────────────────
 
@@ -15,7 +16,6 @@ const ALGO_UNITS: Record<string, HashrateUnit[]> = {
   Scrypt:     ["GH/s", "MH/s"],                   // DOGE+LTC — L9 ~16 GH/s
   KHeavyHash: ["TH/s", "GH/s"],                   // KAS  — KS5 ~21 TH/s
   EthHash:    ["GH/s", "MH/s"],                   // ETC  — GPU rigs, GH or MH
-  Eaglesong:  ["TH/s", "GH/s"],                   // CKB  — K9 Pro ~5 TH/s
   Equihash:   ["kSol/s"],                          // ZEC  — Z15 ~420 kSol/s
   X11:        ["TH/s", "GH/s"],                   // DASH — D9 ~2.8 TH/s
   RandomX:    ["kH/s", "MH/s"],                   // XMR  — XMR-Stak ~10 kH/s
@@ -136,7 +136,10 @@ export default function Calculator({
               </p>
             </div>
           </div>
-          <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase">Live</span>
+          <div className="flex items-center gap-1.5">
+            <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase">Live</span>
+            <InfoTooltip label={t("livePriceInfoLabel")}>{t("livePriceInfoText")}</InfoTooltip>
+          </div>
         </div>
 
         {/* Hashrate — numeric input + unit dropdown */}

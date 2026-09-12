@@ -4,12 +4,15 @@
 
 const WTM_URL = "https://whattomine.com/api/v1/calculate";
 
+// Selectable in the standalone /calculator algorithm picker. Eaglesong (CKB)
+// is intentionally excluded here — real Eaglesong products still get their
+// profit estimate from ALGO_CONFIGS below, just not as a pickable algo when
+// there's no specific product.
 export const ALGO_NAMES: Record<string, string> = {
   SHA256:     "SHA-256",
   Scrypt:     "Scrypt",
   KHeavyHash: "KHeavyHash",
   EthHash:    "Etchash",
-  Eaglesong:  "Eaglesong",
   Equihash:   "Equihash",
   X11:        "X11",
   RandomX:    "RandomX",
