@@ -1,37 +1,26 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import InfoTooltip from './InfoTooltip'
 
 afterEach(() => cleanup())
 
 describe('InfoTooltip', () => {
-  it('renders the trigger with the given label, tooltip hidden by default', () => {
-    render(<InfoTooltip label="About the price">Explanation text</InfoTooltip>)
-    expect(screen.getByLabelText('About the price')).toBeTruthy()
-    expect(screen.queryByText('Explanation text')).toBeNull()
-  })
-
-  it('reveals the tooltip content on click', () => {
-    render(<InfoTooltip label="About the price">Explanation text</InfoTooltip>)
-    fireEvent.click(screen.getByLabelText('About the price'))
-    expect(screen.getByText('Explanation text')).toBeTruthy()
-  })
-
-  it('hides the tooltip again on a second click', () => {
+  it('renders a small labeled trigger button', () => {
     render(<InfoTooltip label="About the price">Explanation text</InfoTooltip>)
     const button = screen.getByLabelText('About the price')
-    fireEvent.click(button)
-    fireEvent.click(button)
-    expect(screen.queryByText('Explanation text')).toBeNull()
+    expect(button.tagName).toBe('BUTTON')
   })
 
-  it('closes when the trigger loses focus', () => {
+  it('renders the tooltip content, hidden until hover/focus via opacity', () => {
     render(<InfoTooltip label="About the price">Explanation text</InfoTooltip>)
-    const button = screen.getByLabelText('About the price')
-    fireEvent.click(button)
-    expect(screen.getByText('Explanation text')).toBeTruthy()
-    fireEvent.blur(button)
-    expect(screen.queryByText('Explanation text')).toBeNull()
+    const tooltip = screen.getByRole('tooltip')
+    expect(tooltip.textContent).toBe('Explanation text')
+    // Pure-CSS reveal: present in the DOM but invisible/non-interactive
+    // until the wrapping group is hovered or focus-within.
+    expect(tooltip.className).toContain('opacity-0')
+    expect(tooltip.className).toContain('pointer-events-none')
+    expect(tooltip.className).toContain('group-hover:opacity-100')
+    expect(tooltip.className).toContain('group-focus-within:opacity-100')
   })
 })
