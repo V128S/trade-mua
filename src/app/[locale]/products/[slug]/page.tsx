@@ -3,14 +3,12 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { getProductsFromDB } from "@/lib/products";
-import ProductDetail from "@/components/products/ProductDetail";
+import ProductHero from "@/components/products/ProductHero";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
 import { getUsdUahRate } from "@/lib/fx";
 import { getModelContentKey } from "@/lib/model-content";
 import { collapseBatches, monthsFromNow, type BatchMonth } from "@/lib/batch";
-import AddToCartButton from "@/components/cart/AddToCartButton";
-import { TrackProductView } from "@/lib/analytics/TrackView";
 import JsonLd from "@/components/seo/JsonLd";
 import TrustBar from "@/components/ui/TrustBar";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -243,102 +241,29 @@ export default async function ProductPage({ params }: Props) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-start">
 
-          {/* Left — product image */}
-          {(() => {
-            const imgSrc = getProductImage(product.name, product.imageUrl);
-            return (
-              <div className="relative glass overflow-hidden aspect-square flex items-center justify-center">
-                <div className="grid-tex" />
-                {imgSrc ? (
-                  <Image
-                    src={imgSrc}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 45vw"
-                    className="relative z-10 object-contain p-8 drop-shadow-2xl"
-                    priority
-                  />
-                ) : (
-                  <span className="material-symbols-outlined text-outline-variant text-[120px] relative z-10">memory</span>
-                )}
-                <div className="absolute top-4 left-4 flex gap-2 z-20">
-                  {product.isNew && (
-                    <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">{t("badgeNew")}</span>
-                  )}
-                  {product.inStock ? (
-                    <span className="chip px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider inline-flex items-center gap-1 !bg-green-400/10 !border-green-400/30 !text-green-400">
-                      <span className="material-symbols-outlined text-[12px]">check_circle</span>
-                      {t("inStock")}
-                    </span>
-                  ) : (
-                    <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase tracking-wider">{t("onOrder")}</span>
-                  )}
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Right — details */}
-          <div className="flex flex-col gap-0">
-            {/* Algorithm label */}
-            <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest text-[11px]">
-              {product.algorithm}
-            </span>
-
-            {/* Name */}
-            <h1 className="font-headline-lg text-headline-lg text-on-surface mt-2 leading-tight">
-              {product.name.replace(/\s*\d[\d.,]*\s*(?:TH\/s|GH\/s|MH\/s|Th|Gh|Mh|T|G|M)\s*$/i, "").trim()}
-              {product.hashrate && (
-                <span className="text-on-surface-variant ml-2 font-normal">{product.hashrate}</span>
-              )}
-            </h1>
-
-            {/* Description */}
-            <p className="font-body-md text-body-md text-on-surface-variant mt-3 max-w-md">
-              {t(descKey)}
-            </p>
-
-            {/* Price */}
-            <div className="mt-6">
-              <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">
-                {product.inStock ? t("priceLabelInStock") : t("priceLabelOnOrder")}
-              </p>
-              <p className="font-display-lg text-[52px] leading-none gold-text">
-                ${product.priceUSDT.toLocaleString()}
-              </p>
-              <p className="font-label-caps text-[10px] text-on-surface-variant mt-1">{t("priceCurrency")}</p>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex flex-wrap gap-3 mt-6">
-              <AddToCartButton product={product} />
-              <TrackProductView product={product} />
-              <Link href="/contact" className="btn-ghost py-4 px-8 rounded font-label-caps text-label-caps uppercase tracking-widest flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                {t("consultButton")}
-              </Link>
-            </div>
-
-            {/* Config selector + mini calculator (client) */}
-            <ProductDetail
-              product={product}
-              configs={configs.map((c) => ({
-                id: c.id,
-                hashrate: c.hashrate,
-                powerW: c.powerW,
-                priceUSDT: c.priceUSDT,
-                inStock: c.inStock,
-              }))}
-              batches={batches.map((b) => ({
-                id: b.id,
-                batch: b.batch as BatchMonth,
-                priceUSDT: b.priceUSDT,
-                inStock: b.inStock,
-              }))}
-              revenuePerTH={revenuePerTH}
-              usdUah={usdUah}
-            />
-          </div>
+          {/* Image, price, CTA, batch selector + hashrate config selector +
+              mini calc (client) — batch siblings are the same physical unit,
+              so switching between them is a client-side price/stock swap,
+              not a navigation. */}
+          <ProductHero
+            product={product}
+            batches={batches.map((b) => ({
+              id: b.id,
+              batch: b.batch as BatchMonth,
+              priceUSDT: b.priceUSDT,
+              inStock: b.inStock,
+            }))}
+            descKey={descKey}
+            configs={configs.map((c) => ({
+              id: c.id,
+              hashrate: c.hashrate,
+              powerW: c.powerW,
+              priceUSDT: c.priceUSDT,
+              inStock: c.inStock,
+            }))}
+            revenuePerTH={revenuePerTH}
+            usdUah={usdUah}
+          />
         </div>
       </section>
 

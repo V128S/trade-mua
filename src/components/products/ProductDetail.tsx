@@ -2,12 +2,11 @@
 
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/sheets";
 import { parseHashrateTH } from "@/lib/utils";
-import { formatBatchLabel, type BatchMonth } from "@/lib/batch";
 
-interface Config {
+export interface Config {
   id: string;
   hashrate: string;
   powerW: number;
@@ -15,24 +14,15 @@ interface Config {
   inStock: boolean;
 }
 
-interface BatchOption {
-  id: string;
-  batch: BatchMonth;
-  priceUSDT: number;
-  inStock: boolean;
-}
-
 interface Props {
   product: Product;
   configs: Config[];
-  batches: BatchOption[];
   revenuePerTH: number; // USD per TH-equivalent per day
   usdUah: number;       // live USD→UAH rate; electricity is entered in UAH
 }
 
-export default function ProductDetail({ product, configs, batches, revenuePerTH, usdUah }: Props) {
+export default function ProductDetail({ product, configs, revenuePerTH, usdUah }: Props) {
   const t = useTranslations("products");
-  const locale = useLocale();
   const [rate, setRate] = useState(3.6); // грн/кВт·год (mining-hotel rate)
 
   const th = parseHashrateTH(product.hashrate);
@@ -42,47 +32,9 @@ export default function ProductDetail({ product, configs, batches, revenuePerTH,
   const dailyProfit = Math.max(0, dailyRev - dailyElec);
 
   const hasConfigs = configs.length > 1;
-  const hasBatches = batches.length > 1;
 
   return (
     <>
-      {/* ── Batch selector — supply-batch (delivery month), separate from
-          the hashrate config selector below: same hashrate, different
-          price/arrival month. Same tile-grid pattern + navigation. ── */}
-      {hasBatches && (
-        <div className="mt-6">
-          <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[10px] mb-3">
-            {t("batchSelectorLabel")}
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {batches.map((b) => {
-              const isCurrent = b.id === product.id;
-              return (
-                <Link
-                  key={b.id}
-                  href={`/products/${b.id}`}
-                  className={`p-3 rounded-lg border transition-colors duration-200 flex flex-col gap-0.5 ${
-                    isCurrent
-                      ? "border-primary bg-primary/10"
-                      : "border-white/10 hover:border-primary/50 bg-white/[0.02]"
-                  }`}
-                >
-                  <span className={`font-technical-data text-technical-data text-sm ${isCurrent ? "text-primary" : "text-on-surface"}`}>
-                    {formatBatchLabel(b.batch, locale)}
-                  </span>
-                  <span className="font-label-caps text-[10px] text-on-surface-variant">
-                    ${b.priceUSDT.toLocaleString()}
-                  </span>
-                  <span className={`font-label-caps text-[10px] mt-1 ${b.inStock ? "text-green-400" : "text-on-surface-variant"}`}>
-                    {b.inStock ? t("inStock") : t("onOrder")}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* ── Config selector ── */}
       {hasConfigs && (
         <div className="mt-6">
@@ -91,7 +43,11 @@ export default function ProductDetail({ product, configs, batches, revenuePerTH,
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {configs.map((c) => {
-              const isCurrent = c.id === product.id;
+              // Batch siblings share this exact hashrate but not `product.id`
+              // (the page can land on any one of them) — compare by hashrate
+              // so the right tile stays highlighted regardless of which
+              // batch is selected.
+              const isCurrent = c.hashrate === product.hashrate;
               return (
                 <Link
                   key={c.id}
