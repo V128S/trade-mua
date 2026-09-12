@@ -5,7 +5,7 @@ export const ALGO_COINS: Record<string, string[]> = {
   randomx:    ["XMR"],
   versahash:  ["ALPH"],
   x11:        ["DASH"],
-  equihash:   ["ZEC", "ZEN"],
+  equihash:   ["ZEC"],
   ethhash:    ["ETC"],
   handshake:  ["HNS"],
   eaglesong:  ["CKB"],
