@@ -333,7 +333,6 @@
     "guidesHeading": "Полезные материалы",
     "coinPriceLabel": "Текущая цена {coinSymbol}",
     "coinPriceLoading": "Загрузка...",
-    "livePriceInfoLabel": "О цене",
     "livePriceInfoText": "Это средняя цена за сутки, а не мгновенная котировка — обновляется каждые несколько минут.",
     "hashrateLabel": "Хешрейт",
     "hashratePlaceholder": "напр. 335",

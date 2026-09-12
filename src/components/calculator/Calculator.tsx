@@ -136,10 +136,9 @@ export default function Calculator({
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
+          <InfoTooltip tooltip={t("livePriceInfoText")}>
             <span className="chip px-2 py-1 font-technical-data text-[10px] uppercase">Live</span>
-            <InfoTooltip label={t("livePriceInfoLabel")}>{t("livePriceInfoText")}</InfoTooltip>
-          </div>
+          </InfoTooltip>
         </div>
 
         {/* Hashrate — numeric input + unit dropdown */}
