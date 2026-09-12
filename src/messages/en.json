@@ -333,7 +333,7 @@
     "guidesHeading": "Useful guides",
     "coinPriceLabel": "Current {coinSymbol} price",
     "coinPriceLoading": "Loading...",
-    "livePriceInfoText": "This is the average price for the day, not an instant quote — refreshed every few minutes.",
+    "livePriceInfoText": "This is the average price for the day.",
     "hashrateLabel": "Hashrate",
     "hashratePlaceholder": "e.g. 335",
     "hashrateHint": "Enter the value — select the unit from the dropdown",

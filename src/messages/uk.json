@@ -333,7 +333,7 @@
     "guidesHeading": "Корисні матеріали",
     "coinPriceLabel": "Поточна ціна {coinSymbol}",
     "coinPriceLoading": "Завантаження...",
-    "livePriceInfoText": "Це середня ціна за добу, а не миттєва котирування — оновлюється кожні кілька хвилин.",
+    "livePriceInfoText": "Це середня ціна за добу.",
     "hashrateLabel": "Хешрейт",
     "hashratePlaceholder": "наприклад: 335",
     "hashrateHint": "Введіть значення — виберіть одиницю зі списку",
