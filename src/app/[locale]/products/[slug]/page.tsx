@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { getProductsFromDB } from "@/lib/products";
+import { getFamilySlug, getCanonicalSlug, type Product } from "@/lib/sheets";
 import ProductHero from "@/components/products/ProductHero";
 import { getProductImage } from "@/lib/product-images";
 import { getMinerstatRevenue } from "@/lib/minerstat";
@@ -50,6 +51,16 @@ function getCooling(name: string): string {
   return "Air";
 }
 
+// Batch products are looked up primarily by their stable family slug (no
+// month) — falls back to an exact row-id match for old/direct links to a
+// specific batch's own id. Picks the soonest batch when several match.
+function findProductBySlug(products: Product[], slug: string): Product | undefined {
+  const exact = products.find((p) => p.id === slug);
+  if (exact) return exact;
+  const familyMatches = products.filter((p) => p.batch && getFamilySlug(p) === slug);
+  return collapseBatches(familyMatches)[0];
+}
+
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -59,9 +70,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     getProductsFromDB(),
     getTranslations({ locale, namespace: "products" }),
   ]);
-  const product = products.find((p) => p.id === slug);
+  const product = findProductBySlug(products, slug);
   if (!product) return { title: "TradeM" };
-  const path = `/products/${slug}`;
+  const path = `/products/${getCanonicalSlug(product)}`;
   const localePrefix = locale === "uk" ? "" : `/${locale}`;
   return {
     title: t("metaSlugTitle", { name: product.name }),
@@ -85,7 +96,7 @@ export default async function ProductPage({ params }: Props) {
 
   const [products, revenueMap, usdUah] = await Promise.all([getProductsFromDB(), getMinerstatRevenue(), getUsdUahRate()]);
 
-  const product = products.find((p) => p.id === slug);
+  const product = findProductBySlug(products, slug);
   if (!product) notFound();
 
   // Revenue for this product's specific algorithm
@@ -109,10 +120,11 @@ export default async function ProductPage({ params }: Props) {
     .filter((p) => p.name === product.name && p.hashrate === product.hashrate && p.batch)
     .sort((a, b) => monthsFromNow(a.batch as BatchMonth) - monthsFromNow(b.batch as BatchMonth));
 
-  // Similar models = same algorithm, different base name, max 4
-  const similar = products
-    .filter((p) => p.algorithm === product.algorithm && getBaseName(p.name) !== baseName)
-    .slice(0, 4);
+  // Similar models = same algorithm, different base name, max 4 (batch
+  // siblings collapsed — same reasoning as the catalog grid)
+  const similar = collapseBatches(
+    products.filter((p) => p.algorithm === product.algorithm && getBaseName(p.name) !== baseName),
+  ).slice(0, 4);
 
   const specs = [
     { label: t("specAlgorithm"), value: product.algorithm },
@@ -134,7 +146,7 @@ export default async function ProductPage({ params }: Props) {
 
   // ── Structured data (built from live catalog data) ──
   const localePrefix = locale === "uk" ? "" : `/${locale}`;
-  const productUrl = `${SITE_URL}${localePrefix}/products/${product.id}`;
+  const productUrl = `${SITE_URL}${localePrefix}/products/${getCanonicalSlug(product)}`;
 
   // Resolve which hub (algo > brand) this product belongs to for breadcrumbs
   const hub = ALGO_HUB[product.algorithm] ?? BRAND_HUB[product.brand] ?? null;
@@ -256,6 +268,7 @@ export default async function ProductPage({ params }: Props) {
             descKey={descKey}
             configs={configs.map((c) => ({
               id: c.id,
+              slug: getCanonicalSlug(c),
               hashrate: c.hashrate,
               powerW: c.powerW,
               priceUSDT: c.priceUSDT,
@@ -342,7 +355,7 @@ export default async function ProductPage({ params }: Props) {
               return (
               <Link
                 key={p.id}
-                href={`/products/${p.id}`}
+                href={`/products/${getCanonicalSlug(p)}`}
                 className="glass glass-hover group overflow-hidden flex flex-col"
               >
                 <div className="relative h-36 plate flex items-center justify-center overflow-hidden border-b border-white/5">

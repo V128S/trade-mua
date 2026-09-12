@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getProductModifiedDates } from "@/lib/products";
+import { getCanonicalSlug } from "@/lib/sheets";
 import { BLOG_SLUGS, getBlogDates } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 
@@ -33,7 +34,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries = STATIC_PATHS.map((path) => entry(path, latestSync ?? undefined));
   const blogDates = getBlogDates();
   const blogEntries = BLOG_SLUGS.map((slug) => entry(`/blog/${slug}`, blogDates[slug]));
-  const productEntries = productDates.map((p) => entry(`/products/${p.id}`, p.syncedAt ?? undefined));
+  // Batch siblings (same model+hashrate, different delivery month) share one
+  // stable family-slug URL — list it once, with the most recent sync time
+  // among the siblings so lastModified reflects any of them changing.
+  const bySlug = new Map<string, string | null>();
+  for (const p of productDates) {
+    const slug = getCanonicalSlug(p);
+    const existing = bySlug.get(slug);
+    if (existing === undefined || (p.syncedAt ?? "") > (existing ?? "")) {
+      bySlug.set(slug, p.syncedAt);
+    }
+  }
+  const productEntries = [...bySlug.entries()].map(([slug, syncedAt]) => entry(`/products/${slug}`, syncedAt ?? undefined));
 
   return [...staticEntries, ...blogEntries, ...productEntries];
 }

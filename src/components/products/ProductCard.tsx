@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import type { Product } from "@/lib/sheets";
+import { getCanonicalSlug, type Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 import { parseHashrateTH } from "@/lib/utils";
 import { trackSelectItem } from "@/lib/analytics";
@@ -37,7 +37,7 @@ export function ProductCard({
   const dailyProfit = dailyRev > 0 ? dailyRev - dailyElec : 0;
   return (
     <Link
-      href={`/products/${product.id}`}
+      href={`/products/${getCanonicalSlug(product)}`}
       onClick={() => {
         if (listId && listName) {
           trackSelectItem(

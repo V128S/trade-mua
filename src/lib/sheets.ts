@@ -48,7 +48,7 @@ function parseWatts(powerRaw: string, hashrateRaw: string): number {
   return parseFloat(s.replace(",", ".")) || 0;
 }
 
-function autoSlug(firm: string, model: string, hashrate: string): string {
+function familySlug(firm: string, model: string, hashrate: string): string {
   const brand = BRAND_MAP[firm.toLowerCase().replace(/\s/g, "")] ?? slug(firm).slice(0, 4);
   const hr = hashrate.toLowerCase()
     .replace(/\s/g, "")
@@ -56,6 +56,34 @@ function autoSlug(firm: string, model: string, hashrate: string): string {
     .replace("mh/s", "mh").replace("kh/s", "kh")
     .replace("ph/s", "ph");
   return `${brand}-${slug(model)}-${hr}`;
+}
+
+// id/slug for a freshly-parsed row — same shape as before (batch tag, if
+// any, is still whatever raw `model` contains at the call site).
+function autoSlug(firm: string, model: string, hashrate: string): string {
+  return familySlug(firm, model, hashrate);
+}
+
+// Stable slug for a product FAMILY — same brand+name+hashrate always maps to
+// the same value, regardless of which supply batch is "current". Batch
+// siblings share a name+hashrate (batch tag already stripped from `name` at
+// parse time), so this is what a batch product's public URL/canonical
+// should use instead of its own (batch-suffixed) row id — otherwise the
+// canonical URL would drift to a different string every time the "current"
+// batch changes.
+export function getFamilySlug(product: Pick<Product, "brand" | "name" | "hashrate">): string {
+  const model = product.name.startsWith(product.brand)
+    ? product.name.slice(product.brand.length).trim()
+    : product.name;
+  return familySlug(product.brand, model, product.hashrate);
+}
+
+// Public slug for a product: a batch product always resolves to its stable
+// family slug (so the URL never drifts to a different string as the
+// "current" batch changes month to month); everything else keeps its own
+// row id.
+export function getCanonicalSlug(product: Pick<Product, "id" | "batch" | "brand" | "name" | "hashrate">): string {
+  return product.batch ? getFamilySlug(product) : product.id;
 }
 
 // Columns: [0]algo [1]firm [2]model [3]hashrate [4]power [5]instock [6]order [7]notes [8]sku [9]image_url

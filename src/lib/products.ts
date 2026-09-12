@@ -92,13 +92,17 @@ export async function getLastSyncTime(): Promise<string | null> {
   return data?.synced_at ?? null
 }
 
-// Lightweight id+synced_at pairs for sitemap lastModified — avoids fetching
-// full product rows when we only need the modification timestamp.
-export async function getProductModifiedDates(): Promise<{ id: string; syncedAt: string | null }[]> {
+// Lightweight rows for sitemap lastModified — avoids fetching full product
+// rows when we only need the modification timestamp. brand/name/hashrate/
+// batch are included so the sitemap can dedupe batch siblings to their one
+// stable family-slug URL (see getCanonicalSlug).
+export async function getProductModifiedDates(): Promise<
+  { id: string; syncedAt: string | null; brand: string; name: string; hashrate: string; batch: string | null }[]
+> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('products')
-    .select('id, synced_at')
+    .select('id, synced_at, brand, name, hashrate, batch')
   if (error || !data) return []
-  return data.map((r) => ({ id: r.id, syncedAt: r.synced_at }))
+  return data.map((r) => ({ id: r.id, syncedAt: r.synced_at, brand: r.brand, name: r.name, hashrate: r.hashrate, batch: r.batch }))
 }

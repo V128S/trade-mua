@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductsFromDB } from "@/lib/products";
+import { getCanonicalSlug } from "@/lib/sheets";
+import { collapseBatches } from "@/lib/batch";
 import { getMinerstatRevenue } from "@/lib/minerstat";
 import { getPost } from "@/lib/blog";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -68,9 +70,11 @@ export default async function AsicHubPage({ params }: Props) {
     getTranslations("products"),
   ]);
 
-  const items = products
-    .filter((p) => (hub.dbAlgo ? p.algorithm === hub.dbAlgo : p.brand === hub.dbBrand))
-    .sort((a, b) => b.priceUSDT - a.priceUSDT);
+  // Batch siblings (same model+hashrate) collapse to one card — same
+  // treatment as the /products catalog grid.
+  const items = collapseBatches(
+    products.filter((p) => (hub.dbAlgo ? p.algorithm === hub.dbAlgo : p.brand === hub.dbBrand)),
+  ).sort((a, b) => b.priceUSDT - a.priceUSDT);
   if (items.length === 0) notFound();
 
   const localePrefix = locale === "uk" ? "" : `/${locale}`;
@@ -91,7 +95,7 @@ export default async function AsicHubPage({ params }: Props) {
     itemListElement: items.slice(0, 20).map((p, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `${SITE_URL}${localePrefix}/products/${p.id}`,
+      url: `${SITE_URL}${localePrefix}/products/${getCanonicalSlug(p)}`,
     })),
   };
 

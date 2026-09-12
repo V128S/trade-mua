@@ -8,6 +8,7 @@ import { parseHashrateTH } from "@/lib/utils";
 
 export interface Config {
   id: string;
+  slug: string; // public URL slug — stable family slug when this config is a batch product
   hashrate: string;
   powerW: number;
   priceUSDT: number;
@@ -51,7 +52,7 @@ export default function ProductDetail({ product, configs, revenuePerTH, usdUah }
               return (
                 <Link
                   key={c.id}
-                  href={`/products/${c.id}`}
+                  href={`/products/${c.slug}`}
                   className={`p-3 rounded-lg border transition-colors duration-200 flex flex-col gap-0.5 ${
                     isCurrent
                       ? "border-primary bg-primary/10"

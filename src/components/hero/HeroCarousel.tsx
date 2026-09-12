@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import type { Product } from "@/lib/sheets";
+import { getCanonicalSlug, type Product } from "@/lib/sheets";
 import { getProductImage } from "@/lib/product-images";
 
 export default function HeroCarousel({ products }: { products: Product[] }) {
@@ -25,7 +25,7 @@ export default function HeroCarousel({ products }: { products: Product[] }) {
           return (
             <Link
               key={`${product.id}-${i}`}
-              href={`/products/${product.id}`}
+              href={`/products/${getCanonicalSlug(product)}`}
               className="group bg-card border-card rounded-lg overflow-hidden shrink-0 hover-primary-border transition-colors duration-300 flex items-center gap-3 px-3 py-2.5"
             >
               {/* Image */}
